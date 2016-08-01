@@ -1,0 +1,320 @@
+\section{Parametric Vs. Nonparametric Models}
+\label{sec:param-vs.-nonp}
+
+Models that can be identified using a finite set of values
+(that is, parameters) are called {\bf parametric} models.  Their
+complexity and expressivity is the same whether they are fit using 10
+data points, $10^6$ data points, or $10^10$ data points.  Most
+canonical statistical models are parametric: the parameters in a
+regression model comprise the regression coefficients and the
+parameters of the residual distribution.  The parameters of the
+mixture of Gaussians model comprise vector, $\pi$, of $K$ mixing weights,
+and the parameters of the individual component Normal distributions:
+$\{\mu_k, \sigma^2_k\}, k = 1, \dots, K$.
+
+In a parametric model, once the sample size is a few orders of
+magnitude larger than the number of parameters, the gains made by
+further increasing the sample size, which in a frequentist setting
+comes in the form of narrower confidence sets, and in a Bayesian
+setting comes in the form of reduced posterior variance, are typically
+negligible: the errors in prediction due to inevitable model misspecification, and
+practical concerns with generalizability to new data sets, overwhelm
+the remaining decimal places of uncertainty.
+
+The name {\bf nonparametric model} is something of a misnomer, in that
+nonparametric models do not have {\em no} parameters (a model with no
+parameters would by definition be unable to learn anything from data);
+rather, they have a number of parameters which grows adaptively as the
+sample size increases.
+
+A common frequentist family of nonparametric models are kernel-smoothed density
+estimators \citep{rosenblatt1956remarks, parzen1962estimation}, 
+in which the probability density of a data-generating process is
+estimated by taking the empirical distribution and ``smoothing'' it to
+obtain the estimated density at $y$ by
+averaging together the values nearby points using a weight kernel.  As
+a result, the estimated density requires $n$ values to specify it,
+where $n$ is the sample size.  As such, the complexity of the family
+of distributions in the model space grows with the sample size, unlike
+in a parametric model.  Here, the tradeoff between bias and variance
+is controlled not by the complexity of the model space, but rather by
+the choice of smoothing bandwith: how much of the density at each
+point is ``borrowed'' from nearby locations, with one extreme
+representing a bandwidth of zero, in which case the estimate is simply
+the empirical distribution.
+
+It is natural to interpret the kernel density estimator as a mixture
+model, where there is a mixture component centered at each data point
+whose distribution belongs to a family defined by the kernel function:
+for example, the Gaussian kernel results in a mixture of Gaussians,
+the Epanechnikov kernel \citep{epanechnikov1969non} 
+results in a mixture of Epanechnikov distributions, and the Uniform
+kernel results in a mixture of Uniform distributions.  On the
+interpretation that each component in a mixture model represents a
+qualitatively distinct class of data, this means that each point is
+viewed as qualitatively distinct, which from a Bayesian perspective
+is unsatisfying.  Instead, we would like a model whose complexity
+grows more slowly than linear in the sample size, such that as we
+collect additional data it is always possible to encounter something
+qualitatively new, but where the chances of doing so diminish as we
+have more and more data.  This can be accomplished by employing a {\bf
+Dirichlet Process} as the prior on the set of mixture components.
+
+\section{The Dirichlet Process}
+\label{sec:dirichlet-process}
+
+The Dirichlet Process (DP) was formally defined by
+\citet{ferguson1973bayesian} as a random probability measure, $G$, over a
+$\mathcal{X}$ equipped with the sigma-algebra $\mathcal{A}$, with the
+defining property that, for any partition of $\mathcal{X}$ consisting
+of measureable sets, $A_1, A_2 \dots, A_k$, the random distribution given
+by the probabilities
+\begin{equation*}
+  \{P(A_1), P(A_2), \dots, P(A_k)\}
+\end{equation*}
+has a Dirichlet distribution.
+
+A Dirichlet distribution is defined by a mean distribution, $\pi_1,
+\pi_2, \dots, \pi_k; \sum_i \pi_i = 1$, and a concentration parameter,
+$\alpha$, which acts as an inverse variance parameter: as $\alpha$
+goes to infinity, draws from the Dirichlet distribution are
+distributions close to the mean with increasingly high probability.
+
+The Dirichlet Process is also defined by a mean distribution $G_0$, called a
+{\bf base measure}, and a
+concentration parameter $\alpha$, but since the DP induces a Dirichlet
+distribution over {\em any} finite partition of $\mathcal{X}$, the
+mean distribution must be defined on all measureable
+sets in $\mathcal{A}$.  We will write
+\begin{equation}
+G \sim \DP{\alpha G_0}
+\end{equation}
+to indicate that the random measure $G$ is distributed according to a
+Dirichlet Process with base measure $G_0$ and concentration parameter $\alpha$.
+Then, concretely, we have
+\begin{equation*}
+    P(A_1), P(A_2), \dots, P(A_k) \sim \Dir{\alpha G_0(A_1), \dots,
+      \alpha G_0(A_k)}
+\end{equation*}
+An important probability of the DP is that the resulting measure is
+discrete almost surely, and hence it is a sensible choice as a prior
+on mixture components.  An equally important property when it comes to
+using a DP as a Bayesian prior is that it is a {\em conjugate prior}
+to a discrete likelihood. That is, if $n$ observations, $Y_1, \dots,
+Y_n$, are drawn from
+some unkown discrete probability measure $G$, and the prior employed
+for $G$ is a Dirichlet Process, then the posterior distribution on $G$
+is also a DP, whose base measure is a weighted sum of the prior base
+measure, $G_0$, and the empirical distribution, $\hat{F}_n$:
+\begin{equation}
+  \label{eq:4}
+  G \given Y \sim \alpha G_0 + n \hat{F}_n
+\end{equation}
+and whose concentration parameter is simply $\alpha + n$.
+
+\subsection{The Normalized Gamma Process representation of the DP}
+\label{sec:norm-gamma-proc}
+
+\citet{ferguson1973bayesian} also showed that the Dirichlet Process
+arises by normalizing a {\bf Gamma Process}.    
+A Gamma Process is a stochastic point process on $\mathbb{R}^{+} \times
+  \Theta$ which is defined by a {\bf L\'evy intensity measure}:
+  \begin{equation}
+    \label{eq:8}
+    \nu(d\pi, d\theta) = \alpha \pi^{-1} e^{-\pi} d\pi G_0(d\theta)
+  \end{equation}
+
+  A realization of a Gamma process is a collection of point masses
+  $\{\pi_k, \theta_k\}$, where $\pi_k \in \mathbb{R}^{+}$ is the mass
+  associated with the point at location $\theta_k \in \Theta$.  This
+  collection can be used to define a measure, $\mu$, on $\Theta$,
+  where
+  \begin{equation}
+    \label{eq:3}
+    \mu(A) = \sum_{k: \theta_k \in A} \pi_k
+  \end{equation}
+
+  The number $n(A)$ of point masses in a region $A \subset \mathbb{R}^+ \times \Theta$ is
+  distributed as
+  \begin{equation}
+    \label{eq:9}
+    n(A) \sim \Pois{\int_A \nu(d\pi, d\theta)}
+  \end{equation}
+
+  The L\'evy intensity measure of the Gamma process satisfies
+  conditions to guarantee that the sum of all of the $\pi_k$
+  weights is finite with probability 1, and therefore the measure $G$
+  defined by
+  \begin{equation}
+    \label{eq:1}
+    G = \frac{\mu}{\sum_k \pi_k}
+  \end{equation}
+  is a valid probability measure.  \citet{ferguson1973bayesian} showed
+  that this probability measure is a DP with base measure $G_0$ and
+  concentration $\alpha$, where
+  these are the measure and parameter used in defining the L\'evy intensity of the
+  Gamma process.
+
+  Although the formal definition of the DP is well-defined, and
+  although the Normalized Gamma Process representation guarantees
+  existence of the DP, neither of these is terribly useful in {\em
+    constructing} a DP, which limits the usefulness of the DP in
+  applied modeling.  Fortunately, a constructive definition of the DP
+  was discovered by \citet{sethuraman1994constructive}, using what is
+  known as a {\bf Stick-Breaking Process}.
+
+  \subsection{The Stick-Breaking Process construction of the DP}
+  \label{sec:stick-break-proc}
+
+  As shown by \citet{sethuraman1994constructive}, we can generate a
+  draw from a Dirichlet Process by iteratively sampling the $\pi_k$
+  weights, and then placing a point mass with weight $\pi_k$ at a
+  location in $\Theta$ independently drawn from $G_0$.  This process
+  is called a {\bf Stick-Breaking Process}.  By using the following
+  algorithm to select the stick weights, the resulting collection of
+  point masses has a Dirichlet Process.
+
+  Having drawn $k-1$ point masses $(\pi_1, theta_1), \dots, (\pi_{k-1}, \theta_{k-1})$,
+  \begin{enumerate}
+  \item \label{stick-step-1} Draw $\tilde{\pi_{k}} \sim \Beta{1}{\alpha}$.
+  \item \label{stick-step-2} Set $\pi_k = \tilde{\pi_k} \prod_{k'=1}^{K-1}
+    \tilde{\pi_{k'}}$.
+  \item \label{stick-step-3} Draw $\theta_k \sim G_0$.
+  \end{enumerate}
+  where, when $k = 1$, the null product in step \ref{stick-step-2} is
+  1.
+
+  The choice of $G_0$ and $\alpha$ determine the resulting DP.
+
+  \subsection{The Chinese Restaurant Process}
+  \label{sec:chin-rest-proc}
+
+  A useful construction for doing inference in a Dirichlet
+  Process-based model is based on the metaphor of customers sharing
+  food at a Chinese restaurant, which is normally described as
+  follows.
+
+  One by one, customers enter a Chinese restaurant and either sit at
+  an unoccupied table and order a dish for the table, or join a table
+  with other customers and share whatever dish is at the table.  The first
+  customer necessarily starts a new table.  Subsequent customers join
+  table $k$ with probability proportional to $n_k$, where $n_k$ is the
+  number of customers currently seated at that table, and sit at an
+  unoccupied table with probability proportional to a parameter
+  $\alpha$.  
+
+  More formally, the $n+1$th customer to enter the restaurant
+  is assigned to table $k$ according to the distribution
+  \begin{align}
+    P(t_{n+1} = k) =
+    \begin{cases}
+      \frac{n_k}{n + \alpha} & k = 1, \dots, K \\
+      \frac{\alpha}{n + \alpha} & k = K + 1
+    \end{cases}
+  \end{align}
+  For each new table, a dish, $\theta_k$ is sampled from a base
+  distribution, $G_0$.
+
+  It turns out that the distribution of the collection of 
+  assignments of dishes to customers is the same as the marginal
+  distribution of draws from a random measure $G$ which is distributed
+  $\DP{\alpha G_0}$ (see \citet{teh2011dirichlet} for a proof of this
+  fact as well as a review of the theory of DPs in general).
+
+  Notice that the Chinese Restaurant Process (CRP) has the property
+  that the more often a dish has already been selected, the more
+  likely it is to be selected again: that is, it has a ``rich get
+  richer'' quality.  This makes sense in terms of the marginal
+  distribution of draws from a DP-distributed random measure since,
+  the more observations there are at a particular location, the
+  stronger the evidence that the mass under $G$ at that location is
+  large, and hence, the larger the posterior predictive probability at
+  that location (marginalizing over $G$).
+
+  \subsection{The Dirichlet Process Mixture Model}
+
+  We are now ready to define a nonparametric version of a Bayesian
+  Gaussian Mixture Model which replaces the Dirichlet distribution
+  prior on the collection of mixture components from the fixed $K$ mixture model 
+  with a Dirichlet Process prior.
+
+  Reiterating the model initially defined in \eqref{eq:gmm}, suppose
+  we have a model of the form
+  \begin{equation}
+    \label{eq:gmm-2}
+    f(y \given \pi, \theta) = \sum_{k=1}^\infty \pi_k f(y \given \theta_k)
+  \end{equation}
+  where $\theta = (\theta_1, \theta_2, \dots)$ are some parameters
+  governing the mixture components, and $\pi = (\pi_1, \pi_2, \dots)$ is
+  the vector of mixing weights that sum to 1.  We now drop the
+  assumption that all but finitely many of the $\pi_k$ are zero, and
+  instead adopt as a prior:
+  \begin{align}
+    \label{eq:DP-prior}
+    \{(\pi_k, \theta_k)_{k=1}^\infty\} \sim \DP{\alpha G_0}
+  \end{align}
+  As before, we introduce indicator variables, $\{z_i\}_{i=1}^n$ so
+  that we can write
+  \begin{align}
+    \label{eq:5}
+    P(z_i = k) = \pi_k, \qquad i = 1, \dots, n; k = 1, 2, \dots \\
+    y_i \given z_i \sim F(\theta_{z_i})
+  \end{align}
+  where $F$ is a parametric family parameterized by $\theta$. For
+  example, if $F$ is Normal, then $\theta$ might represent the mean
+  vector and covariance matrix, and we might choose $G_0$ to be a
+  Normal-Inverse Wishart distribution (or a non-conjugate choice as
+  the application suggests).
+
+  \subsection{A Gibbs Sampler for DP Mixture Models}
+  \label{sec:gibbs-sampler-dp}
+
+  Given data, $y = (y_1, \dots, y_n)$ modeled using the mixture
+  model in \eqref{eq:gmm-2} with the prior in \eqref{eq:DP-prior}, 
+  we want to be able to make inferences about the parameters, $(\pi_k,
+  \theta_k)$.  As with all but the simplest models, the full posterior
+  is not amenable to exact analysis, and so we must resort to
+  approximation to compute quantities of interest.  There are two
+  dominant approximation methods in Bayesian inference.  One is variational
+  inference, in which the true posterior is replaced by a distribution
+  which is more amenable to analysis and which is in some sense as
+  close as possible to the true distribution (usually the objective is
+  to minimize the KL divergence from the target to the
+  approximation).  The second popular approximation technique is
+  Markov Chain Monte Carlo (MCMC), in which integrals involving the posterior
+  are computed based on a sample from the posterior drawn using a
+  Markov Chain whose transition kernel is chosen so as to yield the
+  true posterior as the unique stationary distribution.  In a
+  nutshell, variational Bayes provides an exact calculations based on an
+  approximate distribution, whereas MCMC provides approximate
+  calculations based on the true posterior.  I will focus on MCMC in
+  this dissertation \citet{fox2012tutorial} for a tutorial on
+  variational Bayes generally and \citet{blei2006variational} and
+  \citet{kurihara2007collapsed} for work on variational methods for
+  Dirichlet Process mixture models in particular.
+  
+  As with the finite mixture model, MCMC inference is greatly
+  simplified by sampling over the $z_i$ indicators as well as over the
+  mixture component parameters themselves (indeed, in some
+  applications, these indicators may be the variables of primary interest).
+
+\label{sec:dirichl-proc-gauss}
+
+\section{An Infinite State HMM}
+\label{sec:an-infinite-state}
+
+\subsection{The Hierarchical Dirichlet Process}
+\label{sec:hier-dirichl-proc}
+
+\subsection{The HDP-HMM}
+\label{sec:hdp-hmm}
+
+\section{Inference in Finite and Infinite State HMMs}
+\label{sec:inference-hdp-hmm}
+
+\subsection{The Forward Backward Algorithm}
+\label{sec:forw-backw-algor-1}
+
+\subsection{Two Gibbs Samplers for the HDP-HMM}
+
+\subsection{Beam Sampling in the HDP-HMM}

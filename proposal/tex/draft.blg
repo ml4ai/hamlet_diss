@@ -1,0 +1,47 @@
+This is BibTeX, Version 0.99c (TeX Live 2009)
+The top-level auxiliary file: proposal.aux
+The style file: apalike.bst
+Database file #1: ../../bib/dissertation.bib
+Warning--empty journal in quintana2012cluster
+You've used 20 entries,
+            1935 wiz_defined-function locations,
+            590 strings with 7576 characters,
+and the built_in function-call counts, 8911 in all, are:
+= -- 882
+> -- 376
+< -- 17
++ -- 140
+- -- 128
+* -- 732
+:= -- 1496
+add.period$ -- 64
+call.type$ -- 20
+change.case$ -- 164
+chr.to.int$ -- 20
+cite$ -- 21
+duplicate$ -- 357
+empty$ -- 620
+format.name$ -- 158
+if$ -- 1785
+int.to.chr$ -- 1
+int.to.str$ -- 0
+missing$ -- 20
+newline$ -- 102
+num.names$ -- 60
+pop$ -- 165
+preamble$ -- 1
+purify$ -- 164
+quote$ -- 0
+skip$ -- 270
+stack$ -- 0
+substring$ -- 615
+swap$ -- 71
+text.length$ -- 8
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 120
+warning$ -- 1
+while$ -- 70
+width$ -- 0
+write$ -- 263
+(There was 1 warning)

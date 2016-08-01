@@ -1,0 +1,925 @@
+In this chapter, 
+I describe a generalization of the Hierarchical Dirichlet Process
+Hidden Markov Model  \citet{teh2006hierarchical} discussed in Chapter \ref{chapter:HMM-NPBayes}
+which introduces a notion of latent similarity between pairs of hidden
+states, such that transitions are a priori more likely to occur between states
+that are deemed ``similar''.  This is achieved by
+placing a kernel function on the space of state parameters which
+returns for each pair of states a value between 0 and 1, representing
+the degree to which they are similar (in whatever sense is desired for
+the application at hand), and
+scaling HDP-generated transition probabilities by the similarity between states.  
+I will refer to this model as the Hierarchical Dirichlet Process Hidden Markov Model with Local
+Transitions (HDP-HMM-LT, or HaMMLeT).  Although this achieves the goal of selectively increasing the
+probability of transitions between similar states, inference is made
+more complicated since, unlike in the ``vanilla'' HDP-HMM, 
+the posterior measure over transition
+distributions is no longer a Dirichlet Process --- that is, the prior
+is no longer conjugate to the state sequence likelihood.  
+
+I will present an alternative representation of this process that facilitates
+inference with an auxiliary variable scheme with the following
+interpretation: The discrete time chain is recast as a continuous time Markov Process
+in which: (1) some jump attempts fail, (2) the probability of success is
+proportional to the similarity between the source and destination
+states, (3) only successful jumps are observed,
+and (4) the time elapsed between jumps, as well as the number of
+unsuccessful jump attempts, are latent variables that are sampled
+during MCMC inference.  By introducing these auxiliary latent
+variables, nearly all
+conditional distributions in the model are members of an exponential
+family, admitting exact Gibbs sampling.  The only exception
+is the set of similarities, which are defined in an
+application-specific way, and require application-specific inference methods.
+I present results for a few different choices in the experiments in
+Chs \ref{chapter:cocktail-party} through \ref{chapter:music}.
+
+The motivating domain for this model is natural language text, in
+which sentences in a document are associated with a set of ``topics'',
+the topic sets in successive sentences have a high
+degree of overlap, even when they are not identical (so that
+neighboring topic vectors are similar), and in which there may be a
+high degree of correlation between topics, so that modeling the entry
+and disappearance of each topic independently is undesirable.  
+The topic vectors are represented using binary vectors, indicating which
+topics are ``active'' in the sentence, and to constrain the dynamics 
+governing latent state transitions so that
+transitions between similar topic vectors are {\it a priori} more
+likely, but where certain topics tend to occur together.  The latter
+property makes an ordinary factorial HMM undesireable.  
+
+In the remainder of this chapter, 
+I first review the transition dynamics in the ``vanilla'' HDP-HMM so
+that it is easier to see how the proposed HDP-HMM-LT differs; I then
+define the generative process of the HDP-HMM-LT; finally, I introduce
+the ``Markov Jump Process With Failed Transitions'' augmented data
+representation, which gives rise to a natural Gibbs sampler for the
+HDP-HMM-LT model.
+
+\section{Transition Dynamics in the HDP-HMM}
+\label{sec:transition-dynamics}
+
+The conventional HDP-HMM \citep{teh2006hierarchical} is based on a 
+Hierarchical Dirichlet Process which is defined as follows:
+
+Each of a countably infinite set of states, indexed by $j$, receives a
+parameter vector $\theta_j \in \Theta$, according to base measure $H$.  A top-level
+weight distribution, $\beta$, is drawn from a stick-breaking
+process with parameter $\gamma > 0$, so that state $j$ has overall
+weight $\beta_j$, and an emission distribution which is parameterized by $\theta_j$.
+\begin{align}
+\theta_j &\stackrel{i.i.d.}{\sim} H \\
+\beta &\sim \GEM{\gamma}
+\end{align}
+
+The actual transition distribution from state $j$, denoted by $\pi_j$
+is then drawn from a Dirichlet Process with concentration parameter
+$\alpha$ and base measure $\beta$:
+\begin{equation}
+  \label{eq:1}
+  \pi_j \stackrel{i.i.d}{\sim} \DP{\alpha \beta} \qquad j = 1, 2, \dots
+\end{equation}
+
+The hidden state sequence is then generated according to the $\pi_j$.
+Let $z_t$ be the index of the chain's state at time $t$.  Then we have
+\begin{equation}
+  \label{eq:4}
+  z_t \given z_{t-1}, \pi_{z_{t-1}} \sim \pi_{z_{t-1}} \qquad t = 1, 2, \dots, T
+\end{equation}
+where $T$ is the length of the data sequence.
+
+Finally, the emission distribution for state $j$ is a function of
+$\theta_j$, so that we have
+\begin{equation}
+  \label{eq:5}
+  y_t \given z_{t}, \theta_{z_t} \sim F(\theta_{z_t})
+\end{equation}
+
+A shortcoming of this model is that the generative process does not
+take into account the fact that the set of source states is the same
+as the set of destination states: that is, that the distribution $\pi_j$
+has an element which corresponds to state $j$.  Put another way, there
+is no special treatment of the diagonal of the transition matrix, so
+that self-transitions are no more likely {\it a priori} than
+transitions to any other state.  
+
+The Sticky HDP-HMM \citep{fox2008hdp}
+addresses this issue by adding an extra mass of $\kappa$ at location $j$ to the base
+measure of the DP that generates $\pi_j$.  That is, they replace
+\eqref{eq:1} with
+\begin{equation}
+  \label{eq:6}
+  \pi_j \sim \DP{\alpha\beta + \kappa \delta_j}.
+\end{equation}
+An alternative model is presented by \cite{johnson2013bayesian}, wherein 
+state duration distributions are modeled
+separately, and ordinary self-transitions are ruled out.  In both of
+these models, auxiliary latent variables are introduced to simplify
+conditional posterior distributions and facilitate Gibbs sampling.
+However, while both of these models have the useful property that
+self-transitions are treated as ``special'', they contain no notion of
+similarity for pairs of states that are not identical: 
+in both cases, when $j \neq j'$, the prior probability of
+transitioning from $j$ to $j'$ depends only on the top-level stick
+weight associated with state $j'$, and not on the identity or
+parameters of the previous state $j$.
+
+\section{An HDP-HMM With Local Transitions}
+
+The goal of the proposed model 
+is to add to the transition model the concept of a transition to
+a ``nearby'' state, where nearness of $j$ and $j'$ may be defined
+deterministically or stochastically in
+terms of the emission parameters, $\theta_j$ and $\theta_{j'}$, or may
+be based on a latent state geometry that is a priori independent of
+the emission distribution.
+
+In order to accomplish this, we first
+consider an alternative construction of the transition distributions,
+based on the Normalized Gamma Process representation of the Dirichlet
+Process \citep{ferguson1973bayesian}.
+
+\paragraph{Notational Conventions} 
+In the definitions and derivations that follow, I will adopt the
+convention that variables written with no subscript, such as $\theta$,
+$\beta$, and $\pi$, represent the collection of all corresponding
+subscripted values: for example, $\theta$ is the vector $(\theta_1, \theta_2,
+\dots)$, and $\pi$ is the matrix $(\pi_{jj'})$.  For variables that
+represent counts, I will use a dot in the subscript to represent a sum
+over corresponding individual counts; for example, $n_{j\cdot}$ is
+used to represent $\sum_{j'} n_{jj'}$, and $n_{\cdot\cdot}$ means
+$\sum_{j}\sum_{j'} n_{jj'}$.
+
+\subsection{A Normalized Gamma Process representation of the HDP-HMM}
+\label{sec:normalized-gamma}
+
+Define a random measure, $\mu = \sum_{j=1}^{\infty} \pi_j \delta_{\theta_j}$, where 
+\begin{align}
+  \pi_j &\stackrel{ind}{\sim} \Gamm{\omega_j}{1} \label{eq:17}\\
+  T &= \sum_{j=1}^{\infty} \pi_j \label{eq:18}\\
+  \tilde{\pi}_j &= \frac{\pi_j}{T}   \label{eq:16}\\
+  \theta_j &\stackrel{i.i.d}{\sim} H \label{eq:19}
+\end{align}
+and subject to the constraint that $\sum_{j\geq 1} \omega_j < \infty$,
+which ensures that $T < \infty$ almost surely, since
+\begin{equation*}
+  T \sim \Gamm{\sum_j \omega_j}{1}.
+\end{equation*}
+As shown by Paisley et al. (2011), 
+for fixed $\{\omega_j\}$ and $\{\theta_j\}$, $\mu$ is distributed as a Dirichlet
+Process with base measure $\nu = \sum_{j=1}^{\infty} \omega_j \delta_{\theta_j}$.
+If we draw $\beta$ from a stick-breaking process and then draw a
+series $\{\mu_m\}_{m=1}^M$ of
+i.i.d. random measures from the above process, setting $w =
+\alpha\beta$ for some $\alpha > 0$, then
+this defines a Hierarchical Dirichlet Process.  If, moreover, there is
+one $\mu_m$ associated with every state $j$, then we obtain the
+HDP-HMM.
+
+We can thus write
+\begin{align}
+  \beta &\sim \GEM{\gamma}   \label{eq:20} \\
+  \theta_j &\stackrel{i.i.d.}{\sim} H \label{eq:21}\\
+  \pi_{jj'} &\stackrel{ind}{\sim} \Gamm{\alpha \beta_{j'}}{1} \label{eq:22}\\
+  T_j &= \sum_{j'=1}^{\infty} \pi_{jj'} \\
+  \tilde{\pi}_{jj'} &= \frac{\pi_{jj'}}{T_j} \label{eq:23},
+\end{align}
+where $\gamma$ and $\alpha$ are prior concentration hyperparameters
+for the two DP levels,
+\begin{align}
+  \label{eq:50}
+  p(z_t \given z_{t-1}, \pi) = \tilde{\pi}_{z_{t-1}z_t}
+\end{align}
+and the observed data
+$\{y_t\}_{t\geq 1}$ is distributed as
+\begin{equation}
+  \label{eq:24}
+  y_t \given z_t \stackrel{ind}{\sim} F(\theta_{z_t})
+\end{equation}
+for some family, $F$ of probability measures indexed by values of $\theta$.
+
+\subsection{Promoting ``Local'' Transitions}
+\label{sec:prom-local-trans}
+
+In the preceding formulation, the transition distributions
+$\{\pi_{j}\}_{j=1}^\infty$ are independent
+conditioned on the top-level weights, $\beta$.  Our goal is to relax this
+assumption, in order to allow for the possibility that there may be
+correlations between these distributions.  We achieve this by
+introducing a notion of a geometry on the state space; that is, that
+some pairs of states are ``near'' to each other, and will thus tend to
+have similar transition probabilities associated with them.
+
+We associate with each state a location, $\ell_j \in \mathcal{L}$, and define a
+``similarity function'', $\phi: \mathcal{L} \times \mathcal{L} \to
+[0,1]$, which returns for any pair of locations a measure of how
+``close'' they are.
+
+In order to remain agnostic about the extent to which $\phi$ is
+based on the emission parameters, I will use $\theta_j$ to represent
+the emission parameters for state $j$, and assume that $\ell_j$
+determines $\theta_j$, but that $\phi$ may be based on any part of
+$\ell_j$, which may include some, all, or none of the information
+contained in $\theta_j$.
+
+I will also use the shorthand $\phi_{jj'}$ to represent 
+$\phi(\ell_j, \ell_{j'})$, for the sake of readability; but the reader
+should keep in mind that whenever $\phi$ appears in a conditional
+distribution, it is a constant if and only if $\ell$ is being
+conditioned on.
+
+We can generalize the generative process defined in
+\eqref{eq:20}-\eqref{eq:23} as follows:
+\begin{align}
+  \beta &\sim \GEM{\gamma} \\
+  \ell_j &\stackrel{i.i.d}{\sim} H \\
+  \pi_{jj'} \given \beta, \theta &\sim \Gamm{\alpha \beta_{j'}}{\phi_{jj'}^{-1}} \\
+  T_j &= \sum_{j'=1}^{\infty} \pi_{jj'} \\
+  \tilde{\pi}_{jj'} &= \frac{\pi_{jj'}}{T_j} \\
+  y_t \given z_t \stackrel{ind}{\sim} F(\theta_{z_t})
+\end{align}
+where $H$ is now a measure on $\mathcal{L}$.
+In this new formuation, the expected value of $\pi_{jj'}$ is
+$\alpha\beta_{j'}\phi_{jj'}$.  Since a similarity between one object
+and another should not exceed the similarity between an object and
+itself, we will assume that $\phi_{jj'} = 1$ if $j = j'$.  We will
+also assume that the similarity function is symmetric, so that
+$\phi_{jj'}  = \phi_{j'j}$ for all $j,j'$.  As
+we will see, either or both of these assumptions could be relaxed if
+desired in a particular application, but derivations presented here
+will make both.
+
+The above model is equivalent to simply drawing the $\pi_{jj'}$ as in
+\eqref{eq:20} and scaling each one by $\phi_{jj'}$ prior to
+normalization, since it is a general property of Gamma distributions
+that, if $X \sim \Gamm{a}{b}$, then $cX \sim \Gamm{a}{b/c}$.
+
+Unfortunately, this formulation complicates inference significantly,
+compared to the ordinary HDP-HMM, as the introduction of non-constant 
+rate parameters to the prior on
+$\pi$ destroys the conjugacy between $\pi$ and $z$, and worse, the
+conditional likelihood function for $\pi$ contains a sum
+which renders all entries within a row mutually dependent {\em a posteriori}.
+
+\section{The HDP-HMM-LT as a continuous-time 
+Markov Jump Process with ``failed'' jumps}
+\label{sec:dist-based-filt}
+
+We can gain stronger intuition, as well as simplify posterior
+inference, by re-casting the HDP-HMM-LT described in the last section
+as a continuous time Markov Jump Process where some of the attempts to jump
+from one state to another fail, and where the failure probability
+increases as a function of the ``distance'' between the states.
+
+Let $\phi$ be defined as in the last section, and let 
+$\beta$, $\theta$ and $\pi$ be defined as in the Normalized Gamma
+Process representation of the ordinary HDP-HMM.  Specifically,
+\begin{align}
+  \label{eq:beta} \beta &\sim \GEM{\gamma} \\
+  \ell_j &\stackrel{i.i.d}{\sim} H \\
+  \pi_{jj'} \given \beta &\sim \Gamm{\alpha \beta_{j'}}{1}
+\end{align}
+Now suppose that when the process is in state $j$, jumps to state
+$j'$ are made at rate $\pi_{jj'}$.  This defines a continuous-time
+Markov Process where the off-diagonal elements of the transition rate
+matrix are the off diagonal elements of the $\pi$ matrix.  In addition,
+self-jumps are allowed, and occur with rate $\pi_{jj}$.   
+
+If we only observe the jumps and not the durations between jumps, this is an
+ordinary Markov chain, whose transition matrix is obtained by
+appropriately normalizing the rows of $\pi$.  
+If we do not observe the jumps themselves, but
+instead an observation is generated once per jump from a distribution that depends
+on the state being jumped to, then we have an ordinary HMM.
+
+We modify this process as follows.  
+Suppose that each jump attempt from state $j$ to state $j'$ has a
+chance of failing, which is an increasing function of the ``distance''
+between the states.  In particular, let the success probability be
+$\phi_{jj'}$ (recall that we assumed above that $0 \leq \phi_{jj'}
+\leq 1$ for all $j,j'$).  Then, the rate of successful jumps from $j$
+to $j'$ is $\pi_{jj'}\phi_{jj'}$, and the corresponding rate of unsuccessful jump
+attempts is $\pi_{jj'}(1-\phi_{jj'})$.  To see this, denote by
+$N_{jj'}$ the total number of jump attempts to $j'$ in a unit
+interval of time spent in state $j$.  Since we are assuming the
+process is Markovian, the total number of attempts is $\Pois{\pi_{jj'}}$
+distributed.  Conditioned on $N_{jj'}$, $n_{jj'}$ will be successful, where
+\begin{equation}
+  \label{eq:51}
+  n_{jj'} \given N_{jj'} \sim \Binom{N_{jj'}}{\phi_{jj'}}
+\end{equation}
+It is easy to show (and well known) that the marginal distribution of
+$n_{jj'}$ is $\Pois{\pi_{jj'}\phi_{jj'}}$, and the marginal
+distribution of $N_{jj'} - n_{jj'}$ is
+$\Pois{\pi_{jj'}(1-\phi_{jj'})}$.  The rate of successful jumps
+from state $j$ overall is then $T_j := \sum_{j'} \pi_{jj'} \phi_{jj'}$.
+
+Let $t$ index jumps, so that $z_t$ indicates the $t$th state visited
+by the process (counting self-jumps as marking a transition to a new
+time step).  Given
+that the process is in state $j$ at discretized time $t$ (that is,
+$z_{t} = j$), it is a standard property of Markov Processes that 
+the probability that the destination $z_{t+1}$ of the first successful jump
+is independent of the time since the last jump, and the probability
+that $z_{t+1} = j'$ is proportional to the rate, $\pi_{jj'}\phi_{jj'}$.  
+
+Let $\tau_{t}$ indicate the time elapsed between the $t-1$th and 
+and $t$th successful jump (where we assume that the first
+observation occurs when the first successful jump from a ``dummy'' initial
+state is made).  We have
+\begin{equation}
+  \label{eq:52}
+  \tau_t \given z_{t-1} \sim \Exp{T_{z_{t-1}}}
+\end{equation}
+where $\tau_t$ is independent of $z_{t}$.
+
+During this period, there will be some number of unsuccessful attempts to
+jump to each state, where the rate of unsuccessful jump attempts from
+to state $j'$ is given by $\pi_{z_{t-1}}(1 - \phi_{z_{t-1}j'})$.
+Denote by $\tilde{q}_{j't}$ the number of unsuccessful jump attempts
+to $j'$ during the interval with duration $\tau_t$.  Then we have
+\begin{equation}
+  \label{eq:53}
+  \tilde{q}_{j't} \given z_{t-1}, \tau_t \sim \Pois{\tau_t \pi_{z_{t-1}j'}(1-\phi_{z_{t-1}j'})}
+\end{equation}
+
+Define the following additional variables
+\begin{align}
+  \label{eq:56}
+    \mathcal{T}_j &= \{t \given z_{t-1} = j\} \\
+    q_{jj'} &= \sum_{t \in \mathcal{T}_j}\tilde{q}_{j't} \\
+    u_j &= \sum_{t \in \mathcal{T}_j} \tau_t.
+\end{align}
+In addition, let $Q = (q_{jj'})_{j,j' \geq 1}$ be the matrix of unsuccessful
+jump attempt counts, and $u = (u_j)_{j \geq 1}$ be the vector whose
+$j$th entry is the total time spent in state $j$.
+
+Since each of the $\tau_t$ with $t \in \mathcal{T}_j$ are
+i.i.d. $\Exp{T_j}$, and since the sum of $n$ Exponential random
+variables with shared scale $\lambda$ has a $\Gamm{n}{\lambda}$
+distribution, we have
+\begin{equation}
+u_j \given z, \pi, \ell \stackrel{ind}{\sim} \Gamm{n_{j\cdot}}{T_j}
+\end{equation}
+where we define $n_{j\cdot} = \sum_{j'} n_{jj'}$, where $n_{jj'}$ is
+the number of successful jumps from state $j$ to $j'$ and $n_{j\cdot}$
+is the total number of times that state $j$ is visited.
+
+Moreover, since the $\tilde{q}_{j't}$ with $t \in \mathcal{T}_j$ 
+are Poisson distributed, the total number of failed
+attempts in the total duration $u_j$ is
+\begin{equation}
+  \label{eq:60}
+  q_{jj'} \stackrel{ind}{\sim} \Pois{u_j\pi_{jj'}(1-\phi_{jj'})}.
+\end{equation}
+
+Thus if we marginalize out the individual $\tau_t$ and
+$\tilde{q}_{j't}$, we have a joint distribution
+over $z$, $u$, and $Q$, conditioned on the transition rate
+matrix $\pi$ and the success probability matrix $\phi$, which is
+\begin{align}
+  \label{eq:54}
+  p(z, u, Q \given \pi, \ell) &= \left(\prod_{t=1}^T p(z_{t} \given
+    z_{t-1})\right) \prod_{j} p(u_j \given z, \pi, \ell)
+  \prod_{j'} p(q_{jj'} \given u_j \pi_{jj'}, \phi_{jj'}) \\
+  &= \left(\prod_{t} \frac{\pi_{z_{t-1}z_t}\phi_{z_{t-1}z_t}}{T_{z_{t-1}}}\right) \prod_{j}
+  \frac{T_j^{n_{j\cdot}}}{\Gamma(n_{j\cdot})} u_j^{n_{j\cdot} - 1}
+  e^{-T_j u_j} \\ &\qquad\qquad\times
+  \prod_{j'} e^{-u_j\pi_{jj'}(1-\phi_{jj'})} u_j^{q_{jj'}}
+  \pi_{jj'}^{q_{jj'}} (1-\phi_{jj'})^{q_{jj'}} (q_{jj'}!)^{-1} \\
+  &= \prod_{j} \Gamma(n_{j\cdot})^{-1} u_j^{n_{j\cdot} + q_{j\cdot}-1}
+  \\ &\qquad\qquad \times \prod_{j'}
+  \pi_{jj'}^{n_{jj'} + q_{jj'}} \phi_{jj'}^{n_{jj'}}
+  (1-\phi_{jj'})^{q_{jj'}} e^{-\pi_{jj'}\phi_{jj'}u_j}
+  e^{-\pi_{jj'}(1-\phi_{jj'})u_j} (q_{jj'}!)^{-1} \\
+  &\label{eq:joint-likelihood} = \prod_{j} \Gamma(n_{j\cdot})^{-1} u_j^{n_{j\cdot} + q_{j\cdot}-1} \prod_{j'}
+  \pi_{jj'}^{n_{jj'} + q_{jj'}} \phi_{jj'}^{n_{jj'}}
+  (1-\phi_{jj'})^{q_{jj'}} e^{-\pi_{jj'}u_j} (q_{jj'}!)^{-1}
+\end{align}
+
+\subsection{An HDP-HSMM-LT modification}
+\label{sec:an-hsmm-modification}
+
+In any Hidden Markov Model, the distribution of the number of time
+steps for which a given hidden state persists is by definition
+a Geometric distribution, where the ``failure'' parameter is the
+relevant entry on the diagonal of the transition matrix.  The HDP-HMM
+and the HDP-HMM-LT as defined above are no exception.  Although the
+Sticky HDP-HMM \cite{fox2008hdp} and the LT
+generalization presented here provide mechanisms for which the
+diagonal entries of the transition matrix will tend to have greater
+mass than the off-diagonal entries, they do not alter the Markovian
+assumption, which implies Geometric durations.
+
+The HDP Hidden Semi-Markov Model (HDP-HSMM;
+\citet{johnson2013bayesian}) 
+gets around this restriction directly, by treating self-transitions as
+fundamentally distinct from all other transitions, and modeling state
+persistence durations directly.  Should it be desireable to combine
+this property with the general similarity bias of the HDP-HMM-LT, 
+it is trivial to modify the LT model to incorporate a separate duration model.
+We can simply fix the diagonal
+elements of $\pi$ to be zero, and allow $D_t$ observations to be
+emitted $i.i.d.$ $F(\theta_{z_t})$ at jump $t$, where
+\begin{equation}
+  \label{eq:95}
+  D_t \given z \stackrel{ind}{\sim} g(\omega_{z_t}) \qquad \omega_j
+  \stackrel{i.i.d}{\sim} G
+\end{equation}
+The likelihood then includes the additional term for the $D_t$, and
+the only inference step which is affected is that, instead of sampling
+$z$ alone, we sample $z$ and the $D_t$ jointly, by defining
+\begin{equation}
+  z^*_s = z_{\max\{T \given s \leq \sum_{t=1}^T D_t\}}
+\end{equation}
+where $s$ ranges over the total number of observations, 
+and associating a $y_s$ observation sequence with each $z^*_s$.
+Inferences about $\phi$ are not affected, since the diagonal
+elements are assumed to be 1 anyway.
+
+In the HDP-HSMM as it is presented in \cite{johnson2013bayesian},
+zeroing out the diagonal of the transition matrix to isolate
+self-transitions to the separate duration model necessitates
+renormalization of the other entries so that the rows of the
+transition matrix are probability distributions.  As a result, the
+conditional posterior for the matrix is no longer in 
+an exponential family.  To deal with this, \citeauthor{johnson2013bayesian}
+introduce auxiliary
+variables which can be interpreted as the diagonal entries of the 
+transition matrix prior to zeroing out, as well as the number of
+self-transitions that would have occurred for each state had the
+transition matrix diagonal governed self-transitions instead of the
+separate duration model.  Conditioned on these auxiliary variables,
+conjugacy between the transition matrix prior and likelihood is
+restored, and Gibbs sampling is able to proceed with exponential
+family updates.
+
+In the LT model, on the other hand, we are already representing the
+transition matrix in unnormalized form, having rendered the entries
+conditionally independent given the $z$ state sequence and the $u$ holding times,
+so we are free to clamp the diagonal entries at zero without
+introducing a need for additional auxiliary variables 
+in order to achieve semi-Markov dynamics.
+
+\subsection{Summary}
+\label{sec:model-summary}
+
+I have defined the following augmented generative model for the
+HDP-H(S)MM-LT:
+\begin{align}
+  \label{eq:96}
+  \beta &\sim \GEM{\gamma} \\
+  \ell_j &\stackrel{i.i.d}{\sim} H \\
+  \pi_{jj'} \given \beta &\sim \Gamm{\alpha \beta_{j'}}{1}
+  \\
+  z_{t} \given z_{t-1}, \pi, \ell &\sim \sum_{j}
+  \left(\frac{\pi_{z_{t-1}j}\phi_{z_{t-1}j}}{\sum_{j'}
+    \pi_{z_{t-1}j'}\phi_{z_{t-1}j'}}\right)\delta_j \\
+  u_j \given z, \pi, \ell &\stackrel{ind}{\sim}
+  \Gamm{n_{j\cdot}}{\sum_{j'} \pi_{jj'}\phi_{jj'}} \\
+  q_{jj'} \given u, \pi, \ell &\stackrel{ind}{\sim}
+  \Pois{u_j(1 - \phi_{jj'})\pi_{jj'}} \\
+  \label{eq:likelihood} y_t \given z, \ell &\sim F(\theta_{z_t})
+\end{align}
+
+If we are using the HSMM variant, then we simply fix $\pi_{jj}$ to 0
+for each $j$, draw
+\begin{align}
+  \label{eq:97}
+  \omega_j &\stackrel{i.i.d}{\sim} G \\
+  D_t \given z &\stackrel{ind}{\sim} g(\omega_{z_t}),
+\end{align}
+for chosen $G$ and $g$, set
+\begin{equation}
+  \label{eq:98}
+  z^*_s = z_{\max\{T \given s \leq \sum_{t=1}^T D_t\}}
+\end{equation}
+and replace \eqref{eq:likelihood} with
+\begin{equation}
+  \label{eq:likelihood-hsmm} \by_s \given z, \theta \sim F(\theta_{z^*_s})
+\end{equation}
+
+\section{MCMC Inference in the ``Failed Jumps'' Representation}
+\label{sec:inference}
+
+I develop a Gibbs sampling algorithm based on the Markov Process with
+Failed Jumps representation, augmenting the data with the duration
+variables $u$, the failed jump attempt count matrix, $Q$, as well
+as additional auxiliary variables which we will define below.
+In this representation the transition matrix is not modeled
+directly, but is a function of the unscaled transition matrix $\pi$
+and the similarity matrix $\phi$.  The full set of variables is
+partitioned into three blocks: (1) $\{\gamma, \alpha, \beta, \pi\}$,
+(2) $\{z, u, Q, \xi\}$, and (3) $\{\ell\}$, where $\xi$
+is a placeholder for an additional set of auxiliary variables that will be introduced
+below.  The variables in each block are sampled jointly 
+conditioned on the other two blocks.  In some of the applications
+described in later chapters, blocks (2) and (3) can be sampled
+jointly, and if desired, the parameters of the $\phi$ function can be
+given priors and sampled as a separate block.
+
+Since we are representing the transition matrix of the Markov chain
+explicitly, we approximate the stick-breaking process that produces
+$\beta$ using a finite Dirichlet distribution with a number of 
+components larger than we expect to need, forcing the remaining 
+components to have zero weight.  
+
+Let $J$ indicate the maximum number of states.  Then,
+we approximate \eqref{eq:beta} with
+\begin{equation}
+  \label{eq:28}
+  \beta \given \gamma \sim \mathrm{Dirichlet}(\gamma / J, \dots,
+  \gamma / J)
+\end{equation}
+This distribution converges weakly to the Stick-Breaking Process as $J \to
+\infty$ \cite{ishwaran2000markov}.  In practice, $J$ is large enough 
+when the vast majority of the probability mass in $\beta$ is allocated 
+to a strict subset of components, or when the latent state sequence 
+$z$ never uses all $J$ available states, indicating that the data is 
+well described by a number of states less than $J$.
+
+\subsection{Sampling $\pi$, $\beta$, $\alpha$ and $\gamma$}
+\label{sec:sampling-pi}
+
+The joint conditional over $\gamma$, $\alpha$, $\beta$ and $\pi$
+given $z$, $u$, $Q$, $\xi$ and $\theta$ will factor as
+\begin{equation}
+  \label{eq:46}
+  p(\gamma, \alpha, \beta, \pi \given z, u, Q, \xi, \theta) = p(\gamma \given
+  \xi) p(\alpha \given \xi) p(\beta \given \gamma, \xi) p(\pi
+  \given \alpha, \beta, \theta, z)
+\end{equation}
+I will derive these four factors in reverse order.
+
+\paragraph{Sampling $\pi$}
+
+The entries in $\pi$ are conditionally independent given $\alpha$ and
+$\beta$, so we have the prior
+\begin{equation}
+  \label{eq:47}
+  p(\pi \given \beta, \alpha) = \prod_{j} \prod_{j'}
+  \Gamma(\alpha\beta_{j'})^{-1}
+  \pi_{jj'}^{\alpha\beta_{j'} - 1} \exp(-\pi_{jj'}),
+\end{equation}
+and the likelihood given augmented data $\{z, u, Q\}$ given by
+\eqref{eq:joint-likelihood}.  Combining these, we have
+\begin{align}
+  \label{eq:61}
+  p(\pi, z, u, Q \given \beta, \alpha, \theta) &=
+  \prod_{j} u_j^{n_{j\cdot} + q_{j\cdot}
+  - 1}\prod_{j'} 
+  \Gamma(\alpha\beta_{j'})^{-1} \pi_{jj'}^{\alpha\beta_{j'} + n_{jj'}
+    + q_{jj'} - 1} \\&\qquad \times e^{-(1 + u_j)
+    \pi_{jj'}} \phi_{jj'}^{n_{jj'}} (1-\phi_{jj'})^{q_{jj'}} (q_{jj'}!)^{-1}
+\end{align}
+Conditioning on everything except $\pi$, we get
+\begin{align}
+  \label{eq:24}
+  p(\pi \given Q, u, z, \beta, \alpha, \theta) &\propto \prod_j
+  \prod_{j'} \pi_{jj'}^{\alpha\beta_{j'} + n_{jj'} + q_{jj'} - 1}
+  \exp(-(1 + u_j)\pi_{jj'})
+\end{align}
+and thus we see that the $\pi_{jj'}$ are conditionally independent
+given $u$, $z$ and $Q$, and distributed according to
+\begin{align}
+  \label{eq:25}
+  \pi_{jj'} \given n_{jj'}, q_{jj'}, \beta_{j'}, \alpha \stackrel{ind}{\sim}
+  \Gamm{\alpha\beta_{j'} + n_{jj'} + q_{jj'}}{1 + u_j}
+\end{align}
+
+
+\paragraph{Sampling $\beta$}
+\label{sec:sampling-bbeta}
+
+Consider the conditional distribution of $\beta$ having
+integrated out $\pi$.  The prior density of $\beta$ from
+\eqref{eq:28} is
+\begin{equation}
+  \label{eq:62}
+  p(\beta \given \gamma) =
+  \frac{\Gamma(\gamma)}{\Gamma(\frac{\gamma}{J})^J} \prod_{j}
+  \beta_j^{\frac{\gamma}{J} - 1}
+\end{equation}
+After integrating out $\pi$ in \eqref{eq:61}, we have
+\begin{align}
+  p(z, u, Q \given \beta, \alpha, \gamma, \theta) &=
+  \prod_{j=1}^J u_{j} ^{-1}
+  \prod_{j'=1}^J u^{n_{jj'} + q_{jj'} - 1}(1 +
+  u_j)^{-(\alpha\beta_{j'} + n_{jj'} + q_{jj'})}
+  \\
+  &\qquad \qquad \times \frac{\Gamma(\alpha\beta_{j'} + n_{jj'} +
+    q_{jj'})}{\Gamma(\alpha\beta_{j'})} \phi_{jj'}^{n_{jj'}}(1-\phi_{jj'})^{q_{jj'}}
+  (q_{jj'}!)^{-1} \\
+  &= \prod_{j=1}^J \Gamma(n_{j\cdot})^{-1} u_j^{-1}(1+u_j)^{-\alpha}
+  \left(\frac{u_j}{1+u_j}\right)^{n_{j\cdot} + q_{j\cdot}} \\ &\qquad
+  \qquad \times \prod_{j' =
+    1}^J \frac{\Gamma(\alpha\beta_{j'} + n_{jj'} +
+    q_{jj'})}{\Gamma(\alpha\beta_{j'})} \phi_{jj'}^{n_{jj'}}(1-\phi_{jj'})^{q_{jj'}}
+  (q_{jj'}!)^{-1}
+\end{align}
+ where we have used the fact that the $\beta_j$ sum to 1.  Therefore
+\begin{align}
+  p(\beta \given z, u, Q, \alpha, \gamma, \theta) &\propto \prod_{j=1}^J
+  \beta_j^{\frac{\gamma}{J} - 1} \prod_{j'=1}^J \frac{\Gamma(\alpha\beta_{j'} +
+    n_{jj'} + q_{jj'})}{\Gamma(\alpha\beta_{j'})}.
+\end{align}
+
+Following \citep{teh2006hierarchical}, we can write the ratios of Gamma functions
+as polynomials in $\beta_j$, as
+\begin{equation}
+  \label{eq:31}
+  p(\beta \given z, u, Q, \alpha, \gamma, \theta) \propto \prod_{j=1}^J
+  \beta_j^{\frac{\gamma}{J} - 1} \prod_{j'=1}^{J} \sum_{m_{jj'} = 1}^{n_{jj'}}
+  s(n_{jj'} + q_{jj'}, m_{jj'}) (\alpha \beta_{j'})^{m_{jj'}}
+\end{equation}
+where $s(m,n)$ is an unsigned Stirling number of the first kind, which
+is used to represent the number of permutations of $n$ elements such that there are
+$m$ distinct cycles.
+
+This admits an augmented data representation, where we introduce a
+random matrix $M = (m_{jj'})_{1 \leq j,j' \leq J}$, whose
+entries are conditionally independent given $\beta$, $Q$ and $z$, with
+\begin{equation}
+  \label{eq:32}
+  p(m_{jj'} = m \given \beta_{j'}, \alpha, n_{jj'}, q_{jj'}) =
+  \frac{s(n_{jj'} + q_{jj'}, m) \alpha^{m}
+    \beta_{j'}^{m}}{\sum_{m'=0}^{n_{jj'} + q_{jj'}} s(n_{jj'} +
+  q_{jj'}, m') \alpha^{m'} \beta_{j'}^{m'}}
+\end{equation}
+for integer $m$ ranging between $0$ and $n_{jj'} + q_{jj'}$.  Note
+that $s(n,0) = 0$ if $n > 0$, $s(0,0) = 1$, $s(0,m) = 0$ if $m >
+0$, and we have the recurrence relation $s(n+1,m) = n s(n,m) + s(n,m-1)$, 
+and so we could compute each of these coefficients explicitly;
+however, it is typically simpler and more computationally efficient to sample from
+this distribution than it is to enumerate its probabilities
+
+For each $m_{jj'}$ we simply draw $n_{jj'}$ assignments of customers to tables 
+according to the Chinese Restaurant Process and set $m_{jj'}$ to be
+the number of distinct tables realized; that is, assign the first
+customer to a table, setting $m_{jj'}$ to 1, and then, after $n$
+customers are assigned, assign the $n+1$th customer to a new table
+with probability $\alpha\beta_{j'} / (n + \alpha\beta_{j'})$, 
+in which case we increment $m_{jj'}$, 
+and to an existing table with probability $n / (n + \alpha)$, in which
+case we do not increment $m_{jj'}$.  
+
+% To see that this yields the
+% distribution in \eqref{eq:32}, notice that, in order to end up with
+% $m$ distinct tables, we need to draw the term with numerator
+% $\alpha\beta_j'$ exactly $m$ times.  Irrespective of $m$, we have a
+% product of terms of the form $n + \alpha\beta_{j'}$ for $n = 1, \dots,
+% n_{jj'}$, and so the denominators can be absorbed into the constant of
+% proportionality.  Then, all that remains is to sum the
+% probabilities of different specific table assignments corresponding to
+% the same value of $m$. This number corresponds exactly to $s(n_{jj'},m)$, which
+% can be seen by inductively proving that the recurrence relation is the same.
+
+% Suppose we have $n$ customers distributed among $m$ tables.  If $n
+% > 0$ we must have $m$ at least 1, since the first customer will always
+% start a new table, and so $s(n,0) = 0$.  If $n = 0$, then $m = 0$
+% necessarily, so $s(0,0) = 1$ and $s(0,m) = 0$.
+% Now, suppose that there are $s(n,m)$ ways to divide the first $n$ observations
+% into $m$ tables.
+
+Then, we have joint distribution
+\begin{equation}
+  \label{eq:33}
+  p(\beta, M \given z, u, Q, \alpha, \gamma, \ell) \propto \prod_{j=1}^J
+  \beta_j^{\frac{\gamma}{J} - 1} \prod_{j'=1}^{J} s(n_{jj'} + q_{jj'}, m_{jj'}) \alpha^{m_{jj'}} \beta_{j'}^{m_{jj'}}
+\end{equation}
+which yields \eqref{eq:31} when marginalized over $M$.  Again discarding
+constants in $\beta$ and regrouping yields
+\begin{equation}
+  \label{eq:34}
+  p(\beta \given M, z, u, \theta, \alpha, \gamma) \propto \prod_{{j'}=1}^J
+  \beta_{j'}^{\frac{\gamma}{J} + m_{\cdot {j'}}- 1}
+\end{equation}
+which is Dirichlet:
+\begin{equation}
+  \label{eq:38}
+  \beta \given M, \gamma \sim \mathrm{Dirichlet}(\frac{\gamma}{J} +
+  m_{\cdot 1}, \dots, \frac{\gamma}{J} + m_{\cdot J})
+\end{equation}
+
+\paragraph{Sampling $\alpha$ and $\gamma$}
+\label{sec:sampling-alpha}
+Assume that $\alpha$ and $\gamma$ have Gamma priors, with
+\begin{align}
+  \label{eq:42}
+  p(\alpha) &= \frac{b_{\alpha}^{a_{\alpha}}}{\Gamma(a_{\alpha})}
+  \alpha^{a_{\alpha} - 1} \exp(-b_{\alpha}\alpha) \\
+  p(\gamma) &= \frac{b_{\gamma}^{a_\gamma}}{\Gamma(a_{\gamma})}
+  \gamma^{a_{\gamma - 1}} \exp(-b_{\gamma}\gamma)
+\end{align}
+
+Having integrated out $\pi$, we have
+\begin{align}
+  p(\beta, z, u, Q, M \given \alpha, \gamma, \theta) &=
+  \frac{\Gamma(\gamma)}{\Gamma(\frac{\gamma}{J})^J} \alpha^{m_{\cdot\cdot}} \prod_{j=1}^J \beta_j^{\frac{\gamma}{J} +
+    m_{\cdot j} - 1}\Gamma(n_{j\cdot})^{-1} u_j^{-1}(1+u_j)^{-\alpha}
+  \left(\frac{u_j}{1+u_j}\right)^{n_{j\cdot} + q_{j\cdot}} \\ &\qquad
+  \qquad \times \prod_{j' =
+    1}^J s(n_{jj'} + q_{jj'}, m_{jj'}) \phi_{jj'}^{n_{jj'}}(1-\phi_{jj'})^{q_{jj'}}
+  (q_{jj'}!)^{-1}
+\end{align}
+We can also integrate out $\beta$, to yield
+\begin{align}
+  p(z, u, Q, M \given \alpha, \gamma, \theta) &=
+  \alpha^{m_{\cdot\cdot}} e^{-\sum_{j''} \log(1+u_{j''}) \alpha}
+  \frac{\Gamma(\gamma)}{\Gamma(\gamma + m_{\cdot\cdot})} \\ &\qquad
+  \qquad \times \prod_j
+  \frac{\Gamma(\frac{\gamma}{J} + m_{\cdot
+      j})}{\Gamma(\frac{\gamma}{J}) \Gamma(n_{j\cdot})} u_j^{-1}
+  \left(\frac{u_j}{1+u_j}\right)^{n_{j\cdot} + q_{j\cdot}} \\ &\qquad
+  \qquad \times \prod_{j' =
+    1}^J s(n_{jj'} + q_{jj'}, m_{jj'}) \phi_{jj'}^{n_{jj'}}(1-\phi_{jj'})^{q_{jj'}}
+  (q_{jj'}!)^{-1}
+\end{align}
+demonstrating that $\alpha$ and $\gamma$ are independent given $\theta$
+and the augmented data, with
+\begin{equation}
+  \label{eq:43}
+  p(\alpha \given z, u, Q, M, \theta) \propto
+  \alpha^{a_{\alpha} + m_{\cdot\cdot}}\exp(-(b_\alpha + \sum_{j}\log(1+u_j))\alpha)
+\end{equation}
+and
+\begin{align}
+  \label{eq:8}
+  p(\gamma \given z, u, Q, M, \theta) &\propto \gamma^{a_{\gamma - 1}}
+  \exp(-b_{\gamma}\gamma) \frac{\Gamma(\gamma)\prod_{j=1}^J
+    \Gamma(\frac{\gamma}{J} + m_{\cdot j})}{\Gamma(\frac{\gamma}{J})^J\Gamma(\gamma + m_{\cdot\cdot})}
+\end{align}
+So we see that
+\begin{equation}
+  \label{eq:44}
+  \alpha \given z, u, Q, M, \theta \sim \Gamm{a_{\alpha}
+    + m_{\cdot\cdot}}{b_\alpha + \sum_j\log(1+u_j)}
+\end{equation}
+To sample $\gamma$, we introduce a new set of auxiliary variables, $r = (r_1, \dots,
+r_J)$ and $t$ with the following distributions:
+\begin{align}
+  \label{eq:9}
+  p(r_{j'} = r \given m_{\cdot {j'}}, \gamma) &=
+  \frac{\Gamma(\frac{\gamma}{J})}{\Gamma(\frac{\gamma}{J}
+    + m_{\cdot {j'}})} s(m_{\cdot {j'}}, r)
+    \left(\frac{\gamma}{J}\right)^r \qquad r  = 1, \dots, m_{\cdot j} \\
+  p(t \given m_{\cdot\cdot} \gamma) &= \frac{\Gamma(\gamma +
+    m_{\cdot\cdot})}{\Gamma(\gamma) \Gamma(m_{\cdot\cdot})} t^{\gamma
+    - 1} (1-t)^{m_{\cdot\cdot} - 1} \qquad t \in (0,1)
+\end{align}
+so that
+\begin{align}
+  \label{eq:10}
+  p(\gamma, r, t \given M) &\propto \gamma^{a_{\gamma - 1}}
+  \exp(-b_{\gamma}\gamma) t^{\gamma - 1}(1-t)^{m_{\cdot\cdot}  - 1} \prod_{j'=1}^J s(m_{\cdot {j'}}, r_{j'})
+  \left(\frac{\gamma}{J}\right)^{r_{j'}}
+\end{align}
+and
+\begin{align}
+  \label{eq:11}
+  p(\gamma \given r, t) \propto \gamma^{a_\gamma +
+    r_{\cdot} - 1} \exp(-(b_{\gamma} - \log(t)) \gamma),
+\end{align}
+which is to say
+\begin{equation}
+  \label{eq:18}
+  \gamma \given r, t, z, u, Q, M, \theta \sim \Gamm{a_{\gamma} + r_{\cdot}}{b_{\gamma} - \log(t)}
+\end{equation}
+
+\subsubsection{Summary}
+
+I have made the following additional assumptions about the generative
+model in this section:
+\begin{equation}
+  \label{eq:100}
+  \gamma \sim \Gamm{a_{\gamma}}{b_{\gamma}} \qquad \alpha \sim \Gamm{a_{\alpha}}{b_{\alpha}}
+\end{equation}
+
+The joint conditional over $\gamma$, $\alpha$, $\beta$ and $\pi$
+given $z$, $u$, $Q$, $M$, $r$, $t$ and $\theta$ factors as
+\begin{equation}
+  \label{eq:46}
+  p(\gamma, \alpha, \beta, \pi \given z, u, Q, r, t,
+  \theta) = p(\gamma \given r, t) p(\alpha \given u, M) p(\beta
+  \given \gamma, M) p(\pi \given \alpha, \beta, z, u, Q)
+\end{equation}
+where
+\begin{align}
+  \label{eq:64}
+  \gamma \given r, t &\sim \Gamm{a_{\gamma} + r_{\cdot}}{b_{\gamma} -
+    \log(t)} \\
+  \alpha \given u, M &\sim \Gamm{a_{\alpha} +
+    m_{\cdot\cdot}}{b_{\alpha} + \sum_j \log(1 + u_j)} \\
+  \beta \given \gamma, M &\sim \mathrm{Dirichlet}(\frac{\gamma}{J} + m_{\cdot 1},
+  \dots, \frac{\gamma}{J} + m_{\cdot J}) \\
+  \pi_{jj'} \given \alpha, \beta_{j'}, z, u, Q
+  &\stackrel{ind}{\sim} \Gamm{\alpha\beta_{j'} + n_{jj'} + q_{jj'}}{1 +
+  u_j}
+\end{align}
+
+
+\subsection{Sampling $z$ and the auxiliary variables}
+\label{sec:sampling-z_t}
+
+The hidden state sequence, $z$, is sampled jointly with the auxiliary
+variables, which consist of $u$, $M$, $Q$, $r$ and $t$.  The
+joint conditional distribution of these variables is defined directly
+by the generative model:
+\begin{align}
+  \label{eq:19}
+  p(z, u, Q, M, r, t \given \pi, \beta, \alpha, \gamma,
+  \ell) &= p(z \given \pi, \theta) p(u \given z, \pi, \ell) p(Q \given
+  u, \pi, \ell) p(M \given
+  z, Q, \alpha, \beta) \\
+  &\qquad \times p(r \given
+  \gamma, M) p(t \given \gamma, M)
+\end{align}
+Since we are representing the transition matrix explicitly, we can
+sample the entire sequence $z$ at once with the forward-backward algorithm,
+as in an ordinary HMM (or, if we are employing the HSMM variant
+described in Sec. \ref{sec:an-hsmm-modification}, then we can use the
+modified message passing scheme for HSMMs described by
+\citet{johnson2013bayesian}).  
+Having done this, we can sample $u$, $Q$, $M$,
+$r$ and $t$ from their forward distributions.  To summarize,
+we have
+\begin{align}
+  \label{eq:48}
+  u_j \given z, \pi, \ell &\stackrel{ind}{\sim}
+  \Gamm{n_{j\cdot}}{\sum_{j'} \pi_{jj'}\phi_{jj'}} \\
+  q_{jj'} \given u_j, \pi_{jj'}, \phi_{jj'} &\stackrel{ind}{\sim}
+  \Pois{u_j(1 - \phi_{jj'})\pi_{jj'}} \\
+  m_{jj'} \given n_{jj'}, q_{jj'}, \beta_{j'}, \alpha &\stackrel{ind}{\sim}
+  \frac{\Gamma(\alpha\beta_j)}{\Gamma(\alpha\beta_j + n_{jj'} +
+    q_{jj'})}\sum_{m=1}^{n_{jj'} + q_{jj'}} s(n_{jj'} + q_{jj'}, m) \alpha^m \beta_{j'}^m \delta_{m}
+  \\
+  r_j \given m_{\cdot j}, \gamma &\stackrel{ind}{\sim}
+  \frac{\Gamma(\frac{\gamma}{J})}{\Gamma(\frac{\gamma}{J} + m_{\cdot
+      j})} \sum_{r=1}^{m_{j\cdot}} s(m_{\cdot j}, r)
+  \left(\frac{\gamma}{J}\right)^r \delta_r \\
+  t \given \gamma, M &\sim \Beta{\gamma}{m_{\cdot\cdot}}
+\end{align}
+
+\subsection{Sampling state and emission parameters}
+\label{sec:sampling-eta}
+
+The state parameters, $\theta$, influence the transition matrix,
+$\pi$ and the auxiliary vector $q$ through the similarity matrix
+matrix $\phi$, and also control the emission distributions.
+We have likelihood factors
+\begin{align}
+  \label{eq:65}
+  p(z, Q \given \theta) &\propto \prod_{j}\prod_{j'}
+  \phi_{jj'}^{n_{jj'}}(1-\phi_{jj'})^{q_{jj'}} \\
+  p(y \given z, \theta) &= \prod_{t=1}^T f(y_t; \theta_{z_t})
+\end{align}
+where, recall, $n_{jj'}$ counts the number of times that the state
+sequence transitions from state $j$ to state $j'$, $\theta_j$ is the
+part of $\ell_j$ that governs the emission distribution for state $j$,
+and proportionality is with respect to variation in $\theta$.
+
+The parameter space for the hidden states, 
+the associated prior $H$ on $\theta$, and the similarity function
+$\phi$, is application-specific, thus I now turn to three individual
+applications with qualitatively different state spaces and emission distributions,
+derive inference methods for each, and present experiments on
+synthetic and real data.
+
+\section{Use Cases}
+
+In Chapter \ref{chapter:cocktail-party}, I describe an application of the
+HaMMLeT model to a synthetic dataset designed to mimic a 
+speaker diarization or blind source separation task. Here, each latent
+state corresponds to a description of which of several sound sources
+is active at a given time step, and where the observed data is a set
+of signals picked up from several microphones distributed around the
+room, each of which picks up all of the sound sources with varying
+sensitivities, and the goal is to determine who is speaking when.  In
+this application the latent states are represented as binary vectors,
+similarity is based on Hamming distance between binary vectors, and
+the emission model is a multivariate linear-Gaussian model.
+
+In Chapter \ref{chapter:REDD} I describe a power disaggregation
+application, in which the observation sequence consists the amount of power used
+by a house at various times throughout a day, and the goal is to
+separate the aggregated power signal into several signals
+corresponding to a set of appliances (oven, air conditioning,
+lighting, etc.).  Unlike the cocktail party setting, each latent
+signal may have more than two levels, and so in addition to inferring
+what appliances are on when, the model needs to discover how much
+power each appliance uses in each of its latent states.  Here, latent
+states are vectors where each entry is a categorical label, the number
+of categories per channel is unknown, the similarity model is again
+based on Hamming distance between binary vectors, and the emission 
+model is linear-Gaussian.
+
+Finally, in Chapter \ref{chapter:music} I describe an application to
+unsupervised learning of musical structure.  The data is a sequence of
+chords in a musical composition, represented as a single symbol, and
+the goal is to infer a set of chord equivalence classes and a
+transition model between equivalence classes.  Unlike in the previous
+applications, similarity between states is modeled separately from the
+emission distributions, so that $\ell_j = (\eta_j, \theta_j)$, where
+$\phi$ is based on the $\eta_j$ part of the state parameters, and
+$\theta_j$ is a disjoint set of parameters governing the emission distribution.
+

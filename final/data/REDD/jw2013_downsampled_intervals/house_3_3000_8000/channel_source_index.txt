@@ -1,0 +1,7 @@
+6 electronics
+7 refrigerator
+16 microwave
+22 kitchen_outlets
+11 lighting
+17 lighting
+19 lighting

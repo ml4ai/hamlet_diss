@@ -1,0 +1,132 @@
+\begin{thebibliography}{}
+
+\bibitem[Baum and Petrie, 1966]{baum1966statistical}
+Baum, L.~E. and Petrie, T. (1966).
+\newblock Statistical inference for probabilistic functions of finite state
+  markov chains.
+\newblock {\em The annals of mathematical statistics}, 37(6):1554--1563.
+
+\bibitem[Beal et~al., 2001]{beal2001infinite}
+Beal, M.~J., Ghahramani, Z., and Rasmussen, C.~E. (2001).
+\newblock The infinite hidden markov model.
+\newblock In {\em Advances in neural information processing systems}, pages
+  577--584.
+
+\bibitem[Blei and Jordan, 2006]{blei2006variational}
+Blei, D.~M. and Jordan, M.~I. (2006).
+\newblock Variational inference for {D}irichlet process mixtures.
+\newblock {\em Bayesian Analysis}, 1(1):121--143.
+
+\bibitem[Box et~al., 1987]{box1987empirical}
+Box, G.~E., Draper, N.~R., et~al. (1987).
+\newblock {\em Empirical model-building and response surfaces}, volume 424.
+\newblock Wiley New York.
+
+\bibitem[Duane et~al., 1987]{duane1987hybrid}
+Duane, S., Kennedy, A.~D., Pendleton, B.~J., and Roweth, D. (1987).
+\newblock Hybrid monte carlo.
+\newblock {\em Physics letters B}, 195(2):216--222.
+
+\bibitem[Epanechnikov, 1969]{epanechnikov1969non}
+Epanechnikov, V.~A. (1969).
+\newblock Non-parametric estimation of a multivariate probability density.
+\newblock {\em Theory of Probability \& Its Applications}, 14(1):153--158.
+
+\bibitem[Ferguson, 1973]{ferguson1973bayesian}
+Ferguson, T.~S. (1973).
+\newblock A bayesian analysis of some nonparametric problems.
+\newblock {\em The annals of statistics}, pages 209--230.
+
+\bibitem[Fox and Roberts, 2012]{fox2012tutorial}
+Fox, C.~W. and Roberts, S.~J. (2012).
+\newblock A tutorial on variational {B}ayesian inference.
+\newblock {\em Artificial intelligence review}, 38(2):85--95.
+
+\bibitem[Fox et~al., 2008]{fox2008hdp}
+Fox, E.~B., Sudderth, E.~B., Jordan, M.~I., and Willsky, A.~S. (2008).
+\newblock An hdp-hmm for systems with state persistence.
+\newblock In {\em Proceedings of the 25th international conference on Machine
+  learning}, pages 312--319. ACM.
+
+\bibitem[Geman and Geman, 1984]{geman1984stochastic}
+Geman, S. and Geman, D. (1984).
+\newblock Stochastic relaxation, {G}ibbs distributions, and the {B}ayesian
+  restoration of images.
+\newblock {\em {IEEE} Transactions on pattern analysis and machine
+  intelligence}, 6:721--741.
+
+\bibitem[Gilks and Wild, 1992]{gilks1992adaptive}
+Gilks, W.~R. and Wild, P. (1992).
+\newblock Adaptive rejection sampling for gibbs sampling.
+\newblock {\em Applied Statistics}, pages 337--348.
+
+\bibitem[Ishwaran and Zarepour, 2000]{ishwaran2000markov}
+Ishwaran, H. and Zarepour, M. (2000).
+\newblock Markov chain {M}onte {C}arlo in approximate {D}irichlet and beta
+  two-parameter process hierarchical models.
+\newblock {\em Biometrika}, 87(2):371--390.
+
+\bibitem[Johnson and Willsky, 2013]{johnson2013bayesian}
+Johnson, M.~J. and Willsky, A.~S. (2013).
+\newblock Bayesian nonparametric hidden semi-markov models.
+\newblock {\em The Journal of Machine Learning Research}, 14(1):673--701.
+
+\bibitem[Kolter and Johnson, 2011]{kolter2011redd}
+Kolter, J.~Z. and Johnson, M.~J. (2011).
+\newblock {REDD}: A public data set for energy disaggregation research.
+\newblock In {\em Workshop on Data Mining Applications in Sustainability
+  (SIGKDD), San Diego, CA}, volume~25, pages 59--62. Citeseer.
+
+\bibitem[Kurihara et~al., 2007]{kurihara2007collapsed}
+Kurihara, K., Welling, M., and Teh, Y.~W. (2007).
+\newblock Collapsed variational {D}irichlet process mixture models.
+\newblock In {\em IJCAI}, volume~7, pages 2796--2801.
+
+\bibitem[Neal et~al., 2011]{neal2011mcmc}
+Neal, R.~M. et~al. (2011).
+\newblock {MCMC} using {H}amiltonian dynamics.
+\newblock {\em Handbook of Markov Chain Monte Carlo}, 2:113--162.
+
+\bibitem[Paisley et~al., 2011]{paisley2011discrete}
+Paisley, J., Wang, C., and Blei, D. (2011).
+\newblock The discrete infinite logistic normal distribution.
+\newblock {\em arXiv preprint arXiv:1103.4789}.
+
+\bibitem[Parzen, 1962]{parzen1962estimation}
+Parzen, E. (1962).
+\newblock On estimation of a probability density function and mode.
+\newblock {\em The annals of mathematical statistics}, 33(3):1065--1076.
+
+\bibitem[Rabiner and Juang, 1986]{rabiner1986introduction}
+Rabiner, L. and Juang, B. (1986).
+\newblock An introduction to hidden markov models.
+\newblock {\em ieee assp magazine}, 3(1):4--16.
+
+\bibitem[Rasmussen, 2000]{rasmussen2000infinite}
+Rasmussen, C.~E. (2000).
+\newblock The infinite gaussian mixture model.
+\newblock In Solla, S., Leen, T., and M\"uller, K.-R., editors, {\em Advances
+  in Neural Information Processing Systems}, volume~12, pages 554--560. MIT
+  Press.
+
+\bibitem[Rosenblatt et~al., 1956]{rosenblatt1956remarks}
+Rosenblatt, M. et~al. (1956).
+\newblock Remarks on some nonparametric estimates of a density function.
+\newblock {\em The Annals of Mathematical Statistics}, 27(3):832--837.
+
+\bibitem[Sethuraman, 1994]{sethuraman1994constructive}
+Sethuraman, J. (1994).
+\newblock A constructive definition of {D}irichlet processes.
+\newblock {\em Statistica Sinica}, 4:639--650.
+
+\bibitem[Teh, 2011]{teh2011dirichlet}
+Teh, Y.~W. (2011).
+\newblock Dirichlet process.
+\newblock In {\em Encyclopedia of machine learning}, pages 280--287. Springer.
+
+\bibitem[Teh et~al., 2006]{teh2006hierarchical}
+Teh, Y.~W., Jordan, M.~I., Beal, M.~J., and Blei, D.~M. (2006).
+\newblock Hierarchical {D}irichlet processes.
+\newblock {\em Journal of the American Statistical Association}, 101(476).
+
+\end{thebibliography}

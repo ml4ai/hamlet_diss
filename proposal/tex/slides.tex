@@ -1,0 +1,1210 @@
+\documentclass[11pt, serif, mathserif, table,trans]{beamer}
+
+\input{packages.tex}
+\input{macros.tex}
+\input{colortheme.tex}
+
+\title{Modeling and Unsupervised Learning of Structured Similarity Among
+  Source Contexts in Bayesian Hierarchical Infinite Mixture Models}
+\subtitle{With Two Applications to Modeling Natural Language Semantics}
+\author{Colin Reimer Dawson}
+\date{\today}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\bibliographystyle{apalike}
+
+\begin{frame}
+  \frametitle{Outline}
+  \tableofcontents
+\end{frame}
+
+%====================================================
+\section{Background and Problem Formulation}
+\subsection{Mixture Models}
+\label{sec:mixture-models}
+
+\begin{frame}
+  \frametitle{Mixture Models}  
+  \begin{itemize}[<+->]
+  \item Goal: Estimate unknown density, $f$, of the form
+    \begin{equation}
+      \label{eq:3}
+      f(\bx) = \sum_{k} \pi_k f_k(\bx)
+    \end{equation}
+  \item Traditionally, number of components is fixed and $f_k$ have parametric form:
+    \begin{equation}
+      \label{eq:4}
+      f(\bx; \bpi, \btheta) = \sum_{k=1}^K \pi_k f(\bx; \theta_k)
+    \end{equation}
+  \item Estimate $\bpi$ and $\btheta$.
+    \begin{itemize}
+    \item MLE: can find local optimum using Expectation-Maximization
+      (EM) algorithm.
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+%---------------------------------------------------
+
+\begin{frame}
+  \frametitle{A Bayesian Approach}
+  \begin{itemize}
+  \item Standard Bayesian version:
+    \begin{align}
+      \label{eq:5}
+      \pi &\sim \mathrm{Dirichlet}(\alpha\mathbf{1}_K) \\
+      \theta_k &\stackrel{i.i.d.}{\sim} f\text{-}\mathrm{Conjugate}(\xi)
+    \end{align}
+    \item Straightforward to do Gibbs Sampling
+  \end{itemize}
+\end{frame}
+
+%---------------------------------------------------
+\subsection{Infinite Mixture Models}
+\label{sec:dirichl-proc-mixt}
+\begin{frame}
+  \frametitle{Unbounded number of components}
+  \begin{itemize}
+  \item Having to specify $K$ in advance is limiting.  Too high $\to$
+    overfitting.  Too low $\to$ underfitting.
+  \item We can instead use an {\it infinite mixture model}, with a
+    prior to guard against overfitting.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Dirichlet Processes}
+  \begin{infoblock}{Definition: Dirichlet Process}
+    A {\bf Dirichlet Process} \cite{ferguson1973bayesian} with {\bf
+      base probability measure} $G_0$ and {\bf concentration
+      parameter} $\alpha > 0$ is a random measure, $\mu$ on a measure
+    space $(\cX, \Sigma)$ with the property that, for any finite
+    partition, $\{A_1, \dots, A_n\}$ of $\cX$, the induced random
+    vector
+    \begin{equation}
+      \label{eq:6}
+      (\mu(A_1), \dots, \mu(A_n)) \sim
+      \mathrm{Dirichlet}(\alpha G_0(A_1), \dots, \alpha G_0(A_n))
+    \end{equation}
+  \end{infoblock}
+  \begin{itemize}
+  \item Note: $\mu$ is atomic $a.s.$.
+  \item Note: If $G_0$ is atomic with finite support, $\mu$ reduces to a
+    Dirichlet distribution over those atoms.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Normalized Gamma Process Representation}
+  The DP is obtained by normalizing a {\it Gamma Process}:
+
+  A {\bf Gamma Process} is a Poisson Process on $\mathbb{R}^{+} \times
+  \Theta$ with L\'evy intensity measure
+  \begin{equation}
+    \label{eq:8}
+    \nu(d\pi, d\theta) = \alpha \pi^{-1} e^{-\pi} d\pi G_0(d\theta)
+  \end{equation}
+
+  That is, consider a random collection of point masses $\{\theta_k\}$
+  on $\Theta$, with respective random masses $\{\pi_k\}$ as points
+  $(\pi_k,\theta_k) \in \mathbb{R}^+ \times \Theta$.  The number $n(A)$
+  of such points in a region $A \subset \mathbb{R}^+ \times \Theta$ is
+  distributed
+  \begin{equation}
+    \label{eq:9}
+    n(A) \sim \Pois{\int_A \nu(d\pi, d\theta)}
+  \end{equation}
+  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Normalized Gamma Process Representation}
+  
+  The sum $T = \sum_{k} \pi_k$ is finite almost surely (see, e.g., \cite{ferguson1973bayesian}), so we can
+  normalize the set of atoms to form a probability measure on $\Theta$.
+
+  This normalized measure is distributed $\mathrm{DP}(\alpha G_0)$.
+\end{frame}
+
+\begin{frame}
+  \frametitle{A Constructive Definition of the DP}
+  \begin{infoblock}{The Stick-Breaking Construction \cite{sethuraman1991constructive}}
+    Define 
+    \begin{align}
+      \{\pi'_k\}_{k=1}^{\infty} &\stackrel{i.i.d}{\sim} \Beta{1}{\alpha}
+      \\
+      \pi_k &= \pi'_k \prod_{k=1}^{k-1} (1 - \pi'_{k-1}) \\
+      \{\theta_k\}_{k=1}^{\infty} &\stackrel{i.i.d.}{\sim} G_0
+    \end{align}
+    Then
+    \begin{equation}
+      \label{eq:7}
+      \mu \stackrel{def}{=} \sum_{k=1}^{\infty} \pi_k \delta_{\theta_k}
+    \end{equation}
+    is distributed as a Dirichlet Process with base measure $G_0$ and
+    concentration parameter $\alpha$.
+\end{infoblock}
+\end{frame}
+
+%---------------------------------------------------
+\begin{frame}
+  \frametitle{An Infinite Mixture Model}
+  \begin{infoblock}{DP Mixture Model}
+  If we let
+  \begin{align}
+    \label{eq:10}
+    \bpi &\sim \mathrm{Stick}(\alpha) \\
+    \{\theta_k\} &\stackrel{i.i.d}{\sim} G_0 \\
+    f(\bx \given \bpi, \btheta) &= \sum_{k=1}^\infty \pi_k f(\bx \given
+    \theta_k)
+  \end{align}
+  then $\bx$ are distributed according to a {\bf Dirichlet Process
+    Mixture Model}
+\end{infoblock}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Infinite Gaussian Mixture Model}
+  For example, if $f(\bx \given \theta_k)$ is a Normal density, we
+  have the {\bf Infinite Gaussian Mixture model}
+  \cite{rasmussen2000infinite}.
+
+  \vspace{0.2in}
+
+   We could then let $G_0$ be a Normal Inverse Gamma model for $\mu$
+   and $\sigma^2$.
+\end{frame}
+
+%---------------------------------------------------
+\subsection{Hierarchical Dirichlet Process Mixtures}
+\label{sec:dirichl-proc-mixt}
+\begin{frame}
+  \frametitle{Hierarchical Dirichlet Processes}
+  \begin{itemize}[<+->]
+  \item If we have data from multiple sources, $j = 1, \dots, J$,
+    whose generating distributions, $\{G_j\}$ are distinct but related, we can
+    use a hierarchical prior to couple them, e.g.,
+    \begin{equation}
+      \label{eq:11}
+      G_j \stackrel{i.i.d}{\sim} \mathrm{DP}(\alpha G_0),
+    \end{equation}
+    where dependence is introduced by putting a hyperprior on $G_0$
+    and integrating it out.
+  \item Problem: If $G_0$ is absolutely continuous, the atoms in the
+    $G_j$ will be at disjoint locations.
+  \item Solution: Let $G_0$ itself have a DP prior.
+  \end{itemize}
+\end{frame}
+
+%---------------------------------------------------
+\begin{frame}
+  \frametitle{Hierarchical Dirichlet Processes}
+    \begin{infoblock}{The Hierarchical Dirichlet Process Mixture Model
+        \cite{teh2006hierarchical}}
+      Define
+      \begin{align}
+        G_0 &\sim \mathrm{DP}(\gamma H) \\
+        G_j \given G_0 &\stackrel{i.i.d}{\sim} \mathrm{DP}(\alpha G_0) \qquad \qquad \quad j = 1, \dots, J\\
+        \{(\pi_{jk}, \theta_{jk})\}_{k=1}^{\infty} &\leftarrow G_j \\
+        \{\bx_{jn}\}_{n=1}^N \given \{\pi_{jk} \theta_{jk}\}
+        &\stackrel{i.i.d}{\sim} \sum_{k=1}^{\infty} \pi_{jk}
+        f(\bx \given \theta_{jk})
+      \end{align}
+      This defines a Hierarchical Dirichlet Process (HDP) Mixture.
+      Atoms are shared among contexts by virtue of the discreteness of $G_0$.
+    \end{infoblock}
+\end{frame}
+
+%---------------------------------------------------
+\begin{frame}
+  \frametitle{Examples of HDP Mixture Models}
+  \begin{itemize}[<+->]
+  \item If $H$ is a Normal-Inverse Gamma distribution and $f$ is a
+    Normal density, we have a hierarchical Infinite Gaussian Mixture.
+  \item If $H$ is itself a Dirichlet distribution, and $f$ is a
+    Multinomial mass function, we obtain an {\bf
+      hierarchical infinite topic model}: $x$ are words, and $\theta_{jk}$
+    parameterize multinomial distributions corresponding to ``topics''
+    in a document.
+  \end{itemize}
+\end{frame}
+
+%---------------------------------------------------
+\subsection{Non-Exchangeability}
+\label{sec:dirichl-proc-mixt}
+\begin{frame}
+  \frametitle{Exchangeability vs. Dependence}
+  \begin{itemize}[<+->]
+  \item A limitation of the HDP is that the components in the bottom
+    level measures are {\bf exchangeable}, and independent given
+    $G_0$.  Can we allow for particular component pairs to have
+    correlated weights across contexts? (E.g., topics cooccur across documents)
+  \item Second, both the {\it contexts} and the {\it data points} are
+    exchangeable.  Can we couple them through covariates?
+  \end{itemize}
+\end{frame}
+
+
+%---------------------------------------------------
+
+\section{HDP Hidden Markov Model with Local Transitions}
+\label{sec:hdp-hidden-markov}
+
+%---------------------------------------------------
+\subsection{Hidden Markov Models}
+\begin{frame}
+  \frametitle{Hidden Markov Models}
+  One way to incorporate temporal dependence in a mixture model is the
+  {\bf Hidden Markov Model}.
+  \begin{infoblock}{Hidden Markov Model}
+    Let $\{f_k\}_{k=1}^K$ be a finite family of density functions and
+    $\{\bpi_k\}_{k=0}^K$ a family of $K$-dimensional Multinomial
+    distributions.  Define a {\em latent state
+      sequence}, $\{z_t\}_{t=1}^T$ and an {\em observation sequence}
+    $\{\bx_t\}_{t=1}^T$ such that
+    \begin{align}
+      \label{eq:12}
+      z_t \given z_{t-1} &\sim \pi_{z_{t-1}} \quad t = 1, \dots, T \\
+      \bx_t \given z_t &\sim f_{z_t} \qquad t = 1, \dots, T
+    \end{align}
+    with $z_0$ defined to be 0.  This defines a {\bf Hidden Markov
+      Model} (HMM).
+  \end{infoblock}
+\end{frame}
+
+%---------------------------------------------------
+\begin{frame}
+  \frametitle{A Bayesian HMM}
+  A standard Bayesian formulation for estimating the emission and
+  transition distributions, $\{f_k\}$ and
+  $\{\bpi_k\}$, where the $f_k$ are members of a parametric family,
+  $f_k(\bx) = f(\bx \given \theta_k)$ is to use priors
+  \begin{align}
+    \label{eq:5}
+    \bpi_k &\stackrel{i.i.d}{\sim} \mathrm{Dirichlet}(\alpha\mathbf{1}_K) \\
+    \theta_k &\stackrel{i.i.d.}{\sim} f\text{-}\mathrm{Conjugate}(\xi)
+  \end{align}
+  It is then straightforward to do Gibbs sampling over these variables
+  as well as the latent state sequence (which can be sampled jointly
+  using a dynamic programming-based message passing algorithm).
+\end{frame}
+
+%---------------------------------------------------
+\subsection{The Infinite (HDP) Hidden Markov Model}
+\begin{frame}
+  \frametitle{An Infinite State Generalization}
+  We can allow infinitely many states by replacing the Dirichlet prior
+  with a Dirichlet Process prior:
+  \begin{align}
+    \label{eq:5}
+    (\bpi_k, \btheta_k) &\stackrel{i.i.d}{\sim} \mathrm{DP}(\alpha G_0)
+  \end{align}
+  where $\btheta_k$ represents the vector of emission parameters for the states
+  reachable from state $k$.
+  \pause
+
+  \vspace{0.2in}
+
+  However, we need $G_0$ to be atomic, to ensure that the $\btheta_k$
+  contain overlapping values for different $k$.
+  \pause
+
+  \vspace{0.2in}
+  Solution: Use a hierarchical prior, with $G_0 \sim
+    \mathrm{DP}(\gamma H)$.  This is the Infinite or HDP HMM
+    \cite{beal2001infinite,teh2006hierarchical}
+\end{frame}
+
+%---------------------------------------------------
+\subsection{Adding the Concept of ``Local'' Transitions}
+\begin{frame}
+  \frametitle{Excessive Exchangeability}
+  \begin{itemize}[<+->]
+  \item Two properties of HDP-HMM not shared with non-temporal HDP:
+    \begin{enumerate}
+    \item Contexts (except the first) are random
+    \item Set of contexts is identified with set of states
+    \end{enumerate}
+  \item Self-transitions are not special
+  \item No notion of a state topology: $\pi_{kk'}$ should (perhaps) be
+    similar (but not identical) to $\pi_{k'k}$; states with similar incoming distributions should (perhaps)
+    have similar (but not identical) outgoing distributions.
+  \end{itemize}
+\end{frame}
+
+%---------------------------------------------------
+\begin{frame}
+  \frametitle{Making Self-Transitions Special: Two Approaches}
+  \begin{itemize}[<+->]
+  \item Two solutions to making self-transitions special are:
+    \begin{enumerate}
+      \item the Sticky HDP-HMM \cite{fox2008hdp}:
+        \begin{equation}
+          \label{eq:13}
+          \bpi_k \sim \mathrm{DP}(\alpha G_0 + \kappa \delta_{\theta_k})
+        \end{equation}
+      \item the HDP-HSMM \cite{johnson2013bayesian}: rule out
+        self-transitions, and model durations separately
+      \end{enumerate}
+    \end{itemize}
+\end{frame}
+
+%---------------------------------------------------
+\begin{frame}
+  \frametitle{Local Transitions: The HDP-HMM-LT}
+  \begin{itemize}[<+->]
+  \item I incorporate the notion of state similarity by defining an
+    HDP-HMM that favors ``local'' transitions: The HDP-HMM-LT.
+  \item Key idea: latent states are located an abstract space 
+    on which a symmetric similarity kernel, $\phi$ is defined:
+    \begin{align}
+      0 \leq \phi(\ell_k, \ell_{k'}) = \phi(\ell_{k'}, \ell_k) \leq \phi(\ell_k, \ell_k) \equiv 1
+    \end{align}
+  \item The transition probabilities generated by the HDP prior are
+    scaled by the corresponding $\phi_{kk'}$.
+  \end{itemize}
+\end{frame}
+
+%---------------------------------------------------
+\begin{frame}
+  \frametitle{The HDP-HMM-LT}
+  \begin{infoblock}{Definition: HDP-HMM-LT}
+    Assume we have a sequence of location pairs $\{(\theta_k, \ell_k)\}$ from some
+    distribution, and a similarity kernel $\phi$.  We define
+    \begin{align}
+      \bbeta &\sim \mathrm{Stick}(\gamma) \\
+      \tilde{\bpi}_k &\sim \mathrm{DP}(\alpha\bbeta) \\
+      a_{kk'} &= \tilde{\pi}_{k}(k')\phi(\ell_k, \ell_{k'}) \\
+      z_t \given z_{t-1} &\sim \sum_{k} \frac{a_{z_{t-1}k}}{\sum_{k'}
+        a_{z_{t-1}k'}} \delta_{k} \\
+      x_t \given z_t &\sim F(\theta_{z_t})
+    \end{align}
+  \end{infoblock}
+  Note that the normalization term is finite and positive almost surely, since it
+  is bounded above by $\sum_{k'} \tilde{\pi}_{k}(k') = 1$, and below by $\tilde{\pi}_{k}(k)$.
+\end{frame}
+
+%---------------------------------------------------
+\begin{frame}
+  \frametitle{A Gamma Process representation}
+  By the Gamma Process representation of the DP, we obtain the same
+  model by drawing $\bbeta$ as above and setting
+  \begin{equation}
+    \label{eq:14}
+    \tilde{\pi}_{k}(k') = \frac{\pi_{kk'}}{\sum_{k''} \pi_{kk''}}
+  \end{equation}
+  where
+  \begin{equation}
+    \label{eq:15}
+    \{\pi_{kk'}\}_{k} \stackrel{i.i.d.}{\sim} \Gamm{\alpha
+      \beta_{k'}}{1} \qquad k' \geq 1
+  \end{equation}
+  It is known that the L\'evy measure underlying the Gamma process
+  meets the sufficient conditions for the normalization constant to be
+  positive and finite almost surely, namely
+  \begin{equation}
+    \label{eq:16}
+    \int_{\mathbb{R}^+}\rho(d\pi) = +\infty \qquad \int_{\mathbb{R}^{+}}
+    (1 - e^{-\pi}) \rho(d\pi) < \infty
+  \end{equation}
+\end{frame}
+
+%---------------------------------------------------
+\begin{frame}
+  \frametitle{A Gamma Process representation}
+  Combining the two normalizations yields
+  \begin{infoblock}{HDP-HMM-LT (Gamma Process Representation)}
+    \begin{align}
+      \bbeta &\sim \mathrm{Stick}(\gamma) \\
+      \pi_{kk'} &\sim \Gamm{\alpha\beta_{k'}}{1} \\
+      a_{kk'} &= \pi_{kk'}\phi(\ell_k, \ell_{k'}) \\
+      z_t \given z_{t-1} &\sim \sum_{k} \frac{a_{z_{t-1}k}}{\sum_{k'}
+        a_{z_{t-1}k'}} \delta_{k} \\
+      x_t \given z_t &\sim F(\theta_{z_t})
+    \end{align}
+  \end{infoblock}
+\end{frame}
+%---------------------------------------------------
+\begin{frame}
+  \frametitle{Loss of Conjugacy for $\bpi$}
+  A difficulty introduced by the rescaling is that the likelihood for
+  $\pi$, fixing the sequence $\bz$ is no longer conjugate, due to the
+  normalization.  Let
+  $n_{kk'}$ be the number of transitions from $k$ to $k'$ in $\bz$.
+  Then
+  \begin{equation}
+    \label{eq:17}
+    p(\bz \given \bpi, \bphi) = \prod_{k} \left(\sum_{k''}
+      \pi_{kk'}\phi_{kk'}\right)^{-n_{k\cdot}} \prod_{k'} (\pi_{kk'}\phi_{kk'})^{n_{kk'}}
+  \end{equation}
+  But we can restore conjugacy by introducing auxiliary variables.
+\end{frame}
+%---------------------------------------------------
+\begin{frame}
+  \frametitle{The Markov Process With Failed Jumps Representation}
+  A discrete time Markov chain is obtained from a pure jump Markov process by
+  allowing self-jumps, and marginalizing time.
+  \pause
+
+  \vspace{0.2in}
+
+  Let $A$ be a rate matrix for such a process.  Then time spent in
+  state $k$ is distributed $\mathsf{Exp}(\sum_{k'} a_{kk'})$ and is
+  independent of the state jumped to, which is distributed by
+  the normalized $k$th row of $A$.
+\end{frame}
+%---------------------------------------------------
+\begin{frame}
+  \frametitle{The Markov Process With Failed Jumps Representation}
+  Given $n_{k\cdot} = \sum_{k'} n_{kk'}$ visits to state $k$, the
+  chain will spend
+  \begin{equation}
+    \label{eq:18}
+    u_k \sim \Gamm{n_{k\cdot}}{\sum_{k'}a_{kk'}}
+  \end{equation}
+  time there.
+  
+  \pause
+  \vspace{0.2in}
+
+  The augmented likelihood is now
+  \begin{align}
+    \label{eq:21}
+    p(\bz, \bu \given \bpi, \bphi) &= \prod_{k}\Gamma(n_{k\cdot})^{-1}
+    e^{-u_k \sum_{k'}a_{kk'} }\prod_{k'}
+    (\pi_{kk'}\phi_{kk'})^{n_{kk'}} \\
+    &= \prod_{k}\Gamma(n_{k\cdot})^{-1} \prod_{k'}
+    (\pi_{kk'}\phi_{kk'})^{n_{kk'}} e^{-u_k \phi_{kk'} \pi_{kk'} }
+  \end{align}
+\end{frame}
+% ---------------------------------------------------
+\begin{frame}
+  \frametitle{Introducing failed jumps}
+  Suppose also that while in state $k$, unsuccessful attempts to jump
+  to state $k'$ are made at rate $\pi_{kk'} - a_{kk'} = \pi_{kk'}(1 -
+  \phi_{kk'})$.  The total number of these is
+  \begin{equation}
+    \label{eq:19}
+    q_{kk'} \sim \Pois{\pi_{kk'}(1 - \phi_{kk'}) u_k}
+  \end{equation}
+\end{frame}
+%---------------------------------------------------
+\begin{frame}
+  \frametitle{Augmented Likelihood for $\bpi$}
+  Augmenting the data with $\bu$ and $\bQ$, the likelihod for $\bpi$
+  is now
+  \begin{align}
+    \label{eq:20}
+    \mathcal{L}(\bpi \given \bz, \bu, \bQ; \bphi) &\propto \prod_{k}\prod_{k'}
+    \pi_{kk'}^{n_{kk'}} e^{-u_k\phi_{kk'}\pi_{kk'}}
+    \\
+    &\qquad \times e^{-u_k(1-\phi_{kk'})\pi_{kk'}}
+    \frac{\left(u_k(1-\phi_{kk'})\pi_{kk'}\right)^{q_{kk'}}}{q_{kk'}!}
+    \\
+    &\propto \prod_{k}\prod_{k'}
+    \pi_{kk'}^{n_{kk'} + q_{kk'}} e^{-u_k\pi_{kk'}}
+  \end{align}
+  which is conjugate to the Gamma prior.
+\end{frame}
+%---------------------------------------------------
+\subsection{Posterior Inference}
+\begin{frame}
+  \frametitle{Completing the Gibbs Sampler}
+  \begin{itemize}[<+->]
+  \item Conditioned on $A$ and the observations, we can sample the
+    state sequence $\bz$ jointly with standard HMM message passing.
+  \item We can sample $\bpi$ and its hyperparameters ($\bbeta$,
+    $\alpha$, and $\gamma$) jointly as well by the factorization
+    \begin{equation}
+      \label{eq:22}
+      p(\gamma, \alpha, \bbeta, \bpi \given \mathcal{D}) = p(\gamma
+      \given \mathcal{D}) p(\alpha \given \mathcal{D}) p(\bbeta \given
+      \gamma, \mathcal{D}) p(\bpi \given \bbeta, \alpha, \mathcal{D})
+    \end{equation}
+    where $\mathcal{D}$ is the augmented ``data''.
+  \item These terms require marginal likelihoods for $\bbeta$,
+    $\alpha$ and $\gamma$.
+  \end{itemize}
+\end{frame}
+%---------------------------------------------------
+\begin{frame}
+  \frametitle{Marginal Likelihoods}
+  The marginal likelihood for $\bbeta$ (integrating out $\bpi$)
+    is
+    \begin{align}
+      \label{eq:23}
+      \mathcal{L}(\bbeta \given \mathcal{D}) &\propto \int \prod_{k}
+      \prod_{k'} \Gamma(\alpha\beta_{k'})^{-1} \pi_{kk'}^{\alpha\beta_{k'} + n_{kk'} + q_{kk'} - 1}
+      e^{-(1 + u_k)\pi_{kk'}} d\bpi \\
+      &\propto \prod_{k} \prod_{k'} (1 + u_k)^{-\alpha\beta_{k'}}
+      \frac{\Gamma\left(\alpha\beta_{k'} + n_{kk'} +
+          q_{kk'}\right)}{\Gamma(\alpha\beta_{k'})} \\
+      &\propto \prod_{k} (1 + u_{k})^{-\alpha} \prod_{k'} \frac{\Gamma\left(\alpha\beta_{k'} + n_{kk'} +
+          q_{kk'}\right)}{\Gamma(\alpha\beta_{k'})} \\
+      &\propto \prod_{k} \prod_{k'} \sum_{m=1}^{n_{kk'} + q_{kk'}}
+      s(n_{kk'} + q_{kk'}, m) \alpha^m \beta_{k'}^m
+    \end{align}
+\end{frame}
+%---------------------------------------------------
+\begin{frame}
+  \frametitle{Marginal Likelihoods}
+  \begin{itemize}
+  \item So we can employ the auxiliary variable method of
+    \cite{escobar1995bayesian}, introducing a collection of
+    random $m_{kk'}$ whose distributions depend on $n_{kk'}$, $q_{kk'}$,
+    $\alpha$ and $\bbeta$.
+  \item $m_{kk'}$ represents the number ``sticks''
+    assigned to component $k'$ in context $k$, during the
+    DPs generating $\bpi$.
+  \item After adding $\bM$ to $\mathcal{D}$, the $\bbeta$ likelihood is conjugate to
+    the DP prior.
+\end{itemize}
+\end{frame}
+%---------------------------------------------------
+\begin{frame}
+  \frametitle{Marginal Likelihoods}
+  With the addition of $\bM$, the marginal likelihood for $\alpha$ is
+  now simply
+  \begin{align}
+    \label{eq:24}
+    \mathcal{L}(\alpha \given \mathcal{D}) &\propto \prod_{k} (1 +
+    u_k)^{-\alpha} \prod_{k'} \alpha^{m_{kk'}} \\
+    &\propto \alpha^{m_{\cdot\cdot}} e^{-\sum_k \log(1 + u_k) \alpha}
+  \end{align}
+  which is conjugate to a Gamma prior.  This is simpler than in the
+  formulation of either \cite{escobar1995bayesian} or
+  \cite{teh2006hierarchical} due to the presence of $\bu$.
+\end{frame}
+
+%---------------------------------------------------
+\begin{frame}
+  \frametitle{Marginal Likelihoods}
+  We can further integrate out $\bbeta$ to obtain a marginal likelihood
+  for $\gamma$.  Collapsing all unrepresented components of $\bbeta$
+  into a single component $\beta_{*}$ yields a degenerate Dirichlet prior, and so
+    \begin{align}
+      \label{eq:23}
+      \mathcal{L}(\gamma \given \mathcal{D}) &\propto \int
+      \beta_{*}^{\gamma} \prod_{k} \beta_k^{m_{\cdot k}} d\bbeta \\
+      &\propto \frac{\Gamma(\gamma) \prod_{k} \Gamma(m_{\cdot
+          k})}{\Gamma(\gamma + m_{\cdot\cdot})} \\
+      &\propto \int_{0}^{1} t^{\gamma - 1} (1 - t)^{m_{\cdot\cdot} -
+        1} dt
+    \end{align}
+    and so adding one more auxiliary variable $t \sim
+    \Beta{\gamma}{m_{\cdot\cdot}}$ yields a marginal likelihood for
+    $\gamma$ which is conjugate to a Gamma prior.
+\end{frame}
+%---------------------------------------------------
+\begin{frame}
+  \begin{infoblock}{Interim Summary of Contributions}
+    \begin{itemize}
+      \item I have introduced a new model, the HDP-HMM-LT, in which there is a
+      notion of topology on the transition state space, such that
+      transitions are more likely between nearby states.
+      \item I have formulated the HDP-HMM-LT as the marginalization of
+        another process, the Markov Process With Failed Jumps.
+      \item By ``reinstating'' selected functions of the marginalized
+        variables, the model admits a straightforward Gibbs sampler
+      \item The HDP parameters, $\bpi$, $\bbeta$, $\alpha$ and
+        $\gamma$ can be Gibbs-sampled jointly, conditioned on the
+        augmented data.
+    \end{itemize}
+\end{infoblock}
+\end{frame}
+
+
+\section{Two DP Models for Context-Sensitive Phrase Structure Grammar}
+\label{sec:two-dp-models}
+\subsection{Context-Free Grammars}
+% ---------------------------------------------------
+\begin{frame}
+  \frametitle{Constituency Trees}
+  \Tree [.S 
+            [.NP [.JJ Natural ] [.NN language ] [.NN processing ] ]
+            [.VP [.VBZ is ] [.JJ cool ] ] ]
+\end{frame}
+
+\begin{frame}
+  \frametitle{Context-Free Grammar}
+  Ordinary Context Free Grammar: syntactic
+    constituents (nonterminal phrases) expanded into sequences of smaller phrase
+    nodes and ``preterminals'' (part of speech tags).
+  \begin{exblock}{}
+  \begin{tabular}{lll}
+    $S \to NP\ VP$ & $NP \to JJ\ NN\ NN$ & $VP \to VBZ\ JJ$ \\
+    $JJ \to \text{Natural}$ & $NN \to \text{language}$ & $NN \to \text{processing}$ \\
+    $V \to \text{is}$ & $JJ \to \text{cool}$ & \\
+  \end{tabular}
+\end{exblock}
+\end{frame}
+
+
+% ---------------------------------------------------
+\begin{frame}
+  \frametitle{Now with Probabilities}
+  \begin{itemize}
+  \item But the same LHS can expand in more than one way.
+  \item {\bf Probabilistic} Context-Free Grammar associates each
+    production with a conditional probability of the RHS given the LHS.
+  \end{itemize}
+\begin{exblock}{}
+  \begin{tabular}{lll}
+    $S \stackrel{0.7}{\to} NP\ VP$ & $NP \stackrel{0.02}{\to} JJ\ NN\ NN$ & $VP \stackrel{0.2}{\to} V\ JJ$ \\
+    $JJ \stackrel{0.002}{\to} \text{Natural}$ & $NN \stackrel{0.001}{\to} \text{language}$ & $NN \stackrel{0.0001}{\to}$
+    \text{processing} \\
+    $V \stackrel{0.01}{\to} \text{is}$ & $JJ \stackrel{0.002}{\to}
+    \text{cool}$ & 
+  \end{tabular}
+\end{exblock}
+\pause
+  \begin{itemize}
+  \item Context-free assumption: each sequence is conditionally independent
+    of everything else given the parent.
+  \item Therefore, tree probability is product of production probabilities.
+  \end{itemize}
+\end{frame}
+% ---------------------------------------------------
+\begin{frame}
+  \frametitle{Problems With This Structure}
+  \begin{itemize}[<+->]
+  \item This grammar is both too flexible and too inflexible.
+  \item Too inflexible: Context-free assumption is unrealistic;
+    grandparents, aunts, etc. matter.  Too few parameters!
+  \item Too flexible: Each sequence (say, $JJ\ NN\ NN$) treated as a
+    distinct category, regardless of similarity (to, say, $NN\ NN$).  Too many parameters!
+  \end{itemize}
+\end{frame}
+
+% ---------------------------------------------------
+\begin{frame}
+\frametitle{Lexicalizing and Factoring the Production Probabilities}
+\begin{itemize}[<+->]
+\item \cite{collins2003head} augments representation by
+  labeling constituent nodes with lexical and ``head/modifier''
+  information.
+\item Each constituent has a single head word.
+\item Multiple production types
+\item Modifiers generated one at a time (conditionally independent of
+  each other given parent and head).
+\end{itemize}
+\end{frame}
+% ---------------------------------------------------
+
+\begin{frame}
+  \frametitle{Head-Driven Lexicalized Grammar}
+\begin{columns}
+  \begin{column}{0.5\textwidth}
+\begin{figure}[t]
+
+  \vspace{-2.5in}
+
+{\tiny
+  \Tree [.S(VBZ,is)
+            [.NP(NN,processing) 
+                [.NPB(NN,language) 
+                    [.JJ natural ]
+                    [.*NN language ] ]
+                [.*NPB(NN,processing)
+                    [.*NN processing ] ] ]
+            [.*VP(VBZ,is)
+                 [.*VBZ is ]
+                 [.JJ cool ] ] ] 
+}
+\end{figure}
+\end{column}
+\begin{column}{0.5\textwidth}
+
+\vspace{0.7in}
+
+{\footnotesize
+\begin{align*}
+  ROOT &\stackrel{\text{head}}{\to} S(VBZ,\text{is}) \\
+  S(VBZ,\text{is}) &\stackrel{\text{head}}{\to} VP(VBZ,\text{is}) \\
+  VP(VBZ,\text{is}) &\stackrel{\text{head}}{\to} VBZ(\text{is}) \\
+  VP(VBZ,\text{is}) & \stackrel{\text{right}}{\to} JJ(\text{cool}) \\ 
+  S(VBZ,\text{is}) &\stackrel{\text{left}}{\to} NP(NN,\text{processing}) \\
+  NP(NN,\text{processing}) & \stackrel{\text{head}}{\to}
+  NBP(NN,\text{processing})
+  \\
+  NBP(NN,\text{processing}) & \stackrel{\text{head}}{\to}
+  NN(\text{processing}) \\
+  NP(NN,\text{processing}) & \stackrel{\text{left}}{\to}
+  NPB(NN,\text{language}) \\
+  NPB(NN,\text{language}) & \stackrel{\text{head}}{\to} NN(\text{language})\\
+  NPB(NN,\text{language}) & \stackrel{\text{left}}{\to} JJ(\text{natural}) \\
+\end{align*}
+}
+\end{column}
+\end{columns}
+\end{frame}
+
+% ---------------------------------------------------
+\begin{frame}
+  \frametitle{Parameter Estimation}
+  \begin{itemize}
+  \item For modifiers, condition on (sister) head, as well as parent.
+  \item But contexts now contain words --- very little training data per
+    context!
+  \item Solution: ``smoothing'' distributions for similar contexts
+  \end{itemize}
+\pause
+{\footnotesize
+\begin{align*}
+  &S(JJ,cool) \stackrel{\text{head}}{\to} VP\ 
+  \vert\ \text{Parent} = \mathrm{Root}
+\end{align*}
+\begin{align*}
+&P(VP\ \vert\ \mathrm{Root}, S, JJ, \text{cool}) \\
+  & = \lambda_0 \hat{P}(VP\ \vert\ \mathrm{Root}, S, JJ, \text{cool})
+  \\ & \qquad + (1 - \lambda_0)\big(\lambda_1 \hat{P}(VP\ \vert\ \mathrm{Root}, S, JJ) \\
+    &\qquad \qquad \qquad + (1 - \lambda_1)(\lambda_2 \hat{P}(VP\ \vert\ \mathrm{Root}) + (1-\lambda_2) \varepsilon)\big)
+\end{align*}
+}
+\end{frame}
+
+% ---------------------------------------------------
+\begin{frame}
+  \frametitle{How Should We Choose $\lambda$s?}
+  Collins sets smoothing parameters from the data as
+    \begin{equation*}
+      \label{eq:2}
+      \lambda_{A} = \frac{c_A}{c_A + b u_A}
+    \end{equation*}
+    \begin{center}
+    \begin{tabular}{l}
+      $c_A$: \# of observations of context $A$ \\
+      $u_A$: \# of distinct outcomes in context $A$ (the
+      ``diversity'') \\
+      $b$: tunable parameter shared over all contexts
+    \end{tabular}
+  \end{center}
+\end{frame}
+% ---------------------------------------------------
+\begin{frame}
+  \frametitle{Intuition}
+  \begin{itemize}[<+->]
+  \item More data for context (high $c_A$) $\to$ trust the MLE more
+  \item More distinct outcomes (high $u_A$) $\to$ high entropy $\to$
+    need more data to get a reliable estimate
+  \end{itemize}
+\end{frame}
+
+\subsection{An HDP Formulation of Backoff Smoothing}
+\label{sec:an-hdp-formulation}
+% ---------------------------------------------------
+\begin{frame}
+  \frametitle{A Bayesian Interpretation of Smoothing}
+  \begin{itemize}[<+->]
+  \item With only one smoothing level, i.e.,
+    \begin{equation*}
+      \label{eq:1}
+      P_A = \lambda \hat{P}_A + (1 - \lambda) \varepsilon
+    \end{equation*}
+    this would be the predictive distribution assuming a
+    Dirichlet-multinomial model, with a symmetric prior over $1 /
+    \varepsilon$ categories and concentration hyperparameter
+    related to $(1 - \lambda)$.  Specifically
+    \begin{equation}
+      \label{eq:25}
+      \lambda = \frac{c_A}{c_A + \alpha}
+    \end{equation}
+  \end{itemize}
+\end{frame}
+
+% ---------------------------------------------------
+\begin{frame}
+  \frametitle{A Bayesian Interpretation of Smoothing}
+  We can extend an HDP to arbitrary levels by letting $\pi_K(A)$
+  represent the predictive distribution for context $A$ at level $K$ (where
+  smaller $K$ collapse prefix-equivalent $A$s).  Then
+    \begin{equation*}
+      \label{eq:1}
+      \pi_K(A) = \lambda_K \hat{\pi}_K(A) + (1 - \lambda_k) \pi_{K-1}(A)
+    \end{equation*}
+    where $\hat{\pi}$ is the empirical distribution,
+    \begin{equation}
+      \label{eq:26}
+      \lambda_K = \frac{m_K(A)}{m_K(A) + \alpha_K}
+    \end{equation}
+    and $m_K(A)$ is the total number of distinct masses (``sticks'') with
+    which the observations in context $A$ are associated, and
+    $\alpha_K$ is the concentration parameter of the DP at level $K$.
+\end{frame}
+
+% ---------------------------------------------------
+\begin{frame}
+  \frametitle{Estimating $\alpha$}
+  The set of $m_K(A)$ for all the contexts at level $K$ is
+  probabilistically dependent on $\alpha_{K}$, since higher $\alpha_K$
+  leads to more a more entropic set of stick weights.
+  \cite{antoniak1974mixtures} showed that, for a fixed number $n$ of draws
+  from the distribution, the number of distinct ``sticks'' represented
+  has distribution given by
+  \begin{equation}
+    \label{eq:27}
+    p(m \given \alpha, n) = \frac{\Gamma(\alpha)}{\Gamma(\alpha +
+      n)} s(n,m) \alpha^m
+  \end{equation}
+  This is proportional (in $\alpha$) to
+  \begin{equation}
+    \label{eq:28}
+    \alpha^m \int_0^1 w^{\alpha-1}(1-w)^{n-1} dw
+  \end{equation}
+  so if we draw $w \sim \Beta{\alpha}{n}$, the augmented likelihood is
+  conjugate to a Gamma prior with shape and rate updates $m$ and
+  $-\log(w)$, respectively.
+\end{frame}
+% ---------------------------------------------------
+\begin{frame}
+  \frametitle{Estimating $\alpha$}
+  For fixed $w$, the posterior mean for $\alpha$ is asymptotically
+  proportional to $m$.  Hence if we approximate $m$ by the diversity $u$ and all
+  $w$s by a fixed constant $w_0$ (perhaps a function of the sample size), we
+  might estimate $\alpha$ by $w_0 u$, as Collins does:
+    \begin{equation*}
+      \label{eq:2}
+      \lambda_{A} = \frac{c_A}{c_A + b u_A}
+    \end{equation*}
+    \begin{center}
+    \begin{tabular}{l}
+      $c_A$: \# of observations of context $A$ \\
+      $u_A$: \# of distinct outcomes in context $A$ (the
+      ``diversity'') \\
+      $b$: tunable parameter shared over all contexts
+    \end{tabular}
+  \end{center}
+\end{frame}
+
+% ---------------------------------------------------
+\begin{frame}
+  \frametitle{A true HDP model}
+  \begin{itemize}[<+->]
+  \item Instead of these heuristic approximations, I propose Gibbs sampling
+    the $m$,
+    $w$ and $\alpha$ to derive a Monte Carlo estimate of the predictive
+    probabilities.
+  \item This can perhaps improve parsers trained on annotated corpora
+    (empirical study to come).
+  \item Further, by specifying a full probabilistic model, we can account for missing or
+    incomplete context data in the training bank of parse trees, such
+    as semantic information (informed by paired images).
+\end{itemize}
+\end{frame}
+
+
+
+% ---------------------------------------------------
+\begin{frame}
+  \frametitle{Conditioning Grammar on Semantics}
+We want the probability of this...
+ {\tiny
+  \Tree [.S(VBZ,is)
+            [.NP(NN,lamp) 
+                [\qroof{a white lamp}.*NPB ]
+                [.PP(IN,on) [.*IN on ] [\qroof{a table}.NPB ] ] ]
+            [.*VP(VBZ,is)
+                 [.*VBZ is ]
+                 [.PP(IN,in)
+                     [.*IN in ]
+                     [.NP(NN,front) 
+                         [.*NPB(NN,front) [.NN front ] ]
+                         [.PP(IN,of) 
+                             [.*IN of ]
+                             [.NPB(NN,bed) [.det a ] [.JJ green ] [.*NN bed ] ] ] ] ] ] ]
+}
+\end{frame}
+
+\begin{frame}
+to depend on this:
+\begin{figure}[t]
+ {\tiny
+  \Tree [.{\sc Focus}(lamp)
+            [.T:{\sc front-of}(lamp,bed) 
+                H:front-of
+                [.T:{\sc on}(lamp,table) 
+                    H:on
+                    [.T:lamp(white) H:lamp A:white ] 
+                    [.B:table() H:table A:NULL ] ]
+                [.B:bed(green) H:bed A:green ] ] ]
+}
+\end{figure}
+\end{frame}
+
+
+% ---------------------------------------------------
+\begin{frame}
+  \frametitle{Sparse Dependency Assumption}
+    \begin{itemize}[<+->]
+    \item That's a lot of structure to condition on.  Smoothing only
+      helps so much.
+    \item Intuition: A given syntactic subtree expresses a particular
+      ``semantic constituent''.
+      \begin{align*}
+        front(lamp, bed) &\leftarrow S(VBZ, is) \\
+        bed(green) &\leftarrow NP(NN,bed)
+      \end{align*}
+    \item Moreover, correspondences are largely ``continuous''
+      (connected graphs map to connected graphs).
+    \item Hence, add semantic features to the head/modifier features,
+      and define new production types.
+    \end{itemize}
+\end{frame}
+
+% ---------------------------------------------------
+\begin{frame}
+  \frametitle{Semantic Features and Events in $P(T \vert \psi, \mathcal{G})$}
+  \begin{itemize}
+  \item Syntactic root is associated with root predicate; each step down
+    syntactic tree associated with (a) no move, (b) move down, or (c)
+    move to null, in semantic tree.
+  \end{itemize}
+\begin{figure}[t]
+  \vspace{-0.4in}
+
+  \hspace{-0.1in}
+
+ {\tiny
+  \Tree 
+  [.*VP(VBZ,is,{\em front(lamp,bed)})
+      [.*VBZ({\em front}) is ]
+          [.PP(IN,in,{\em front(lamp,bed)})
+              [.*IN({\em front}) in ]
+                  [.NP(NN,front,{\em front(lamp,bed)})
+                      [.*NPB(NN,front,{\em front}) 
+                          [.NN({\em front}) front ] ] 
+                          [.PP(IN,of,{\em front(lamp,bed)})
+                              [.*IN({\em front}) of ]
+                              [.NPB(NN,bed,{\em bed(green)}) 
+                                  [.det($\emptyset$) a ] 
+                                  [.JJ({\em green}) green ] 
+                                  [.*NN({\em bed}) bed ] ] ] ] ] ]
+}
+\end{figure}
+\end{frame}
+
+% ---------------------------------------------------
+\begin{frame}
+  \frametitle{Semantic Features and Events in $P(T \vert \psi, \mathcal{G})$}
+  \begin{itemize}
+  \item Simply adds new production types to the grammar.
+  \item For a fixed mapping, we can employ the same context-sensitive
+    grammar model to estimate the likelihood of a parse.
+  \item Use this as a likelihood to sample (a) mappings, and (b) the
+    semantic trees themselves
+  \end{itemize}
+\end{frame}
+
+\subsection{Future Work: A Similarity-Based Alternative}
+\label{sec:simil-based-altern}
+\begin{frame}
+  \frametitle{A Similarity-Based Alternative}
+  \begin{itemize}
+  \item The HDP model requires context features to be ordered in
+    advance.
+  \item No tying between contexts that differ on a feature in the
+    first ``tier''.
+  \item Instead: couple context distributions via an overall
+    similarity measure.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{A Similarity-Based Alternative}
+  \begin{itemize}[<+->]
+  \item Treat each context distribution, $P_A$ as an infinite mixture
+    of principal ``topic'' distributions
+    \begin{equation}
+      \label{eq:29}
+      P_A = \sum_{k=1}^\infty w_k(A) P'_k, \qquad \sum_k w_k(A) = 1
+    \end{equation}
+  \item Introduce random topic indicators, $\{z_i\}$ for each observed
+    production, with 
+    \begin{align}
+      z_i \given A_i &\sim \sum_{k=1}^{\infty} w_k(A_i) \delta_k \\
+      x_i \given z_i &\sim P_{z_i}
+    \end{align}
+  \item Key: coupled prior on $\{w(A)\}_A$ so that $w(A)$ and $w(A')$
+    are similar when $A$ and $A'$ are similar.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{The Distance-Dependent Chinese Restaurant Process}
+  \begin{itemize}[<+->]
+  \item Several approaches exist to place a distribution on partitions
+    that bias groupings based on similarity on covariates: 
+    \cite{maceachern2000dependent,dunson2007bayesian,dahl2008distance,muller2011product}
+  \item However, all assume that the covariates are known, which is
+    not the case when the context consists of outcomes above in the
+    tree.
+  \item The Distance-Dependent Chinese Restaurant Process
+    \cite{blei2011distance} assumes this as well, but admits a
+    straightforward modification to resample context.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{The Chinese Restaurant Process}
+  \begin{itemize}[<+->]
+  \item By integrating out the ``stick weights'', we get a marginal
+    distribution on partitions of observations to ``sticks'' called
+    the Polya Urn Process, aka, the {\bf Chinese Restaurant Process}.
+  \item Conditioned on a partition of $N$ other observations, into $K$
+    clusters (numbered $1, \dots, K$), with $n_k$ in cluster $k$, 
+    the cluster assignment $z_{N+1}$ of the
+    $N+1$ data point has distribution
+    \begin{equation}
+      \label{eq:30}
+      p(z_{N+1} = k) \propto
+      \begin{cases}
+        n_k & k = 1, \dots, K \\
+        \alpha & k = K+1
+      \end{cases}
+    \end{equation}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{The Distance-Dependent CRP}
+  \begin{itemize}[<+->]
+  \item Equivalently, assign observation $N+1$ to the same stick as
+    another observation with probability proportional to $N$ and to a
+    new stick with probability proportional to $\alpha$.  Conditioned
+    on the first case, choose an observation uniformly.
+  \item The {\bf Distance-Dependent CRP} generalizes this uniformity.
+    Given a similarity function $\phi(\bx, \bx')$, where $\bx$ and
+    $\bx'$ are covariates, link observation $i$ to
+    observation $j$ according to
+    \begin{equation}
+      \label{eq:31}
+      p(c_i = j) \propto
+      \begin{cases}
+        \phi(\bx_i,\bx_j) & i \neq j \\
+        \alpha & i = j
+      \end{cases}
+    \end{equation}
+  \item The self-link case corresponds to creating a new cluster.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{The Distance-Dependent CRP for Context-Sensitive Grammars}
+  \begin{itemize}[<+->]
+  \item We can then alternate sampling the per-cluster outcome
+    variables (which in our case, unlike in the original ddCRP, needs
+    to take into account the links, since it will change some
+    contexts and hence the link probabilities), 
+    and sampling the links.
+  \item Moreover, we can sample parameters of the similarity function
+    conditional on the links to do relevance-determination.
+  \end{itemize}
+\end{frame}
+
+% % ---------------------------------------------------
+% \begin{frame}
+%   \frametitle{Semantic Features and Events in $P(T \vert \psi,
+%     \mathcal{G})$}
+% \vspace{-0.25in}
+%   \begin{itemize}
+%   \item Productions yielding constituent labels depend on a
+%     hierarchy of context ``history''.  Define semantic ``move events'' analogously.
+%   \end{itemize}
+% {\scriptsize
+% \begin{center}
+% \vspace{-0.2in}
+% \begin{tabular}[h]{|c|c|c|c|c|c|} \hline
+%   \multirow{2}{*}{{\bf type}} & \multirow{2}{*}{{\bf generated}} & \multicolumn{4}{|c|}{{\bf conditioned on}} \\ \cline{3-6}
+%   & & Level 0 & Level 1 & Level 2 & Level 3 \\ \hline
+%   {\tt r1} & ch, th & {\bf sh}, {\bf cp} = {\tt TOP} & {\bf sha} & & \\ \hline
+%   {\tt r2} & wh & th, {\bf sh} & ch & cp = TOP, {\bf sha} & \\ \hline
+%   {\tt hsem} & {\bf sh}, {\bf sha} & {\bf sp}, cp & th, {\bf spa} & wh & \\ \hline
+%   {\tt h} & ch & {\bf sh}, cp & th, {\bf sha} & wh & \\ \hline
+%   {\tt msem} & {\bf sm}, {\bf sma} & {\bf sp}, cp & {\bf sh}, ch & th, {\bf spa}, {\bf sha} & wh \\ \hline
+%   {\tt m1} & cm, tm & cp, {\bf sm} & ch, {\bf sp}, {\bf sh}, side & th, {\bf sma}, {\bf spa}, {\bf sha} & wh \\ \hline
+%   {\tt m2} & wm & tm, {\bf sm} & cm, cp, ch, {\bf sp}, {\bf sh}, side & th, {\bf sma}, {\bf spa}, {\bf sha} & wh \\ \hline
+% \end{tabular}
+% \end{center}
+% \begin{tabular}{ll}
+% {\tt r1,r2: root events} & {\tt cp = constituent of parent}\\
+% {\tt h: syntactic head event} & {\tt ch = constituent of (sister) head} \\
+% {\tt m1,m2: syntactic modifier events} & {\tt cm = constituent of modifier (self)}\\
+% {\tt hsem: semantic event at head} & {\tt w* = word of *} \\
+% {\tt msem: semantic event at modifier} & {\tt t* = PoS tag of *}\\
+% & {\tt s* = (head) semantic label of *} \\
+% & {\tt s*a = arguments of semantic label of *}
+% \end{tabular}
+% }
+% \end{frame}
+
+
+% % ---------------------------------------------------
+% \section{Training}
+% \begin{frame}
+%   \frametitle{Learning $\mathcal{G}$}
+%   \begin{itemize}
+%   \item Grammar parameters in $\mathcal{G}$ consist of conditional
+%     probabilities of two types of syntactic productions (head and
+%     modifier), as well as new semantic
+%     ``productions'' (type of step taken on the semantic tree)
+%   \item All production events are conditioned on syntactic and semantic
+%     ``history''.
+%   \item Estimate parameters from human-verified 'ground truth' parse
+%     trees, associated with hand-annotated scenes.
+%   \item Problem: no semantic ground truth, so learning is only semi-supervised.
+%   \end{itemize}
+% \end{frame}
+
+% % ---------------------------------------------------
+% \begin{frame}
+% \frametitle{MCMC Algorithm for Inferring $\Psi$ for Training Data}
+% \begin{itemize}
+% \item Given $\Psi$ and augmented $T$s ($T^\prime$), it is straightforward to set parameters of
+%   $\mathcal{G}$ (just counting).
+% \item Use prior on $\Psi$ given ground truth $Z$, and likelihood of
+%   $T$ given $\Psi$, and do MCMC.
+%   \begin{enumerate}
+%   \item Initialize $\Psi$ from prior.
+%   \item Initialize $T^\prime$ deterministically given $\Psi$.
+%   \item Gibbs sampling: Sample $T^\prime$ for one sentence at a time, given
+%     others and $\Psi$.
+%   \item Then sample $\Psi$ given $T^\prime$.
+%   \end{enumerate}
+% \end{itemize}
+% \end{frame}
+
+% % ---------------------------------------------------
+% \section{Inference}
+% \begin{frame}
+%   \frametitle{Inference}
+%   \begin{figure}[h]
+%     % \centering
+%     \includegraphics[width = 1\textwidth]{../img/GenerativeModelAfterTraining.pdf}
+%     \caption{Bayes net representation of the probabilistic model after
+%       training.}
+%     \label{fig:graphical-model}
+%   \end{figure}
+
+%     \vspace{-0.35in}
+
+
+%   \begin{itemize}
+%   \item After training, we treat $\mathcal{G}$ as known (for now)
+%   \item Goal: Infer posterior, $p(T, \Psi, Z, C \vert S, I,
+%     \mathcal{G}) \propto p(Z) p(C) p(I \vert Z, C) p(\Psi \vert Z) p(T
+%     \vert \Psi, \mathcal{G}) \mathbbm{1}(S \equiv T)$ using MCMC.
+%   \end{itemize}
+% \end{frame}
+
+% % ---------------------------------------------------
+% \begin{frame}
+%   Results in progress...
+%   {\footnotesize \bibliography{../bib/dissertation.bib}}
+% \end{frame}
+
+% \bibliographystyle{apalike}
+\bibliography{../../../manuscripts/sac/bib/scenes_and_captions}
+
+\end{document}

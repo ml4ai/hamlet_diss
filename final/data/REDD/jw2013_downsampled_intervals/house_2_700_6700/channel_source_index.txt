@@ -1,0 +1,5 @@
+3 kitchen_outlets
+8 kitchen_outlets
+4 lighting
+6 microwave
+10 dishwasher

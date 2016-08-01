@@ -1,0 +1,100 @@
+;; RefTeX parse info file
+;; File: /Users/colindawson/research/dissertation/proposal/tex/proposal.tex
+;; User: colindawson (Colin Dawson)
+
+(set reftex-docstruct-symbol '(
+
+
+(xr nil "\\\\\\\\\\\\")
+
+(index-tags)
+
+(is-multi nil)
+
+(bibview-cache)
+
+(master-dir . "/Users/colindawson/research/dissertation/proposal/tex/")
+
+(label-numbers ("eq:" . 7))
+
+(bof "/Users/colindawson/research/dissertation/proposal/tex/proposal.tex")
+
+(toc "toc" "    1 Overview" "/Users/colindawson/research/dissertation/proposal/tex/proposal.tex" nil 2 "1" "\\section{Overview}" 1055)
+
+("sec:overview" "s" "The purpose of this dissertation is the development of a probabilistic generative model, and associa" "/Users/colindawson/research/dissertation/proposal/tex/proposal.tex" nil)
+
+(toc "toc" "    2 Related Work" "/Users/colindawson/research/dissertation/proposal/tex/proposal.tex" nil 2 "2" "\\section{Related Work}" 4445)
+
+("sec:related-work" "s" "The proposed model is informed by two hitherto largely separate literatures: one on language underst" "/Users/colindawson/research/dissertation/proposal/tex/proposal.tex" nil)
+
+(toc "toc" "    3 Summary of Novelty" "/Users/colindawson/research/dissertation/proposal/tex/proposal.tex" nil 2 "3" "\\section{Summary of Novelty}" 6878)
+
+(toc "toc" "    4 Model and Representations" "/Users/colindawson/research/dissertation/proposal/tex/proposal.tex" nil 2 "4" "\\section{Model and Representations}" 10104)
+
+("sec:model-overview" "s" "\\begin{figure}[t] \\centering \\includegraphics[width=0.8\\textwidth]{../img/GenerativeModel} \\caption{" "/Users/colindawson/research/dissertation/proposal/tex/proposal.tex" nil)
+
+("fig:generative-model" "f" "A sketch of a generative model, expressed as a Bayes net, giving rise to scene-caption pairs. Nodes " "/Users/colindawson/research/dissertation/proposal/tex/proposal.tex" nil)
+
+(toc "toc" "      4.1 (Amodal) Semantic Representation" "/Users/colindawson/research/dissertation/proposal/tex/proposal.tex" nil 3 "4.1" "\\subsection{(Amodal) Semantic Representation}" 10732)
+
+("sec:sem-repr" "s" "A sketch of a generative model for scene-caption pairs is shown in Fig. \\ref{fig:generative-model}. " "/Users/colindawson/research/dissertation/proposal/tex/proposal.tex" nil)
+
+("fig:semantic-representation" "f" "Example semantic representation " "/Users/colindawson/research/dissertation/proposal/tex/proposal.tex" nil)
+
+(toc "toc" "      4.2 Visual Representation" "/Users/colindawson/research/dissertation/proposal/tex/proposal.tex" nil 3 "4.2" "\\subsection{Visual Representation}" 18560)
+
+("sec:vis-repr" "s" "Given the scene topology, $\\Phi$, a 3D ``geometric'' representation, $Z$, of the objects in the scen" "/Users/colindawson/research/dissertation/proposal/tex/proposal.tex" nil)
+
+(toc "toc" "      4.3 Linguistic Representation" "/Users/colindawson/research/dissertation/proposal/tex/proposal.tex" nil 3 "4.3" "\\subsection{Linguistic Representation}" 20533)
+
+("sec:ling-repr" "s" "Given a scene topology $\\Phi$, a subset, $\\Psi \\subset \\Phi$, of the available features are chosen t" "/Users/colindawson/research/dissertation/proposal/tex/proposal.tex" nil)
+
+("fig:typed-dependency-tree" "f" "Tree representation of collapsed typed dependencies induced by the Stanford parse of the sentence ``" "/Users/colindawson/research/dissertation/proposal/tex/proposal.tex" nil)
+
+("eq:1" "e" "P(\\Upsilon_i \\vert \\Psi_i) = \\prod_{j=1}^J \\pi^{t}(\\upsilon^{t}_{ij} \\vert h^t_{ij}, \\Psi_i) \\prod_{" "/Users/colindawson/research/dissertation/proposal/tex/proposal.tex" nil)
+
+("eq:3" "e" "\\hat{p}(f \\vert c_1, \\dots, c_{n-k}) = \\lambda_k \\tilde{p}(f \\vert c_1, \\dots, c_{n-k}) + (1 - \\lamb" "/Users/colindawson/research/dissertation/proposal/tex/proposal.tex" nil)
+
+("eq:4" "e" "\\boldsymbol{\\pi}^{f} \\vert x_{j} = \\sum_{k=1}^\\infty w_{k}(x_j) \\pi^{f}_k " "/Users/colindawson/research/dissertation/proposal/tex/proposal.tex" nil)
+
+("eq:10" "e" "\\pi^f_k &\\sim Dir(\\alpha^f_0\\pi^f_0) " "/Users/colindawson/research/dissertation/proposal/tex/proposal.tex" nil)
+
+("eq:2" "e" "p(z_{ij} \\vert z_{-ij}, x_{i}, \\mathbf{w}) &\\propto \\begin{cases} \\sum_{i' \\in R_k} \\sum_{m=1}^M w_{" "/Users/colindawson/research/dissertation/proposal/tex/proposal.tex" nil)
+
+("eq:11" "e" "p(\\boldsymbol{\\upsilon}^f \\vert \\mathbf{z}, \\pi_0^f, \\dots, \\pi_K^f) &= \\prod_{k=1}^K p(\\upsilon^*_k" "/Users/colindawson/research/dissertation/proposal/tex/proposal.tex" nil)
+
+(toc "toc" "    5 Posterior Inference" "/Users/colindawson/research/dissertation/proposal/tex/proposal.tex" nil 2 "5" "\\section{Posterior Inference}" 40465)
+
+("sec:inference" "s" "Given a scene-caption pair, $(S, X)$ % (or, a triple, $(S, X, Y)$ if a bottom-up parser is being use" "/Users/colindawson/research/dissertation/proposal/tex/proposal.tex" nil)
+
+(toc "toc" "      5.1 Sampling Concentration Parameters" "/Users/colindawson/research/dissertation/proposal/tex/proposal.tex" nil 3 "5.1" "\\subsection{Sampling Concentration Parameters}" 42746)
+
+("eq:12" "e" " " "/Users/colindawson/research/dissertation/proposal/tex/proposal.tex" nil)
+
+(toc "toc" "      5.2 Sampling Cluster Indicators" "/Users/colindawson/research/dissertation/proposal/tex/proposal.tex" nil 3 "5.2" "\\subsection{Sampling Cluster Indicators}" 42748)
+
+("eq:13" "e" "\\pi(\\upsilon^f_{ij} \\vert \\Psi_i, h_{ij}) = \\sum_{k=1}^\\infty w_{k}(\\Psi_i, h_{ij}) \\pi_k(\\upsilon_{" "/Users/colindawson/research/dissertation/proposal/tex/proposal.tex" nil)
+
+("eq:13" "e" "\\pi(\\upsilon^f_{ij} \\vert \\Psi_i, h_{ij}) = \\sum_{k=1}^\\infty p(z^{cl}_{ij} = k \\vert \\Psi_i, h_{ij}" "/Users/colindawson/research/dissertation/proposal/tex/proposal.tex" nil)
+
+("eq:5" "e" "p(z^{cl}_{j} \\vert z^{cl}_{-j}, \\mathbf{z}^{sim}_{-j}, x_{j}) &\\propto \\begin{cases} \\sum_{j' \\in R_" "/Users/colindawson/research/dissertation/proposal/tex/proposal.tex" nil)
+
+("eq:6" "e" "p(z^{sim}_{j} = m \\vert z^{cl}_{j}, \\mathbf{z}^{sim}_{-j}, x_{j}, \\alpha^{sim}_0, w^{sim}_0) = \\frac" "/Users/colindawson/research/dissertation/proposal/tex/proposal.tex" nil)
+
+("eq:7" "e" nil "/Users/colindawson/research/dissertation/proposal/tex/proposal.tex" nil "")
+
+("eq:6" "e" "p(z^{sim}_{j} = m \\vert z^{cl}_{j}, \\mathbf{z}^{sim}_{-j}, x_{j}, \\alpha^{sim}_0, \\gamma^{sim}) &= \\" "/Users/colindawson/research/dissertation/proposal/tex/proposal.tex" nil)
+
+("eq:8" "e" "p(\\upsilon_{j} \\vert z^{cl}_j) = \\pi_{z^{cl}_j}(\\upsilon_j) " "/Users/colindawson/research/dissertation/proposal/tex/proposal.tex" nil)
+
+(toc "toc" "      5.3 Sampling $\\Psi$ and Auxiliary Parameters" "/Users/colindawson/research/dissertation/proposal/tex/proposal.tex" nil 3 "5.3" "\\subsection{Sampling $\\Psi$ and Auxiliary Parameters}" 51906)
+
+("sec:gibbs-sampler-psi" "s" "The propositional semantics represented by $\\Psi$ has in its Markov blanket (1) the parameters, $\\th" "/Users/colindawson/research/dissertation/proposal/tex/proposal.tex" nil)
+
+("sec:learning" "s" "% A final goal involves learning what relational distinctions are made in a particular (language and" "/Users/colindawson/research/dissertation/proposal/tex/proposal.tex" t)
+
+(bib "/Users/colindawson/research/dissertation/bib/dissertation.bib")
+
+(eof "/Users/colindawson/research/dissertation/proposal/tex/proposal.tex")
+))
+

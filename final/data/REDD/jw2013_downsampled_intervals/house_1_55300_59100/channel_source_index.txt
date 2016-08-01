@@ -1,0 +1,9 @@
+3 oven
+4 oven
+8 kitchen_outlets
+15 kitchen_outlets
+9 lighting
+17 lighting
+18 lighting
+10 washer_dryer
+20 washer_dryer

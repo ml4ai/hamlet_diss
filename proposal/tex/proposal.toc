@@ -1,0 +1,32 @@
+\contentsline {chapter}{\numberline {1}A Hierarchical Dirichlet Process Hidden Markov Model With ``Local'' Transitions (HDP-HMM-LT)}{1}
+\contentsline {section}{\numberline {1.1}Transition Dynamics in the HDP-HMM}{2}
+\contentsline {section}{\numberline {1.2}An HDP-HMM With Local Transitions}{3}
+\contentsline {subsection}{\numberline {1.2.1}A Normalized Gamma Process representation of the HDP-HMM}{4}
+\contentsline {subsection}{\numberline {1.2.2}Promoting ``Local" Transitions}{5}
+\contentsline {subsection}{\numberline {1.2.3}The HDP-HMM-LT as a continuous-time Markov Jump Process with ``failed'' jumps}{6}
+\contentsline {subsection}{\numberline {1.2.4}An HDP-HSMM-LT modification}{8}
+\contentsline {subsection}{\numberline {1.2.5}Summary}{9}
+\contentsline {section}{\numberline {1.3}Inference}{9}
+\contentsline {subsection}{\numberline {1.3.1}Sampling $\bm {\pi }$, $\bm {\beta }$, $\alpha $ and $\gamma $}{10}
+\contentsline {subsubsection}{Sampling $\bm {\pi }$}{10}
+\contentsline {subsubsection}{Sampling $\bm {\beta }$}{11}
+\contentsline {subsubsection}{Sampling $\alpha $ and $\gamma $}{12}
+\contentsline {subsubsection}{Summary}{14}
+\contentsline {subsection}{\numberline {1.3.2}Sampling $\mathbf {z}$ and the auxiliary variables}{14}
+\contentsline {subsection}{\numberline {1.3.3}Sampling state and emission parameters}{15}
+\contentsline {subsubsection}{Sampling $\bm {\theta }$}{16}
+\contentsline {subsubsection}{Sampling $\bm {\mu }$}{18}
+\contentsline {subsubsection}{Sampling $\lambda $}{18}
+\contentsline {subsubsection}{Sampling $\mathbf {W}$}{19}
+\contentsline {subsubsection}{Summary}{20}
+\contentsline {chapter}{\numberline {2}Two Dirichlet Process Models of Probabilistic Context-Rich Grammars}{22}
+\contentsline {section}{\numberline {2.1}Representation of Captions}{24}
+\contentsline {subsection}{\numberline {2.1.1}Elaboration Trees: $\Psi $}{25}
+\contentsline {subsection}{\numberline {2.1.2}Syntactic Trees: $\Lambda $}{26}
+\contentsline {subsection}{\numberline {2.1.3}Representation of Context}{27}
+\contentsline {section}{\numberline {2.2}Heuristic Smoothing}{28}
+\contentsline {section}{\numberline {2.3}An HDP Model of Context-Conditional Event Distributions}{29}
+\contentsline {subsection}{\numberline {2.3.1}Heuristic Smoothing as an Approximation to the HDP Prior}{31}
+\contentsline {subsection}{\numberline {2.3.2}Posterior Estimation of Event Distributions in the HDP Model}{33}
+\contentsline {section}{\numberline {2.4}A Similarity-Based Dependency Structure for Context-Conditional Event Distributions}{34}
+\contentsline {subsection}{\numberline {2.4.1}Posterior Estimation of Event Distributions in the Similarity-Based Model}{36}

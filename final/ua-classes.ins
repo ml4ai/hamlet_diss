@@ -1,0 +1,22 @@
+%%
+%% Installation file for UA Classes
+%%
+%% by Marcel Oliver, 1996/05/09
+%%
+\def\batchfile{ua-classes.ins}
+\input docstrip.tex
+\preamble
+\endpreamble
+\keepsilent
+
+\generateFile{ua-thesis.cls}{t}{%
+  \from{ua-classes.dtx}{ua-thesis}}
+  
+\generateFile{my-thesis.cls}{t}{%
+  \from{ua-classes.dtx}{my-thesis}}
+
+\generateFile{ua-title.sty}{t}{%
+  \from{ua-classes.dtx}{ua-title}}
+  
+\generateFile{my-title.sty}{t}{%
+  \from{ua-classes.dtx}{my-title}}

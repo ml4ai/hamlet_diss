@@ -1,0 +1,8 @@
+8 refrigerator
+10 outlets_unknown
+11 outlets_unknown
+12 electric_heat
+14 lighting
+15 air_conditioning
+16 air_conditioning
+17 air_conditioning

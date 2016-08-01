@@ -1,0 +1,82 @@
+\documentclass[final]{ua-thesis}
+\usepackage[pdftex]{graphicx}
+\usepackage{amsmath,amssymb,bm,bbm,upgreek,mathrsfs}
+\usepackage{algorithmic,algorithm}
+% \usepackage{subfigure}
+\usepackage{caption,sidecap,subcaption}
+\usepackage{setspace}
+% \usepackage{color}
+% \usepackage[pdfencoding=auto]{hyperref}
+
+\input{macros.tex}
+
+\usepackage[round,authoryear]{natbib}
+
+\title{{HaMMLeT}: An Infinite Hidden Markov Model with Local
+  Transitions}
+\author{Colin Reimer Dawson}
+\degree{Doctor of Philosophy}
+\department{Program in Statistics}
+\date{2016}
+\director{Clayton Morrison}
+% \major{Statistics}
+
+\begin{document}
+
+% \input{signatures}
+\maketitle
+
+
+
+% \chapter*{Acknowledgements}
+% \begin{singlespace}
+% \input{acknowledgement}
+% \end{singlespace}
+
+% \chapter*{Dedication}
+% \input{dedication}
+
+\tableofcontents
+\listoftables
+\listoffigures
+\begin{abstract}
+\input{abstract}
+\end{abstract}
+
+\chapter{ \MakeUppercase{Statistical Models and Model Selection} }
+\label{chapter:intro}
+\input{intro}
+
+
+\chapter{ \MakeUppercase{Bayesian Nonparametric Models and the Infinite
+  Hidden Markov Model} }
+\label{chapter:HMM-NPBayes}
+\input{background}
+
+\chapter{\MakeUppercase{HaMMLeT: An infinite Hidden Markov Model with
+    Local Transitions}}
+\label{chapter:HaMMLeT}
+\input{hammlet}
+
+\chapter{\MakeUppercase{Binary Vector States: Speaker Diarization}}
+\label{chapter:cocktail-party}
+\input{cocktail-party}
+
+\chapter{\MakeUppercase{Categorical Vector States: Power Disaggregation}}
+\label{chapter:REDD}
+\input{redd}
+
+\chapter{\MakeUppercase{Separate Similarities and Emissions: Learning
+  Tonal Grammar in Music}}
+\label{chapter:music}
+\input{music}
+
+\chapter{\MakeUppercase{Conclusions and Future Work}}
+\label{chapter:discussion}
+\input{discussion}
+
+\bibliographystyle{apalike}
+\bibliography{../bib/supplement}
+\end{document}  
+
+a
