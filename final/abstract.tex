@@ -44,7 +44,7 @@ scaled up or down together.  However, inference in this model requires
 the posterior distribution to be approximated by a variational family,
 as MCMC sampling from the exact posterior was deemed intractable.
 Thus, one goal of this dissertation is the development of simple MCMC
-algorithms for HDP models with correlated components.
+algorithms for correlated components.
 
 A second application of HDPs is to time series
 models, in particular Hidden Markov Models (HMMs), where the HDP can be used
@@ -64,13 +64,14 @@ correspond to correlated components will overall have similar
 distributions.  
 
 In the first part of the dissertation, I will present a formal overview of
-Dirichlet Processes and their various representations, as well as
+Mixture Models and Hidden Markov Models.  I then turn to a discussion
+of Dirichlet Processes and their various representations, as well as
 associated schemes for tackling the problem of doing approximate inference over an
 infinitely flexible model with finite computational resources.  I will
-then turn to the Hierarchical Dirichlet Process, and review the literature on
-modeling correlations between components.
+then turn to the Hierarchical Dirichlet Process (HDP) and its application to
+an infinite state Hidden Markov Model, the HDP-HMM.
 
-Next, I will present a novel probabilistic model, which I call the
+The central contribution of the dissertation is a novel probabilistic model, which I call the
 Hierarchical Dirichlet Process Hidden Markov Model With Local
 Transitions (HDP-HMM-LT, or HaMMLeT for short), 
 which achieves the goal of simultaneously modeling
@@ -85,15 +86,10 @@ durations are not observed, and in which some jump attempts fail and
 are never observed.  By tying the success probability of a jump
 between two states to the distance between them, the first successful
 (and therefore observed) jump is more likely to be to a nearby state.
-I refer to this representation as a Markov Process With Failed Jump
-Attempts.  I test this model on both synthetic and real data,
-including a natural language data set drawn from a corpus of
-biological research articles, in which the goal is inferences about
-the semantic scope of assertions about biological processes implicated
-in cancer (to, e.g., species, organ sites, gene variants, etc.).
-There, the latent states are sets of entities in the scope, and the
-data is raw text.  It is presumed that succesive assertions in a paper
-apply in similar scopes. 
+I refer to this representation as a Markov Process With Failed Jumps.
+I test this model on several synthetic and real data sets, showing
+that in at least some circumstances, the HaMMLeT model more
+effectively finds the latent time series structure underlying the observations.
 
 %\end{abstracts}
 %\end{abstractlongs}

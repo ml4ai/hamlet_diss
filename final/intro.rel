@@ -1,0 +1,117 @@
+;; RefTeX parse info file
+;; File: /Users/cdawson/dissertation/final/intro.tex
+;; User: cdawson (Colin Dawson)
+
+(set reftex-docstruct-symbol '(
+
+
+(xr nil "\\\\\\\\\\\\")
+
+(index-tags)
+
+(is-multi nil)
+
+(bibview-cache)
+
+(master-dir . "/Users/cdawson/dissertation/final/")
+
+(label-numbers)
+
+(bof "/Users/cdawson/dissertation/final/intro.tex")
+
+(toc "toc" "    1 Statistical Models" "/Users/cdawson/dissertation/final/intro.tex" nil 2 "1" "\\section{Statistical Models}" 1)
+
+(toc "toc" "    2 Model Selection" "/Users/cdawson/dissertation/final/intro.tex" nil 2 "2" "\\section{Model Selection}" 802)
+
+("sec:model-selection" "s" "\\subsection{The Likelihood Function and the Conservation of Explanatory Power}  In a parametric mode" "/Users/cdawson/dissertation/final/intro.tex" nil)
+
+(toc "toc" "      2.1 The Likelihood Function and the Conservation of Explanatory Power" "/Users/cdawson/dissertation/final/intro.tex" nil 3 "2.1" "\\subsection{The Likelihood Function and the Conservation of
+  Explanatory Power}" 857)
+
+("sec:bayes-occams-razor" "s" "In a parametric model family, $\\mathcal{F} = \\{f_{\\theta}: \\theta \\in \\Theta\\}$, the principle of ma" "/Users/cdawson/dissertation/final/intro.tex" nil)
+
+(toc "toc" "      2.2 The Bias-Variance Tradeoff" "/Users/cdawson/dissertation/final/intro.tex" nil 3 "2.2" "\\subsection{The Bias-Variance Tradeoff}" 4509)
+
+(toc "toc" "      2.3 Example: Polynomial Regression" "/Users/cdawson/dissertation/final/intro.tex" nil 3 "2.3" "\\subsection{Example: Polynomial Regression}" 7703)
+
+("sec:exampl-polyn-regr" "s" "We can see the tradeoff between bias and variance (and the consequences of overfitting) in the setti" "/Users/cdawson/dissertation/final/intro.tex" nil)
+
+("fig:poly-linear" "f" "Linear Fit " "/Users/cdawson/dissertation/final/intro.tex" nil)
+
+("fig:poly-quad" "f" "Quadratic Fit " "/Users/cdawson/dissertation/final/intro.tex" nil)
+
+("fig:poly10" "f" "Tenth-Order Fit " "/Users/cdawson/dissertation/final/intro.tex" nil)
+
+("fig:poly-errors" "f" "Errors on Training and Test Set " "/Users/cdawson/dissertation/final/intro.tex" nil)
+
+("fig:polynomials" "f" "Polynomials of varying degrees fit using ordinary least squares (equivalently, maximum likelihood es" "/Users/cdawson/dissertation/final/intro.tex" nil)
+
+(toc "toc" "      2.4 Balancing Fit and Complexity: Bayesian Occam's Razor" "/Users/cdawson/dissertation/final/intro.tex" nil 3 "2.4" "\\subsection{Balancing Fit and Complexity: Bayesian Occam's Razor}" 10900)
+
+("sec:balanc-fit-compl" "s" "How do we go about deciding how complex a model to use in a given setting? One common approach is to" "/Users/cdawson/dissertation/final/intro.tex" nil)
+
+("eq:2" "e" "p(Y \\given \\mathcal{M}_2) = \\int_{\\Theta} p(Y \\given \\theta, \\mathcal{M}_2) p(\\theta \\given \\mathcal" "/Users/cdawson/dissertation/final/intro.tex" nil)
+
+(toc "toc" "    3 Clustering via a Mixture of Gaussians Model" "/Users/cdawson/dissertation/final/intro.tex" nil 2 "3" "\\section{Clustering via a Mixture of Gaussians Model}" 15167)
+
+("sec:example:-clustering" "s" "Suppose we have a model of the form \\begin{equation}  f(y \\given \\pi, \\theta) = \\sum_{k=1}^\\infty \\p" "/Users/cdawson/dissertation/final/intro.tex" nil)
+
+("eq:gmm" "e" "f(y \\given \\pi, \\theta) = \\sum_{k=1}^\\infty \\pi_k f(y \\given \\theta_k) " "/Users/cdawson/dissertation/final/intro.tex" nil)
+
+(toc "toc" "      3.1 Model Selection in the Mixture of Gaussians Model" "/Users/cdawson/dissertation/final/intro.tex" nil 3 "3.1" "\\subsection{Model Selection in the Mixture of Gaussians Model}" 22285)
+
+("sec:model-select-mixt" "s" "It is relatively rare that we would be in a situation where we wanted to fit a mixture of Gaussians " "/Users/cdawson/dissertation/final/intro.tex" nil)
+
+(toc "toc" "    4 Parametric Vs. Nonparametric Models" "/Users/cdawson/dissertation/final/intro.tex" nil 2 "4" "\\section{Parametric Vs. Nonparametric Models}" 24726)
+
+("sec:param-vs.-nonp" "s" "Models that can be identified using a finite set of values (that is, parameters) are called {\\bf par" "/Users/cdawson/dissertation/final/intro.tex" nil)
+
+(toc "toc" "    5 The Dirichlet Process" "/Users/cdawson/dissertation/final/intro.tex" nil 2 "5" "\\section{The Dirichlet Process}" 24726)
+
+("sec:dirichlet-process" "s" "The Dirichlet Process (DP) was formally defined by \\citet{ferguson1973bayesian} as a random probabil" "/Users/cdawson/dissertation/final/intro.tex" nil)
+
+("eq:4" "e" "G \\given Y \\sim \\alpha G_0 + n \\hat{F}_n " "/Users/cdawson/dissertation/final/intro.tex" nil)
+
+(toc "toc" "      5.1 The Normalized Gamma Process representation of the DP" "/Users/cdawson/dissertation/final/intro.tex" nil 3 "5.1" "\\subsection{The Normalized Gamma Process representation of the DP}" 24726)
+
+("sec:norm-gamma-proc" "s" "\\citet{ferguson1973bayesian} also showed that the Dirichlet Process arises by normalizing a {\\bf Gam" "/Users/cdawson/dissertation/final/intro.tex" nil)
+
+("eq:8" "e" "\\nu(d\\pi, d\\theta) = \\alpha \\pi^{-1} e^{-\\pi} d\\pi G_0(d\\theta) " "/Users/cdawson/dissertation/final/intro.tex" nil)
+
+("eq:3" "e" "\\mu(A) = \\sum_{k: \\theta_k \\in A} \\pi_k " "/Users/cdawson/dissertation/final/intro.tex" nil)
+
+("eq:9" "e" "n(A) \\sim \\Pois{\\int_A \\nu(d\\pi, d\\theta)} " "/Users/cdawson/dissertation/final/intro.tex" nil)
+
+("eq:1" "e" "G = \\frac{\\mu}{\\sum_k \\pi_k} " "/Users/cdawson/dissertation/final/intro.tex" nil)
+
+(toc "toc" "      5.2 The Stick-Breaking Process construction of the DP" "/Users/cdawson/dissertation/final/intro.tex" nil 3 "5.2" "\\subsection{The Stick-Breaking Process construction of the DP}" 24726)
+
+("sec:stick-break-proc" "s" "As shown by \\citet{sethuraman1994constructive}, we can generate a draw from a Dirichlet Process by i" "/Users/cdawson/dissertation/final/intro.tex" nil)
+
+("stick-step-1" "i" "Draw $\\tilde{\\pi_{k}} \\sim \\Beta{1}{\\alpha}$. " "/Users/cdawson/dissertation/final/intro.tex" nil)
+
+("stick-step-2" "i" "Set $\\pi_k = \\tilde{\\pi_k} \\prod_{k'=1}^{K-1} \\tilde{\\pi_{k'}}$. " "/Users/cdawson/dissertation/final/intro.tex" nil)
+
+("stick-step-3" "i" "Draw $\\theta_k \\sim G_0$. " "/Users/cdawson/dissertation/final/intro.tex" nil)
+
+(toc "toc" "      5.3 The Chinese Restaurant Process" "/Users/cdawson/dissertation/final/intro.tex" nil 3 "5.3" "\\subsection{The Chinese Restaurant Process}" 24726)
+
+("sec:chin-rest-proc" "s" "A useful construction for doing inference in a Dirichlet Process-based model is based on the metapho" "/Users/cdawson/dissertation/final/intro.tex" nil)
+
+(toc "toc" "      5.4 The Dirichlet Process Gaussian Mixture Model" "/Users/cdawson/dissertation/final/intro.tex" nil 3 "5.4" "\\subsection{The Dirichlet Process Gaussian Mixture Model}" 24726)
+
+("eq:gmm" "e" "f(y \\given \\pi, \\theta) = \\sum_{k=1}^\\infty \\pi_k f(y \\given \\theta_k) " "/Users/cdawson/dissertation/final/intro.tex" nil)
+
+("eq:5" "e" " " "/Users/cdawson/dissertation/final/intro.tex" nil)
+
+(toc "toc" "      5.5 A Gibbs Sampler for the DP Mixture Model" "/Users/cdawson/dissertation/final/intro.tex" nil 3 "5.5" "\\subsection{A Gibbs Sampler for the DP Mixture Model}" 24726)
+
+("sec:gibbs-sampler-dp" "s" nil "/Users/cdawson/dissertation/final/intro.tex" nil "")
+
+("sec:dirichl-proc-gauss" "s" "\\section{The Structure of This Document} " "/Users/cdawson/dissertation/final/intro.tex" nil)
+
+(toc "toc" "    6 The Structure of This Document" "/Users/cdawson/dissertation/final/intro.tex" nil 2 "6" "\\section{The Structure of This Document}" 24726)
+
+(eof "/Users/cdawson/dissertation/final/intro.tex")
+))
+

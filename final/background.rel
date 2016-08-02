@@ -1,0 +1,62 @@
+;; RefTeX parse info file
+;; File: /Users/cdawson/dissertation/final/background.tex
+;; User: cdawson (Colin Dawson)
+
+(set reftex-docstruct-symbol '(
+
+
+(xr nil "\\\\\\\\\\\\")
+
+(index-tags)
+
+(is-multi nil)
+
+(bibview-cache)
+
+(master-dir . "/Users/cdawson/dissertation/final/")
+
+(label-numbers ("sec:forw-backw-algor" . 1))
+
+(bof "/Users/cdawson/dissertation/final/background.tex")
+
+(toc "toc" "    1 The Hidden Markov Model" "/Users/cdawson/dissertation/final/background.tex" nil 2 "1" "\\section{The Hidden Markov Model}" 14499)
+
+("sec:hidden-markov-model" "s" nil "/Users/cdawson/dissertation/final/background.tex" nil "")
+
+(toc "toc" "      1.1 The Forward-Backward Algorithm" "/Users/cdawson/dissertation/final/background.tex" nil 3 "1.1" "\\subsection{The Forward-Backward Algorithm}" 14499)
+
+("sec:forw-backw-algor" "s" nil "/Users/cdawson/dissertation/final/background.tex" nil "")
+
+(toc "toc" "      1.2 A Bayesian HMM" "/Users/cdawson/dissertation/final/background.tex" nil 3 "1.2" "\\subsection{A Bayesian HMM}" 14499)
+
+("sec:bayesian-hmm" "s" nil "/Users/cdawson/dissertation/final/background.tex" nil "")
+
+(toc "toc" "      1.3 A Gibbs Sampler for the Bayesian HMM" "/Users/cdawson/dissertation/final/background.tex" nil 3 "1.3" "\\subsection{A Gibbs Sampler for the Bayesian HMM}" 14499)
+
+("sec:gibbs-sampl-bayes" "s" nil "/Users/cdawson/dissertation/final/background.tex" nil "")
+
+(toc "toc" "    2 An Infinite State HMM" "/Users/cdawson/dissertation/final/background.tex" nil 2 "2" "\\section{An Infinite State HMM}" 14499)
+
+("sec:an-infinite-state" "s" nil "/Users/cdawson/dissertation/final/background.tex" nil "")
+
+(toc "toc" "      2.1 The Hierarchical Dirichlet Process" "/Users/cdawson/dissertation/final/background.tex" nil 3 "2.1" "\\subsection{The Hierarchical Dirichlet Process}" 14562)
+
+("sec:hier-dirichl-proc" "s" nil "/Users/cdawson/dissertation/final/background.tex" nil "")
+
+(toc "toc" "      2.2 The HDP-HMM" "/Users/cdawson/dissertation/final/background.tex" nil 3 "2.2" "\\subsection{The HDP-HMM}" 14641)
+
+("sec:hdp-hmm" "s" nil "/Users/cdawson/dissertation/final/background.tex" nil "")
+
+(toc "toc" "      2.3 Inference in the HDP-HMM" "/Users/cdawson/dissertation/final/background.tex" nil 3 "2.3" "\\subsection{Inference in the HDP-HMM}" 14687)
+
+("sec:inference-hdp-hmm" "s" nil "/Users/cdawson/dissertation/final/background.tex" nil "")
+
+(toc "toc" "      2.4 The Forward Backward Algorithm" "/Users/cdawson/dissertation/final/background.tex" nil 3 "2.4" "\\subsection{The Forward Backward Algorithm}" 14772)
+
+("sec:forw-backw-algor-1" "s" nil "/Users/cdawson/dissertation/final/background.tex" nil "")
+
+(toc "toc" "    1 The Hidden Markov Model" "/Users/cdawson/dissertation/final/background.tex" nil 2 "1" "\\section{The Hidden Markov Model}" 14499)
+
+(eof "/Users/cdawson/dissertation/final/background.tex")
+))
+

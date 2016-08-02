@@ -1,0 +1,98 @@
+;; RefTeX parse info file
+;; File: /Users/cdawson/dissertation/final/cocktail-party.tex
+;; User: cdawson (Colin Dawson)
+
+(set reftex-docstruct-symbol '(
+
+
+(xr nil "\\\\\\\\\\\\")
+
+(index-tags)
+
+(is-multi nil)
+
+(bibview-cache)
+
+(master-dir . "/Users/cdawson/dissertation/final/")
+
+(label-numbers ("eq:" . 1))
+
+(bof "/Users/cdawson/dissertation/final/cocktail-party.tex")
+
+(toc "toc" "    1 Binary State Vectors" "/Users/cdawson/dissertation/final/cocktail-party.tex" nil 2 "1" "\\section{Binary State Vectors}" 1)
+
+("eq:39" "e" "\\phi_{jj'} &= \\phi(\\theta_j, \\theta_{j'}) = \\exp(-\\lambda \\Delta_{jj'}) " "/Users/cdawson/dissertation/final/cocktail-party.tex" nil)
+
+(toc "toc" "      1.1 Additional Inference Steps" "/Users/cdawson/dissertation/final/cocktail-party.tex" nil 3 "1.1" "\\subsection{Additional Inference Steps}" 1871)
+
+("sec:sampling-eta" "s" "\\paragraph{Sampling $\\theta$} We put independent Beta-Bernoulli priors on each coordinate of $\\theta" "/Users/cdawson/dissertation/final/cocktail-party.tex" nil)
+
+(toc "toc" "          1.1.0.1 Sampling $\\theta$" "/Users/cdawson/dissertation/final/cocktail-party.tex" nil 5 "1.1.0.1" "\\paragraph{Sampling $\\theta$}" 1937)
+
+("eq:1" "e" nil "/Users/cdawson/dissertation/final/cocktail-party.tex" nil "")
+
+("eq:68" "e" "\\phi_{jj'-d} &= \\exp(-\\lambda(\\Delta_{jj'} - \\Delta_{jj'd})) " "/Users/cdawson/dissertation/final/cocktail-party.tex" nil)
+
+("eq:70" "e" "\\frac{p(z, Q \\given \\theta_{jd} = 1, \\theta\\setminus\\theta_{jd} )}{p(z, Q \\given \\theta_{jd} = 0, \\t" "/Users/cdawson/dissertation/final/cocktail-party.tex" nil)
+
+("eq:71" "e" "&=  e^{-\\lambda(c_{jd0} - c_{jd1})} \\prod_{j' \\neq j} \\left(\\frac{1 - \\phi_{jj'-d}e^{-\\lambda}}{1-\\p" "/Users/cdawson/dissertation/final/cocktail-party.tex" nil)
+
+("eq:72" "e" "c_{jd0} = \\sum_{\\{j' \\given \\theta_{j'd} = 0\\}} n_{jj'} + n_{j'j}\\qquad c_{jd1} = \\sum_{\\{j' \\given " "/Users/cdawson/dissertation/final/cocktail-party.tex" nil)
+
+("eq:77" "e" "&\\log\\left(\\frac{p(\\theta_{jd} = 1 \\given Y, z, Q, \\theta \\setminus \\theta_{jd})}{p(\\theta_{jd} = 0 " "/Users/cdawson/dissertation/final/cocktail-party.tex" nil)
+
+("eq:74" "e" "f(\\by_t \\given z_t, \\theta_{z_t}) = g(\\by_t; W^{\\mathsf{T}} \\theta_{z_t}) " "/Users/cdawson/dissertation/final/cocktail-party.tex" nil)
+
+("eq:73" "e" "g(\\by_t; W^{\\mathsf{T}} \\theta_{z_t}) = \\prod_{k=1}^K \\Norm{w_k^{\\sf T} \\cdot \\theta_{z_t}, \\sigma^2" "/Users/cdawson/dissertation/final/cocktail-party.tex" nil)
+
+("eq:91" "e" "\\sum_{t: z_t = j} \\log\\left(\\frac {g_k(y_{tk}; x_{tk}^{(-d)} + w_{dk})}{g_k(y_{tk}; x_{tk}^{(-d)})}\\" "/Users/cdawson/dissertation/final/cocktail-party.tex" nil)
+
+(toc "toc" "        1.1.1 Sampling $\\mu$" "/Users/cdawson/dissertation/final/cocktail-party.tex" nil 4 "1.1.1" "\\subsubsection{Sampling $\\mu$}" 7620)
+
+("sec:sampling-bmu" "s" "Sampling the $\\mu_d$ is straightforward with a Beta prior. Suppose \\begin{equation}  \\mu_d \\stackrel" "/Users/cdawson/dissertation/final/cocktail-party.tex" nil)
+
+("eq:92" "e" "\\mu_d \\stackrel{ind}{\\sim} \\Beta{a_\\mu}{b_\\mu} " "/Users/cdawson/dissertation/final/cocktail-party.tex" nil)
+
+("eq:93" "e" "\\mu_d \\given \\theta \\sim \\Beta{a_\\mu + \\sum_{j} \\theta_{jd}}{b_\\mu + \\sum_{j} (1 - \\theta_{jd})} " "/Users/cdawson/dissertation/final/cocktail-party.tex" nil)
+
+(toc "toc" "          1.1.1.1 Sampling $\\lambda$" "/Users/cdawson/dissertation/final/cocktail-party.tex" nil 5 "1.1.1.1" "\\paragraph{Sampling $\\lambda$}" 9316)
+
+("sec:sampling-lambda" "s" "The Laplacian kernel $\\phi$ is defined as $\\phi(\\theta_j, \\theta_{j'}) = e^{-\\lambda d(\\theta_j,\\the" "/Users/cdawson/dissertation/final/cocktail-party.tex" nil)
+
+("eq:88" "e" "p(\\bz, \\bQ \\given \\lambda, \\theta) \\propto \\prod_{j}\\prod_{j'} e^{-\\lambda \\Delta_{jj'} n_{jj'}}(1-e" "/Users/cdawson/dissertation/final/cocktail-party.tex" nil)
+
+("eq:88" "e" "p(\\lambda \\given \\bz, \\bQ, \\btheta) \\propto e^{-(b_{\\lambda} + \\sum_{j}\\sum_{j'} \\Delta_{jj'} n_{jj'" "/Users/cdawson/dissertation/final/cocktail-party.tex" nil)
+
+("eq:90" "e" "-\\frac{d^2\\log(p(\\lambda \\given z, Q, \\theta))}{d\\lambda^2} = \\sum_{\\{(j,j') \\given \\Delta_{jj'} > 0" "/Users/cdawson/dissertation/final/cocktail-party.tex" nil)
+
+("eq:94" "e" "h(\\lambda) &= -(b_{\\lambda} + \\sum_{\\{(j,j') \\given \\Delta_{jj'} > 0\\}} \\Delta_{jj'} n_{jj'})\\lambda" "/Users/cdawson/dissertation/final/cocktail-party.tex" nil)
+
+(toc "toc" "          1.1.1.2 Sampling $W$ and $\\Sigma$" "/Users/cdawson/dissertation/final/cocktail-party.tex" nil 5 "1.1.1.2" "\\paragraph{Sampling $W$ and $\\Sigma$}" 11110)
+
+("eq:78" "e" "p(W) = \\prod_{k=1}^K\\prod_{d=1}^D \\mathcal{N}(w_{dk} \\given 0,\\sigma^2_0) " "/Users/cdawson/dissertation/final/cocktail-party.tex" nil)
+
+("eq:79" "e" "g_k(y; x) = \\mathcal{N}(y \\given x,1) " "/Users/cdawson/dissertation/final/cocktail-party.tex" nil)
+
+("eq:80" "e" "p(W \\given \\theta, Y) = \\prod_{k=1}^K \\mathcal{N}\\left(\\left(\\sigma_0^2 \\mathbf{I} + \\theta^{\\mathsf" "/Users/cdawson/dissertation/final/cocktail-party.tex" nil)
+
+(toc "toc" "      1.2 Summary" "/Users/cdawson/dissertation/final/cocktail-party.tex" nil 3 "1.2" "\\subsection{Summary}" 11112)
+
+("sec:summary" "s" "I have made the following assumptions about the representation of the hidden states and observed dat" "/Users/cdawson/dissertation/final/cocktail-party.tex" nil)
+
+("eq:102" "e" "x_{tk} = \\bw_k \\cdot \\theta_{z_t} " "/Users/cdawson/dissertation/final/cocktail-party.tex" nil)
+
+("eq:101" "e" "\\theta_{jd} \\given \\theta \\setminus \\theta_{jd}, z, Q, \\mu, \\lambda, W, Y^* &\\sim \\Bern{\\frac{e^{\\ze" "/Users/cdawson/dissertation/final/cocktail-party.tex" nil)
+
+(toc "toc" "    2 ``Cocktail Party'' Data" "/Users/cdawson/dissertation/final/cocktail-party.tex" nil 2 "2" "\\section{``Cocktail Party'' Data}" 14005)
+
+("fig:cocktail-results" "f" "(a-b) Accuracy and F1 scores for the HDP-HMM-LT, standard HDP-HMM, and Binary Factorial HMM on the C" "/Users/cdawson/dissertation/final/cocktail-party.tex" nil)
+
+(toc "toc" "    3 Synthetic Data Without Local Transitions" "/Users/cdawson/dissertation/final/cocktail-party.tex" nil 2 "3" "\\section{Synthetic Data Without Local Transitions}" 19767)
+
+("sec:synth-data-without" "s" "We also generated data from an ordinary HDP-HMM, with no local transition property, in order to inve" "/Users/cdawson/dissertation/final/cocktail-party.tex" nil)
+
+("fig:synthetic-results" "f" "(a-b) Accuracy and F1 for the three models on data generated from an HDP-HMM without local transitio" "/Users/cdawson/dissertation/final/cocktail-party.tex" nil)
+
+(eof "/Users/cdawson/dissertation/final/cocktail-party.tex")
+))
+

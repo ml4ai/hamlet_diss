@@ -1,0 +1,42 @@
+;; RefTeX parse info file
+;; File: /Users/cdawson/dissertation/final/music.tex
+;; User: cdawson (Colin Dawson)
+
+(set reftex-docstruct-symbol '(
+
+
+(xr nil "\\\\\\\\\\\\")
+
+(index-tags)
+
+(is-multi nil)
+
+(bibview-cache)
+
+(master-dir . "/Users/cdawson/dissertation/final/")
+
+(label-numbers)
+
+(bof "/Users/cdawson/dissertation/final/music.tex")
+
+(toc "toc" "    1 Separable Similarity and Emissions" "/Users/cdawson/dissertation/final/music.tex" nil 2 "1" "\\section{Separable Similarity and Emissions}" 1)
+
+("sec:separ-simil-emiss" "s" nil "/Users/cdawson/dissertation/final/music.tex" nil "")
+
+(toc "toc" "    2 A Hamlitonian Monte Carlo step to sample $\\eta$" "/Users/cdawson/dissertation/final/music.tex" nil 2 "2" "\\section{A Hamlitonian Monte Carlo step to sample $\\eta$}" 1488)
+
+("sec:haml-monte-carlo" "s" nil "/Users/cdawson/dissertation/final/music.tex" nil "")
+
+(toc "toc" "    3 Synthetic Data from an HMM with a Nearly Block Diagonal Transition Matrix" "/Users/cdawson/dissertation/final/music.tex" nil 2 "3" "\\section{Synthetic Data from an HMM with a Nearly Block Diagonal Transition Matrix}" 5532)
+
+("sec:synthetic-data-from" "s" nil "/Users/cdawson/dissertation/final/music.tex" nil "")
+
+(toc "toc" "    4 Discovering Chord Equivalence Classes in Tonal Music" "/Users/cdawson/dissertation/final/music.tex" nil 2 "4" "\\section{Discovering Chord Equivalence Classes in Tonal Music}" 8013)
+
+("sec:disc-chord-equiv" "s" nil "/Users/cdawson/dissertation/final/music.tex" nil "")
+
+(toc "toc" "    1 Separable Similarity and Emissions" "/Users/cdawson/dissertation/final/music.tex" nil 2 "1" "\\section{Separable Similarity and Emissions}" 1)
+
+(eof "/Users/cdawson/dissertation/final/music.tex")
+))
+

@@ -1,4 +1,4 @@
-\section{Statistical Models}
+\section{Introduction}
 
 The statistician George Box famously said that 
 ``Essentially, all models are wrong, but some are useful.''
@@ -13,6 +13,104 @@ purposes of making predictions, and being able to gain some verbal
 understanding is not a priority, the more complex a model becomes, the
 more sensitive it is to the idiosyncracies of the data that it is
 informed by.
+
+An important question in statistics is how to go about choosing a
+model with enough complexity and flexibility to account for 
+the interesting regularities in the process that produced the data, 
+but not so much complexity that the model will not generalize; 
+after all, the purpose of statistical
+modeling is almost always to explain something and/or to make
+predictions about the future, not simply to describe data already
+collected.
+
+A number of techniques have been developed in both frequentist and
+Bayesian statistics to select from among a set
+of model forms one that balances fit and generalizability, that is, to
+do {\bf model selection}.  An alternative to model selection is to
+employ a model form whose complexity is not fixed, but instead adapts
+to become increasingly flexible as the data set grows larger: this is
+the {\bf nonparametric} approach, which has a long history in
+frequentist statistics (e.g., \cite{rosenblatt1956remarks,
+  parzen1962estimation}), where the typical approach is to model the
+data without any assumptions about the specific distributional family
+that generated the observations.  
+
+Distribution-free estimators have
+been shown to have good asymptotic properties (see, e.g.,
+\cite{wasserman2007nonparametric} for a review of the theory), but for finite
+samples, usually require {\em ad hoc} ``smoothing'' parameters to be
+specified by hand, or chosen using cross-validation.  In Bayesian
+statistics, ``smoothing'' occurs naturally through the prior, but the
+notion of a model with no distributional assumptions at all is not
+particularly natural in a statistical approach that requires a well-defined
+distribution to be specified over all possible data generating
+processes.
+
+In recent decades, however, and especially in the last decade, a field
+of {\bf Bayesian nonparametrics} has grown up.  Bayesian nonparametric
+models share with their non-Bayesian counterparts the property that
+the flexibility of the model increases as the sample size increases,
+but instead of being entirely distribution-free, Bayesian
+nonparametric models employ countably infinite dimensional families of
+distributions that can approximate large classes of distributions (e.g., all continuous
+distributions) arbitrarily well
+\citep{lindsay1995mixture,mclachlan2004finite}.  The result is to
+combine the explicitness of assumptions in Bayesian models with the
+flexibility of nonparametric models.
+
+The central innovation in this dissertation is a new nonparametric
+Bayesian model for sequence data, the Hierarchical Dirichlet
+Process Hidden Markov Model with Local Transitions (HDP-HMM-LT, or
+HaMMLeT, for short).  Hidden Markov Models (HMMs) are used to model
+observed sequence data as ``noisy'' realizations of an underlying
+sequence of discrete states.  The HaMMLeT model generalizes an existing model, the
+Hierarchical Dirichlet Process Hidden Markov Model (HDP-HMM), by
+allowing a metric structure to be specified on the state space of the
+underlying Markov chain, providing a mechanism to build into the state
+transition prior the notion that consecutive states are ``similar'' in
+some way.
+
+A challenge for most Bayesian modeling, not least inifinte-dimensional nonparametric
+Bayesian modeling, is developing efficient algorithms to compute
+(or approximate) desired functions of the posterior distribution,
+since for all but the simplest models, explicit integration is
+intractable.  For nonparametric models in particular, a key property of any
+practical inference algorithm is that it must be able to represent
+needed properties of the infinite-dimensional posterior using finite
+storage and processing.  Thus, any time a new nonparametric model is
+proposed, a central challenge is introducing a tractable and efficient
+inference algorithm.  I present a simple Gibbs sampling algorithm
+\cite{geman1984stochastic} to sample from the joint posterior of all
+parameters and hyperparameters of HaMMLeT as well as the latent state
+sequence, which is achieved by the introduction of a set of auxiliary
+variables with a natural interpretation under an augmentation of the
+stochastic process underlying HaMMLeT.
+
+\subsection{An overview of the dissertation}
+\label{sec:an-overv-diss}
+
+In the remainder of this chapter, I begin by discussing the general
+problem of model selection in the context of the bias variance
+tradeoff, and how Bayesian models in particular provide a natural
+Occam's Razor principle to balance fidelity to data on the one hand,
+and simplicity on the other.  Then I introduce the finite dimensional
+versions of the models on which HaMMLeT will build, namely mixture
+models and their sequential counterparts, Hidden Markov Models.  In
+Chapter \ref{chapter:HMM-NPBayes} I review the theory of Bayesian
+nonparametrics, in particular Dirichlet Processes and Hierarchical
+Dirichlet Processes, which underlie infinite mixture models and the
+infinite-state Hidden Markov Model, respectively, and then define the
+HDP-HMM of which HaMMLeT is a generalization.  In Chapter
+\ref{chapter:HaMMLeT} I introduce the basic theory of HaMMLeT model
+and an augmented stochastic process, the Markov Jump Process with
+Failed Transitions, which provides an interpretable set of auxiliary
+variables that greatly simplify posterior inference in HaMMLeT.  Then
+in Chapters \ref{chapter:cocktail-party}-\ref{chapter:music} I define
+some specific instantiations of HaMMLeT for a variety of kinds of
+data, and give experimental results comparing HaMMLeT's inferential
+performance to existing models.  Finally, in
+\ref{chapter:discussion}, I give concluding thoughts and some
+directions for future research.
 
 \section{Model Selection}
 \label{sec:model-selection}
@@ -480,20 +578,18 @@ achieve substantially the same thing more simply by employing a single
 {\bf nonparametric} model with an {\em infinite} number of
 components.  
 
-\section{The Structure of This Dissertation}
-
 In the next chapter, I turn to the distinction between parametric and
 nonparametric models, develop some of the theory of {\bf Dirichlet Process Mixture
   Models}, which form the basis for the infinite-state Hidden Markov
 Model, which I define after that, along with additional detail on
 Gibbs sampling in these two models.
 
-In Chapter \ref{chapter:HaMMLeT}, I introduce a new model, the Hidden
-Markov Model with Local Transitions (HaMMLeT), which generalizes the
-infinite state Hidden Markov Model to allow more specific prior
-information on the state space to be incorporated.  Then, in Chapters
-\ref{chapter:cocktail-party} through Chapter \ref{chapter:music}, I
-define variations on the basic HaMMLeT model in order to test the
-model on several kinds of data.  Finally in Chapter
-\ref{chapter:discussion} I give some concluding thoughts and outline
-plans for future work.
+% In Chapter \ref{chapter:HaMMLeT}, I introduce a new model, the Hidden
+% Markov Model with Local Transitions (HaMMLeT), which generalizes the
+% infinite state Hidden Markov Model to allow more specific prior
+% information on the state space to be incorporated.  Then, in Chapters
+% \ref{chapter:cocktail-party} through Chapter \ref{chapter:music}, I
+% define variations on the basic HaMMLeT model in order to test the
+% model on several kinds of data.  Finally in Chapter
+% \ref{chapter:discussion} I give some concluding thoughts and outline
+% plans for future work.

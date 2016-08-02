@@ -82,6 +82,17 @@ Kurihara, K., Welling, M., and Teh, Y.~W. (2007).
 \newblock Collapsed variational {D}irichlet process mixture models.
 \newblock In {\em IJCAI}, volume~7, pages 2796--2801.
 
+\bibitem[Lindsay, 1995]{lindsay1995mixture}
+Lindsay, B.~G. (1995).
+\newblock Mixture models: theory, geometry and applications.
+\newblock In {\em NSF-CBMS regional conference series in probability and
+  statistics}, pages i--163. JSTOR.
+
+\bibitem[McLachlan and Peel, 2004]{mclachlan2004finite}
+McLachlan, G. and Peel, D. (2004).
+\newblock {\em Finite mixture models}.
+\newblock John Wiley \& Sons.
+
 \bibitem[Neal et~al., 2011]{neal2011mcmc}
 Neal, R.~M. et~al. (2011).
 \newblock {MCMC} using {H}amiltonian dynamics.
@@ -128,5 +139,10 @@ Teh, Y.~W. (2011).
 Teh, Y.~W., Jordan, M.~I., Beal, M.~J., and Blei, D.~M. (2006).
 \newblock Hierarchical {D}irichlet processes.
 \newblock {\em Journal of the American Statistical Association}, 101(476).
+
+\bibitem[Wasserman, 2007]{wasserman2007nonparametric}
+Wasserman, L. (2007).
+\newblock {\em All of nonparametric statistics}.
+\newblock Springer.
 
 \end{thebibliography}
