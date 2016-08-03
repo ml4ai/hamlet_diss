@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016/MacPorts 2016_0) (preloaded format=pdflatex 2016.7.22)  2 AUG 2016 12:15
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016/MacPorts 2016_0) (preloaded format=pdflatex 2016.7.22)  3 AUG 2016 14:47
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -166,35 +166,51 @@ LaTeX Font Info:    Overwriting symbol font `ugrf@m' in version `bold'
 Package: mathrsfs 1996/01/01 Math RSFS package v1.0 (jk)
 \symrsfs=\mathgroup10
 )
-(/opt/local/share/texmf-texlive/tex/latex/algorithms/algorithmic.sty
-Package: algorithmic 2009/08/24 v0.1 Document Style `algorithmic'
-
-(/opt/local/share/texmf-texlive/tex/latex/base/ifthen.sty
-Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
-)
-\c@ALC@unique=\count101
-\c@ALC@line=\count102
-\c@ALC@rem=\count103
-\c@ALC@depth=\count104
-\ALC@tlm=\skip51
-\algorithmicindent=\skip52
-)
 (/opt/local/share/texmf-texlive/tex/latex/algorithms/algorithm.sty
 Package: algorithm 2009/08/24 v0.1 Document Style `algorithm' - floating enviro
 nment
 
 (/opt/local/share/texmf-texlive/tex/latex/float/float.sty
 Package: float 2001/11/08 v1.3d Float enhancements (AL)
-\c@float@type=\count105
+\c@float@type=\count101
 \float@exts=\toks26
 \float@box=\box28
 \@float@everytoks=\toks27
 \@floatcapt=\box29
 )
-\@float@every@algorithm=\toks28
-\c@algorithm=\count106
+(/opt/local/share/texmf-texlive/tex/latex/base/ifthen.sty
+Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
 )
-(/opt/local/share/texmf-texlive/tex/latex/caption/caption.sty
+\@float@every@algorithm=\toks28
+\c@algorithm=\count102
+)
+(/opt/local/share/texmf-texlive/tex/latex/algorithmicx/algorithmicx.sty
+Package: algorithmicx 2005/04/27 v1.2 Algorithmicx
+
+Document Style algorithmicx 1.2 - a greatly improved `algorithmic' style
+\c@ALG@line=\count103
+\c@ALG@rem=\count104
+\c@ALG@nested=\count105
+\ALG@tlm=\skip51
+\ALG@thistlm=\skip52
+\c@ALG@Lnr=\count106
+\c@ALG@blocknr=\count107
+\c@ALG@storecount=\count108
+\c@ALG@tmpcounter=\count109
+\ALG@tmplength=\skip53
+) (/opt/local/share/texmf-texlive/tex/latex/graphics/color.sty
+Package: color 2016/05/09 v1.1c Standard LaTeX Color (DPC)
+
+(/opt/local/share/texmf-texlive/tex/latex/graphics-cfg/color.cfg
+File: color.cfg 2016/01/02 v1.6 sample color configuration
+)
+Package color Info: Driver file: pdftex.def on input line 144.
+)
+(/opt/local/share/texmf-texlive/tex/latex/algorithmicx/algpseudocode.sty
+Package: algpseudocode 
+
+Document Style - pseudocode environments for use with the `algorithmicx' style
+) (/opt/local/share/texmf-texlive/tex/latex/caption/caption.sty
 Package: caption 2016/02/21 v3.3-144 Customizing captions (AR)
 
 (/opt/local/share/texmf-texlive/tex/latex/caption/caption3.sty
@@ -219,7 +235,7 @@ Package caption Info: \@makecaption = \long macro:#1#2->\vskip \abovecaptionski
 p \sbox \@tempboxa {\textsc {#1}. #2}\ifdim \wd \@tempboxa >\hsize \textsc {#1}
 . #2\par \else \global \@minipagefalse \hb@xt@ \hsize {\hfil \box \@tempboxa \h
 fil }\fi \vskip \belowcaptionskip .
-\c@ContinuedFloat=\count107
+\c@ContinuedFloat=\count110
 Package caption Info: float package is loaded.
 ) (/opt/local/share/texmf-texlive/tex/latex/sidecap/sidecap.sty
 Package: sidecap 2003/06/06 v1.6f SideCap Package (RN/HjG)
@@ -227,24 +243,30 @@ Package: sidecap 2003/06/06 v1.6f SideCap Package (RN/HjG)
 \SC@CAPWD=\dimen122
 \SC@tempdima=\dimen123
 \SC@tempdimb=\dimen124
-\c@SC@C=\count108
+\c@SC@C=\count111
 \SC@BOX=\box30
 )
 (/opt/local/share/texmf-texlive/tex/latex/caption/subcaption.sty
 Package: subcaption 2016/02/20 v1.1-142 Sub-captions (AR)
-\c@subfigure=\count109
-\c@subtable=\count110
+\c@subfigure=\count112
+\c@subtable=\count113
 )
 (/opt/local/share/texmf-texlive/tex/latex/setspace/setspace.sty
 Package: setspace 2011/12/19 v6.7a set line spacing
 ) (./macros.tex) (/opt/local/share/texmf-texlive/tex/latex/natbib/natbib.sty
 Package: natbib 2010/09/13 8.31b (PWD, AO)
-\bibhang=\skip53
-\bibsep=\skip54
+\bibhang=\skip54
+\bibsep=\skip55
 LaTeX Info: Redefining \cite on input line 694.
-\c@NAT@ctr=\count111
+\c@NAT@ctr=\count114
 )
 (./dissertation.aux
+
+LaTeX Warning: Label `eq:1' multiply defined.
+
+
+LaTeX Warning: Label `eq:2' multiply defined.
+
 
 LaTeX Warning: Label `eq:1' multiply defined.
 
@@ -255,6 +277,9 @@ LaTeX Warning: Label `eq:4' multiply defined.
 LaTeX Warning: Label `eq:5' multiply defined.
 
 
+LaTeX Warning: Label `eq:6' multiply defined.
+
+
 LaTeX Warning: Label `eq:24' multiply defined.
 
 
@@ -262,6 +287,9 @@ LaTeX Warning: Label `eq:8' multiply defined.
 
 
 LaTeX Warning: Label `eq:9' multiply defined.
+
+
+LaTeX Warning: Label `eq:11' multiply defined.
 
 
 LaTeX Warning: Label `eq:18' multiply defined.
@@ -284,30 +312,30 @@ LaTeX Warning: Label `eq:88' multiply defined.
 )
 \openout1 = `dissertation.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 24.
-LaTeX Font Info:    ... okay on input line 24.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 24.
-LaTeX Font Info:    ... okay on input line 24.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 24.
-LaTeX Font Info:    ... okay on input line 24.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 24.
-LaTeX Font Info:    ... okay on input line 24.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 24.
-LaTeX Font Info:    ... okay on input line 24.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 24.
-LaTeX Font Info:    ... okay on input line 24.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 27.
+LaTeX Font Info:    ... okay on input line 27.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 27.
+LaTeX Font Info:    ... okay on input line 27.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 27.
+LaTeX Font Info:    ... okay on input line 27.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 27.
+LaTeX Font Info:    ... okay on input line 27.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 27.
+LaTeX Font Info:    ... okay on input line 27.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 27.
+LaTeX Font Info:    ... okay on input line 27.
  (/opt/local/share/texmf-texlive/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count112
+\scratchcounter=\count115
 \scratchdimen=\dimen125
 \scratchbox=\box31
-\nofMPsegments=\count113
-\nofMParguments=\count114
+\nofMPsegments=\count116
+\nofMParguments=\count117
 \everyMPshowfont=\toks29
-\MPscratchCnt=\count115
+\MPscratchCnt=\count118
 \MPscratchDim=\dimen126
-\MPnumerator=\count116
-\makeMPintoPDFobject=\count117
+\MPnumerator=\count119
+\makeMPintoPDFobject=\count120
 \everyMPtoPDFconversion=\toks30
 ) (/opt/local/share/texmf-texlive/tex/generic/oberdiek/pdftexcmds.sty
 Package: pdftexcmds 2016/05/10 v0.21 Utility functions of pdfTeX for LuaTeX (HO
@@ -369,36 +397,36 @@ Package: everysel 2011/10/28 v1.2 EverySelectfont Package (MS)
 ABD: EverySelectfont initializing macros
 LaTeX Info: Redefining \selectfont on input line 126.
 )
-\CenteringLeftskip=\skip55
-\RaggedLeftLeftskip=\skip56
-\RaggedRightLeftskip=\skip57
-\CenteringRightskip=\skip58
-\RaggedLeftRightskip=\skip59
-\RaggedRightRightskip=\skip60
-\CenteringParfillskip=\skip61
-\RaggedLeftParfillskip=\skip62
-\RaggedRightParfillskip=\skip63
-\JustifyingParfillskip=\skip64
-\CenteringParindent=\skip65
-\RaggedLeftParindent=\skip66
-\RaggedRightParindent=\skip67
-\JustifyingParindent=\skip68
+\CenteringLeftskip=\skip56
+\RaggedLeftLeftskip=\skip57
+\RaggedRightLeftskip=\skip58
+\CenteringRightskip=\skip59
+\RaggedLeftRightskip=\skip60
+\RaggedRightRightskip=\skip61
+\CenteringParfillskip=\skip62
+\RaggedLeftParfillskip=\skip63
+\RaggedRightParfillskip=\skip64
+\JustifyingParfillskip=\skip65
+\CenteringParindent=\skip66
+\RaggedLeftParindent=\skip67
+\RaggedRightParindent=\skip68
+\JustifyingParindent=\skip69
 ) [1
 
 
 {/opt/local/var/db/texmf/fonts/map/pdftex/updmap/pdftex.map}] (./signatures.tex
 ) [2]
-LaTeX Font Info:    Try loading font information for U+msa on input line 27.
+LaTeX Font Info:    Try loading font information for U+msa on input line 30.
 
 (/opt/local/share/texmf-texlive/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 27.
+LaTeX Font Info:    Try loading font information for U+msb on input line 30.
 
 (/opt/local/share/texmf-texlive/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Try loading font information for U+rsfs on input line 27.
+LaTeX Font Info:    Try loading font information for U+rsfs on input line 30.
 
 (/opt/local/share/texmf-texlive/tex/latex/jknapltx/ursfs.fd
 File: ursfs.fd 1998/03/24 rsfs font definition file (jk)
@@ -427,7 +455,7 @@ Overfull \hbox (1.56442pt too wide) in paragraph at lines 15--15
 [6
 
 ]
-Overfull \hbox (20.8322pt too wide) in paragraph at lines 66--66
+Overfull \hbox (20.8322pt too wide) in paragraph at lines 69--69
 [][] []\OT1/cmr/m/sc/12 SEPARATE SIM-I-LAR-I-TIES AND EMIS-SIONS: LEARN-ING TON
 AL 
  []
@@ -457,7 +485,7 @@ Abstract
 (./abstract.tex [11
 
 ] [12]) [13]
-\c@s@avepageno=\count118
+\c@s@avepageno=\count121
  (./abstract.tex [1
 
 
@@ -507,44 +535,44 @@ Overfull \hbox (6.19814pt too wide) in paragraph at lines 118--122
  by nor-mal-iz-ing a \OT1/cmr/bx/n/12 Gamma
  []
 
-[31] [32] [33] [34] [35]) [36]
+[31] [32] [33] [34] [35] [36] [37] [38] [39] [40]) [41]
 Chapter 3
-(./hammlet.tex [37
+(./hammlet.tex [42
 
-] [38] [39] [40] [41] [42] [43] [44]
+] [43] [44] [45] [46] [47] [48] [49]
 Overfull \hbox (24.18925pt too wide) in paragraph at lines 310--316
 \OT1/cmr/m/n/12 It is easy to show (and well known) that the marginal dis-tri-b
 u-tion of $\OML/cmm/m/it/12 n[]$ \OT1/cmr/m/n/12 is $[](\OML/cmm/m/it/12 ^^Y[]^
 ^^[]\OT1/cmr/m/n/12 )$,
  []
 
-[45]
+[50]
 Overfull \hbox (5.57597pt too wide) in paragraph at lines 398--398
 [] 
  []
 
-[46]
+[51]
 Overfull \hbox (1.37006pt too wide) in paragraph at lines 414--424
 []\OT1/cmr/m/n/12 The HDP Hid-den Semi-Markov Model (HDP-HSMM; John-son and Wil
 l-sky (2013))
  []
 
-[47] [48] [49] [50] [51] [52]
+[52] [53] [54] [55] [56] [57]
 Overfull \hbox (11.47104pt too wide) in paragraph at lines 724--724
 [] 
  []
 
-[53] [54] [55] [56] [57]) [58]
+[58] [59] [60] [61] [62]) [63]
 Chapter 4
-(./cocktail-party.tex [59
+(./cocktail-party.tex [64
 
-] [60] [61] [62] [63]
+] [65] [66] [67] [68]
 Overfull \hbox (10.05522pt too wide) in paragraph at lines 248--248
 [] 
  []
 
-[64] [65] [66]
-<fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/accuracy.pdf, id=262, 361.35pt x 361.35
+[69] [70] [71]
+<fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/accuracy.pdf, id=278, 361.35pt x 361.35
 pt>
 File: fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/accuracy.pdf Graphic file (type pd
 f)
@@ -553,7 +581,7 @@ Package pdftex.def Info: fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/accuracy.pdf us
 ed on input line 341.
 (pdftex.def)             Requested size: 173.44534pt x 173.44603pt.
 
-<fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/F1_score.pdf, id=263, 361.35pt x 361.35
+<fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/F1_score.pdf, id=279, 361.35pt x 361.35
 pt>
 File: fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/F1_score.pdf Graphic file (type pd
 f)
@@ -562,7 +590,7 @@ Package pdftex.def Info: fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/F1_score.pdf us
 ed on input line 345.
 (pdftex.def)             Requested size: 173.44534pt x 173.44603pt.
 
-<fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/lambda.pdf, id=264, 361.35pt x 361.35pt
+<fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/lambda.pdf, id=280, 361.35pt x 361.35pt
 >
 File: fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/lambda.pdf Graphic file (type pdf)
 
@@ -571,14 +599,14 @@ Package pdftex.def Info: fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/lambda.pdf used
  on input line 350.
 (pdftex.def)             Requested size: 173.44534pt x 173.44603pt.
 
-<fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/n_dot.pdf, id=265, 361.35pt x 361.35pt>
+<fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/n_dot.pdf, id=281, 361.35pt x 361.35pt>
 File: fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/n_dot.pdf Graphic file (type pdf)
 <use fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/n_dot.pdf>
 Package pdftex.def Info: fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/n_dot.pdf used 
 on input line 353.
 (pdftex.def)             Requested size: 173.44534pt x 173.44603pt.
 
-<fig/synth16/w0/noLT_s0/accuracy.pdf, id=266, 361.35pt x 361.35pt>
+<fig/synth16/w0/noLT_s0/accuracy.pdf, id=282, 361.35pt x 361.35pt>
 File: fig/synth16/w0/noLT_s0/accuracy.pdf Graphic file (type pdf)
 
 <use fig/synth16/w0/noLT_s0/accuracy.pdf>
@@ -586,7 +614,7 @@ Package pdftex.def Info: fig/synth16/w0/noLT_s0/accuracy.pdf used on input line
  388.
 (pdftex.def)             Requested size: 173.44534pt x 173.44603pt.
 
-<fig/synth16/w0/noLT_s0/F1_score.pdf, id=267, 361.35pt x 361.35pt>
+<fig/synth16/w0/noLT_s0/F1_score.pdf, id=283, 361.35pt x 361.35pt>
 File: fig/synth16/w0/noLT_s0/F1_score.pdf Graphic file (type pdf)
 
 <use fig/synth16/w0/noLT_s0/F1_score.pdf>
@@ -594,7 +622,7 @@ Package pdftex.def Info: fig/synth16/w0/noLT_s0/F1_score.pdf used on input line
  392.
 (pdftex.def)             Requested size: 173.44534pt x 173.44603pt.
 
-<fig/synth16/w0/noLT_s0/lambda.pdf, id=268, 361.35pt x 361.35pt>
+<fig/synth16/w0/noLT_s0/lambda.pdf, id=284, 361.35pt x 361.35pt>
 File: fig/synth16/w0/noLT_s0/lambda.pdf Graphic file (type pdf)
 
 <use fig/synth16/w0/noLT_s0/lambda.pdf>
@@ -602,20 +630,20 @@ Package pdftex.def Info: fig/synth16/w0/noLT_s0/lambda.pdf used on input line 3
 98.
 (pdftex.def)             Requested size: 173.44534pt x 173.44603pt.
 
-<fig/synth16/w0/noLT_s0/n_dot.pdf, id=269, 361.35pt x 361.35pt>
+<fig/synth16/w0/noLT_s0/n_dot.pdf, id=285, 361.35pt x 361.35pt>
 File: fig/synth16/w0/noLT_s0/n_dot.pdf Graphic file (type pdf)
 
 <use fig/synth16/w0/noLT_s0/n_dot.pdf>
 Package pdftex.def Info: fig/synth16/w0/noLT_s0/n_dot.pdf used on input line 40
 1.
 (pdftex.def)             Requested size: 173.44534pt x 173.44603pt.
-) [67] [68 <./fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/accuracy.pdf> <./fig/cockt
+) [72] [73 <./fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/accuracy.pdf> <./fig/cockt
 ail_s16_m12/w0/h10.0_nocs_cp1/F1_score.pdf> <./fig/cocktail_s16_m12/w0/h10.0_no
-cs_cp1/lambda.pdf> <./fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/n_dot.pdf>] [69 <.
+cs_cp1/lambda.pdf> <./fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/n_dot.pdf>] [74 <.
 /fig/synth16/w0/noLT_s0/accuracy.pdf> <./fig/synth16/w0/noLT_s0/F1_score.pdf> <
 ./fig/synth16/w0/noLT_s0/lambda.pdf> <./fig/synth16/w0/noLT_s0/n_dot.pdf>]
 Chapter 5
-(./redd.tex [70
+(./redd.tex [75
 
 ]
 Overfull \hbox (9.00864pt too wide) in paragraph at lines 23--29
@@ -624,9 +652,9 @@ cmr/m/n/12 . Rather than the ma-trix given by $(\OML/cmm/m/it/12 w[]\OT1/cmr/m/
 n/12 )[]$,
  []
 
-[71] [72] [73]
+[76] [77] [78]
 <data/REDD/jw2013_downsampled_intervals/house_1_1200_6800/house_1_1200-6800.pdf
-, id=332, 578.16pt x 650.43pt>
+, id=349, 578.16pt x 650.43pt>
 File: data/REDD/jw2013_downsampled_intervals/house_1_1200_6800/house_1_1200-680
 0.pdf Graphic file (type pdf)
 
@@ -635,32 +663,32 @@ File: data/REDD/jw2013_downsampled_intervals/house_1_1200_6800/house_1_1200-680
 Package pdftex.def Info: data/REDD/jw2013_downsampled_intervals/house_1_1200_68
 00/house_1_1200-6800.pdf used on input line 141.
 (pdftex.def)             Requested size: 433.62001pt x 487.8213pt.
-) [74] [75 <./data/REDD/jw2013_downsampled_intervals/house_1_1200_6800/house_1_
+) [79] [80 <./data/REDD/jw2013_downsampled_intervals/house_1_1200_6800/house_1_
 1200-6800.pdf>]
 Chapter 6
-(./music.tex [76
+(./music.tex [81
 
-] [77] [78] [79]) [80]
+] [82] [83] [84]) [85]
 Chapter 7
-(./discussion.tex) (./dissertation.bbl [81
+(./discussion.tex) (./dissertation.bbl [86
 
 ]
 References
-[82
+[87
 
-]) [83] (./dissertation.aux)
+]) [88] (./dissertation.aux)
 
 LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 5011 strings out of 494114
- 73519 string characters out of 6155601
- 137115 words of memory out of 5000000
- 8208 multiletter control sequences out of 15000+600000
+ 5402 strings out of 494114
+ 79511 string characters out of 6155601
+ 143331 words of memory out of 5000000
+ 8590 multiletter control sequences out of 15000+600000
  15803 words of font info for 58 fonts, out of 8000000 for 9000
  430 hyphenation exceptions out of 8191
- 38i,14n,43p,1014b,490s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 38i,14n,43p,1014b,503s stack positions out of 5000i,500n,10000p,200000b,80000s
 </opt/local/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx12.pfb></o
 pt/local/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmcsc10.pfb></opt/l
 ocal/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmex10.pfb></opt/local/
@@ -680,10 +708,10 @@ opt/local/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy6.pfb></opt/lo
 cal/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy8.pfb></opt/local/sh
 are/texmf-texlive/fonts/type1/public/amsfonts/cm/cmti12.pfb></opt/local/share/t
 exmf-texlive/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on dissertation.pdf (86 pages, 646626 bytes).
+Output written on dissertation.pdf (91 pages, 661798 bytes).
 PDF statistics:
- 502 PDF objects out of 1000 (max. 8388607)
- 307 compressed objects within 4 object streams
+ 518 PDF objects out of 1000 (max. 8388607)
+ 318 compressed objects within 4 object streams
  0 named destinations out of 1000 (max. 500000)
  66 words of extra memory for PDF output out of 10000 (max. 10000000)
 

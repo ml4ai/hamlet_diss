@@ -537,8 +537,8 @@ the label, $z_t$ on the previous label, $z_{t-1}$.  We can indeed
 construct an easy to work with Bayesian HMM by placing an appropriate 
 conjugate prior on the $\theta_t$ emission parameters (e.g.,
 Normal-Inverse Wishart in the case where $F$ is the family of Normal
-distributions), and a Dirichlet conjugate prior on $\pi_0$ and 
-each row of $\pi$, and carry out posterior inference using Gibbs
+distributions), and Dirichlet conjugate priors on $\pi_0$ and 
+on each row of $\pi$, and carry out posterior inference using Gibbs
 sampling: alternating between sampling the state sequence $\{z_t\}$
 and the model parameters, $\pi, \pi_0$ and the $\theta_j$.  There is
 some additional difficulty introduced by the fact that the $z_t$

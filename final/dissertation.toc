@@ -19,54 +19,57 @@
 \contentsline {subsection}{\numberline {2.2.2}The Stick-Breaking Process construction of the DP}{33}
 \contentsline {subsection}{\numberline {2.2.3}The Chinese Restaurant Process}{33}
 \contentsline {subsection}{\numberline {2.2.4}The Dirichlet Process Mixture Model}{34}
-\contentsline {subsection}{\numberline {2.2.5}A Gibbs Sampler for DP Mixture Models}{35}
-\contentsline {section}{\numberline {2.3}An Infinite State HMM}{36}
-\contentsline {subsection}{\numberline {2.3.1}The Hierarchical Dirichlet Process}{36}
-\contentsline {subsection}{\numberline {2.3.2}The HDP-HMM}{36}
-\contentsline {section}{\numberline {2.4}Inference in Finite and Infinite State HMMs}{36}
-\contentsline {subsection}{\numberline {2.4.1}The Forward Backward Algorithm}{36}
-\contentsline {subsection}{\numberline {2.4.2}Two Gibbs Samplers for the HDP-HMM}{36}
-\contentsline {subsection}{\numberline {2.4.3}Beam Sampling in the HDP-HMM}{36}
-\contentsline {chapter}{\chapterline {3}\MakeUppercase {HaMMLeT: An infinite Hidden Markov Model with Local Transitions}}{37}
-\contentsline {section}{\numberline {3.1}Transition Dynamics in the HDP-HMM}{38}
-\contentsline {section}{\numberline {3.2}An HDP-HMM With Local Transitions}{40}
-\contentsline {paragraph}{Notational Conventions}{40}
-\contentsline {subsection}{\numberline {3.2.1}A Normalized Gamma Process representation of the HDP-HMM}{41}
-\contentsline {subsection}{\numberline {3.2.2}Promoting ``Local'' Transitions}{42}
-\contentsline {section}{\numberline {3.3}The HDP-HMM-LT as a continuous-time Markov Jump Process with ``failed'' jumps}{44}
-\contentsline {subsection}{\numberline {3.3.1}An HDP-HSMM-LT modification}{47}
-\contentsline {subsection}{\numberline {3.3.2}Summary}{49}
-\contentsline {section}{\numberline {3.4}MCMC Inference in the ``Failed Jumps'' Representation}{49}
-\contentsline {subsection}{\numberline {3.4.1}Sampling $\pi $, $\beta $, $\alpha $ and $\gamma $}{50}
-\contentsline {paragraph}{Sampling $\pi $}{51}
-\contentsline {paragraph}{Sampling $\beta $}{51}
-\contentsline {paragraph}{Sampling $\alpha $ and $\gamma $}{53}
-\contentsline {subsubsection}{Summary}{55}
-\contentsline {subsection}{\numberline {3.4.2}Sampling $z$ and the auxiliary variables}{55}
-\contentsline {subsection}{\numberline {3.4.3}Sampling state and emission parameters}{56}
-\contentsline {section}{\numberline {3.5}Use Cases}{57}
-\contentsline {chapter}{\chapterline {4}\MakeUppercase {Binary Vector States: Speaker Diarization}}{59}
-\contentsline {section}{\numberline {4.1}Binary State Vectors}{59}
-\contentsline {subsection}{\numberline {4.1.1}Additional Inference Steps}{60}
-\contentsline {paragraph}{Sampling $\theta $}{60}
-\contentsline {paragraph}{Sampling $\mu $}{62}
-\contentsline {paragraph}{Sampling $W$ and $\Sigma $}{62}
-\contentsline {paragraph}{Sampling $\lambda $}{63}
-\contentsline {subsection}{\numberline {4.1.2}Summary}{63}
-\contentsline {section}{\numberline {4.2}``Cocktail Party'' Data}{65}
-\contentsline {section}{\numberline {4.3}Synthetic Data Without Local Transitions}{67}
-\contentsline {chapter}{\chapterline {5}\MakeUppercase {Categorical Vector States: Power Disaggregation}}{70}
-\contentsline {section}{\numberline {5.1}Generalizing to Categorical-Valued $\theta $}{70}
-\contentsline {section}{\numberline {5.2}Priors and Representations in the Categorical State Variant}{71}
-\contentsline {section}{\numberline {5.3}Adapting Posterior Inference for Categorical State Vectors}{72}
-\contentsline {subsubsection}{Sampling $\theta $}{72}
-\contentsline {paragraph}{Sampling $W$}{73}
-\contentsline {paragraph}{Sampling $\lambda $}{73}
-\contentsline {section}{\numberline {5.4}Power Disaggregation}{73}
-\contentsline {chapter}{\chapterline {6}\MakeUppercase {Separate Similarities and Emissions: Learning Tonal Grammar in Music}}{76}
-\contentsline {section}{\numberline {6.1}Separable Similarity and Emissions}{76}
-\contentsline {section}{\numberline {6.2}A Hamlitonian Monte Carlo step to sample $\eta $}{76}
-\contentsline {section}{\numberline {6.3}Synthetic Data from an HMM with a Nearly Block Diagonal Transition Matrix}{79}
-\contentsline {section}{\numberline {6.4}Discovering Chord Equivalence Classes in Tonal Music}{80}
-\contentsline {chapter}{\chapterline {7}\MakeUppercase {Conclusions and Future Work}}{81}
-\contentsline {chapter}{References}{82}
+\contentsline {subsection}{\numberline {2.2.5}Two Gibbs Samplers for DP Mixture Models}{35}
+\contentsline {paragraph}{Method 1: A Collapsed Sampler Based on the CRP}{36}
+\contentsline {paragraph}{Method 2: An uncollapsed sampler based on the Stick-Breaking Process}{37}
+\contentsline {section}{\numberline {2.3}An Infinite State HMM}{38}
+\contentsline {subsection}{\numberline {2.3.1}The Hierarchical Dirichlet Process}{39}
+\contentsline {subsection}{\numberline {2.3.2}The HDP-HMM}{39}
+\contentsline {subsection}{\numberline {2.3.3}Adapting the HDP for an Infinite State HMM}{41}
+\contentsline {section}{\numberline {2.4}Inference in Finite and Infinite State HMMs}{41}
+\contentsline {subsection}{\numberline {2.4.1}The Forward Backward Algorithm}{41}
+\contentsline {subsection}{\numberline {2.4.2}Two Gibbs Samplers for the HDP-HMM}{41}
+\contentsline {subsection}{\numberline {2.4.3}Beam Sampling in the HDP-HMM}{41}
+\contentsline {chapter}{\chapterline {3}\MakeUppercase {HaMMLeT: An infinite Hidden Markov Model with Local Transitions}}{42}
+\contentsline {section}{\numberline {3.1}Transition Dynamics in the HDP-HMM}{43}
+\contentsline {section}{\numberline {3.2}An HDP-HMM With Local Transitions}{45}
+\contentsline {paragraph}{Notational Conventions}{45}
+\contentsline {subsection}{\numberline {3.2.1}A Normalized Gamma Process representation of the HDP-HMM}{46}
+\contentsline {subsection}{\numberline {3.2.2}Promoting ``Local'' Transitions}{47}
+\contentsline {section}{\numberline {3.3}The HDP-HMM-LT as a continuous-time Markov Jump Process with ``failed'' jumps}{49}
+\contentsline {subsection}{\numberline {3.3.1}An HDP-HSMM-LT modification}{52}
+\contentsline {subsection}{\numberline {3.3.2}Summary}{54}
+\contentsline {section}{\numberline {3.4}MCMC Inference in the ``Failed Jumps'' Representation}{54}
+\contentsline {subsection}{\numberline {3.4.1}Sampling $\pi $, $\beta $, $\alpha $ and $\gamma $}{55}
+\contentsline {paragraph}{Sampling $\pi $}{56}
+\contentsline {paragraph}{Sampling $\beta $}{56}
+\contentsline {paragraph}{Sampling $\alpha $ and $\gamma $}{58}
+\contentsline {subsubsection}{Summary}{60}
+\contentsline {subsection}{\numberline {3.4.2}Sampling $z$ and the auxiliary variables}{60}
+\contentsline {subsection}{\numberline {3.4.3}Sampling state and emission parameters}{61}
+\contentsline {section}{\numberline {3.5}Use Cases}{62}
+\contentsline {chapter}{\chapterline {4}\MakeUppercase {Binary Vector States: Speaker Diarization}}{64}
+\contentsline {section}{\numberline {4.1}Binary State Vectors}{64}
+\contentsline {subsection}{\numberline {4.1.1}Additional Inference Steps}{65}
+\contentsline {paragraph}{Sampling $\theta $}{65}
+\contentsline {paragraph}{Sampling $\mu $}{67}
+\contentsline {paragraph}{Sampling $W$ and $\Sigma $}{67}
+\contentsline {paragraph}{Sampling $\lambda $}{68}
+\contentsline {subsection}{\numberline {4.1.2}Summary}{68}
+\contentsline {section}{\numberline {4.2}``Cocktail Party'' Data}{70}
+\contentsline {section}{\numberline {4.3}Synthetic Data Without Local Transitions}{72}
+\contentsline {chapter}{\chapterline {5}\MakeUppercase {Categorical Vector States: Power Disaggregation}}{75}
+\contentsline {section}{\numberline {5.1}Generalizing to Categorical-Valued $\theta $}{75}
+\contentsline {section}{\numberline {5.2}Priors and Representations in the Categorical State Variant}{76}
+\contentsline {section}{\numberline {5.3}Adapting Posterior Inference for Categorical State Vectors}{77}
+\contentsline {subsubsection}{Sampling $\theta $}{77}
+\contentsline {paragraph}{Sampling $W$}{78}
+\contentsline {paragraph}{Sampling $\lambda $}{78}
+\contentsline {section}{\numberline {5.4}Power Disaggregation}{78}
+\contentsline {chapter}{\chapterline {6}\MakeUppercase {Separate Similarities and Emissions: Learning Tonal Grammar in Music}}{81}
+\contentsline {section}{\numberline {6.1}Separable Similarity and Emissions}{81}
+\contentsline {section}{\numberline {6.2}A Hamlitonian Monte Carlo step to sample $\eta $}{81}
+\contentsline {section}{\numberline {6.3}Synthetic Data from an HMM with a Nearly Block Diagonal Transition Matrix}{84}
+\contentsline {section}{\numberline {6.4}Discovering Chord Equivalence Classes in Tonal Music}{85}
+\contentsline {chapter}{\chapterline {7}\MakeUppercase {Conclusions and Future Work}}{86}
+\contentsline {chapter}{References}{87}

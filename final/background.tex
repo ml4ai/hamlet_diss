@@ -186,6 +186,18 @@ A Gamma Process is a stochastic point process on $\mathbb{R}^{+} \times
 
   The choice of $G_0$ and $\alpha$ determine the resulting DP.
 
+  When describing the stick-breaking part of this process by itself
+  --- that is, the process that produces the weights, $\pi_1, \pi_2,
+  \dots$, it is common to write
+  \begin{equation}
+    \label{eq:11}
+    \pi \sim \GEM{\alpha}
+  \end{equation}
+  where GEM stands for Griffiths-Engen-McCloskey, the names of three
+  authors who did early work on stick-breaking processes and laid the foundation
+  for the connection to Dirichlet Processes later formalized by
+  \citet{sethuraman1994constructive}.
+  
   \subsection{The Chinese Restaurant Process}
   \label{sec:chin-rest-proc}
 
@@ -216,7 +228,7 @@ A Gamma Process is a stochastic point process on $\mathbb{R}^{+} \times
   distribution, $G_0$.
 
   It turns out that the distribution of the collection of 
-  assignments of dishes to customers is the same as the marginal
+  assignments of dishes to customers is the same as the {\em marginal}
   distribution of draws from a random measure $G$ which is distributed
   $\DP{\alpha G_0}$ (see \citet{teh2011dirichlet} for a proof of this
   fact as well as a review of the theory of DPs in general).
@@ -266,7 +278,7 @@ A Gamma Process is a stochastic point process on $\mathbb{R}^{+} \times
   Normal-Inverse Wishart distribution (or a non-conjugate choice as
   the application suggests).
 
-  \subsection{A Gibbs Sampler for DP Mixture Models}
+  \subsection{Two Gibbs Samplers for DP Mixture Models}
   \label{sec:gibbs-sampler-dp}
 
   Given data, $y = (y_1, \dots, y_n)$ modeled using the mixture
@@ -296,18 +308,244 @@ A Gamma Process is a stochastic point process on $\mathbb{R}^{+} \times
   As with the finite mixture model, MCMC inference is greatly
   simplified by sampling over the $z_i$ indicators as well as over the
   mixture component parameters themselves (indeed, in some
-  applications, these indicators may be the variables of primary interest).
+  applications, these indicators may be the variables of primary
+  interest).
 
-\label{sec:dirichl-proc-gauss}
+  % The standard Gibbs sampling algorithm proceeds as follows
+  % \begin{algorithm}
+  %   \caption{Gibbs sampler for a Generic DP Mixture Model}
+  %   \begin{algorithmic}[1]
+  %     \State{Initialize the state labels, $z_1, \dots, z_n$ (e.g. from a
+  %       a CRP)}
+  %     \State{Define $K = \max_{i}\{z_i\}$}
+  %     \For{Iteration $m = 1, \dots, M$}
+  %         \For{$k = 1, \dots, K$}
+  %         \State{Sample $\theta_k \given \{y_i: z_i = k\}$}
+  %         \EndFor
+  %     \EndFor
+  %   \end{algorithmic}
+  % \end{algorithm}
+  
+  We are interested in the joint posterior over the emission parameters,
+  $\{\theta_k\}$, the component weights, $\{\pi_k\}$, and the component
+  indicators, $\{z_i\}$, where $k$ indexes components and $i$ indexes
+  observations.
+
+  \paragraph{Method 1: A Collapsed Sampler Based on the CRP}
+  One option is to sample only $\theta$ and $z$, integrating out
+  $\pi$.  This is possible since the marginal distribution of $z
+  \given \theta$ is a Chinese Restaurant Process.
+
+  In this approach, we sample each entry of $z$ one at a time conditioned on the
+  others.  Let $z^{(-i)}$ be the vector of component indicators
+  excluding $z_i$, let $n_k^{(-i)} = \sum_{i' \neq i} \mathbb{I}(z_i = k)$ be the count
+  of the number of $z_{i'}$ currently assigned to component $k$, not
+  counting $z_i$, and let $K$ count the number of distinct values in
+  $z$ among the other $n-1$ indicators (we will assume by permuting
+  the labels that the distinct values are numbered $1$ through $K$).  Then we have
+  \begin{align}
+    p(z_i  = k \given z^{(-i)}) =
+    \begin{cases}
+      \frac{n_k}{n + \alpha}& \quad k = 1, \dots, K \\
+      \frac{\alpha}{n + \alpha} & \quad k = K + 1
+    \end{cases}
+  \end{align}
+  where if $z_i$ takes on a distinct value from any of the other
+  entries in $z$, we call this value $K + 1$.
+
+  In order to sample $z_i$ conditioned on both $z^{(-i)}$ and the
+  data, we also need to compute the likelihood $p(y_i \given z_i, \theta)$ for
+  each value of $z_i$.  Generically, we simply have
+  \begin{align}
+    p(y_i \given z_i, \theta) = f(y_i \given \theta_{z_i})
+  \end{align}
+  where $f(\cdot \given \theta_{z_i})$ is the density (or mass)
+  function corresponding to the distribution $F(\theta_{z_i})$.
+
+  Thus we sample $z_i$ with probabilities
+  \begin{align}
+    p(z_i  = k \given z^{(-i)}, y_i, \theta) \propto
+    \begin{cases}
+      \frac{n_k}{n + \alpha} f(y_i \given \theta_k) & \quad k = 1,
+      \dots, K \\
+      \frac{\alpha}{n + \alpha} \int_{\Theta} f(y_i \given \theta_*)
+      p(\theta_*)\ d\theta_* & \qquad k = K+1
+    \end{cases}
+  \end{align}
+  where depending on the form of $f$, it may be able to compute the
+  integral for the marginal likelihood of $y_i$ analytically; but if
+  not, we can approximate it by sampling a value of $\theta_*$ from
+  the prior and using
+  \begin{equation}
+    \label{eq:1}
+    p(z_i = K + 1 \given \theta, y) \propto \frac{\alpha}{n + \alpha} f(y_i \given theta_*)
+  \end{equation}
+  If $z_i$ is set to $K + 1$, we increment $K$.  If $z_i$ was
+  previously the only indicator assigned to some value $k$, relabel
+  the indicators to occupy consecutive natural numbers.
+
+  Conditioned on $z$, sampling $\theta$ amounts to $K$ independent
+  updates of the parameters of the $K$ separate components, each using
+  the likelihood of the observations currently assigned to that
+  component.  If the prior on $\theta$ is conjugate to the likelihood,
+  this involves $K$ samples from an exponential family.
+
+  \paragraph{Method 2: An uncollapsed sampler based on the
+    Stick-Breaking Process}
+
+  Alternatively we might choose to sample a finite subset of the
+  entries in $\pi$ directly.  
+
+  Conditioned on a current set of
+  assignments to the $z$ indicators, we again let $K$ represent the
+  number of distinct values taken on by the $z$, again assuming that
+  the labels have been re-numbered as needed to take the values $1$
+  through $K$, and again let $n_k, k = 1, \dots, K$ be the counts of
+  the $z_i$ assigned to each $k$.  
+  We can then sample the weights associated with each currently
+  represented component, given by $\pi_1, \dots, \pi_K$, as well as
+  the total weight associated with all unrepresented components
+  combined, $\pi_{new}$.  Given the $n_k$, we have
+  \begin{equation}
+    \label{eq:2}
+    (\pi_1, \dots, \pi_K, \pi_{new}) \sim \Dir{n_1, n_2, \dots, n_K, \alpha}
+  \end{equation}
+  We may then sample each $z_i$ according to
+  \begin{align}
+    p(z_i = k \given \pi, \theta, y) \propto
+    \begin{cases}
+      \pi_k f(y_i \given \theta_k) & \quad k = 1, \dots, K \\
+      \pi_{new} \int_\Theta f(y_i \given \theta_*) p(\theta_*)\
+      d\theta_* & k > K
+    \end{cases}
+  \end{align}
+  where each time some $z_i$ is assigned to a new component, we must
+  instantiate a new $\pi_{K+1}$ using the stick-breaking process, by sampling
+  \begin{equation}
+    \label{eq:6}
+    \tilde{\pi}_{K+1} \sim \Beta{1}{\alpha},
+  \end{equation}
+  set $\pi_{K+1} := \pi_{new} \tilde{\pi}_{K+1}$, and set $\pi_{new}
+  := 1 - \sum_{k=1}^{K+1} \pi_k$, and then increment $K$ before
+  sampling the next $z_i$.
+
+  Sampling $\theta$ is exactly as in the collapsed sampler, since
+  the distribution depends only on $z$ and $y$.
 
 \section{An Infinite State HMM}
 \label{sec:an-infinite-state}
 
+We would like to adapt the nonparametric DP mixture model to the
+sequential setting to define an infinite state HMM 
+in an analogous way to that in which the finite
+mixture model was adapted to create a finite state HMM.  There, the
+link between the mixture model and the $K$-state HMM was that the HMM
+consisted of $K$ separate $K$-state mixture models: one associated
+with each state.  That is, after visiting state $k$, the next
+observation is drawn from mixture model $k$.
+
+Naively, then, we might then try to define a countably infinite set of
+mixture models, each with a DP prior, and after visiting component
+$k$, draw the next observation from mixture model $k$.  However, if
+the prior on the emission parameters $\theta$ is continuous, then with
+probability 1 the set of mixture components will be non-overlapping,
+and hence we will never revisit the same component twice.
+
+% Perhaps instead we should draw only the mixing weights (that is, the
+% transition probabilities) separately for
+% each preceding state, and draw $\theta_j$ only once per
+% column.  However, this will not do what we want either.  By drawing 
+% probabilities from a Stick-Breaking
+% Process we will tend to get probabilities that decrease as we go, and
+% so by sampling the entries in each row of the transition matrix in
+% order, we are introducing a bias for every state to transition toward
+% states with low indices.  
+
 \subsection{The Hierarchical Dirichlet Process}
 \label{sec:hier-dirichl-proc}
 
+The key property that we want in an Infinite State HMM needs to have
+is that the mixture distributions need to be coupled --- that is, they
+need to share a set of components.  In order to accomplish this using
+a Dirichlet Process prior on the mixture parameters, the base measure
+needs to be discrete.
+
 \subsection{The HDP-HMM}
 \label{sec:hdp-hmm}
+
+\citet{teh2006hierarchical} defined the {\bf Hierarchical Dirichlet
+  Process} (HDP), in which a collection of Dirichlet Processes take as
+a common base measure a distribution itself drawn from a DP.  This
+model is then hierarchical in the same sense as a Bayesian hierarchical regression
+model, in which data sets from a collection of sources are assumed to
+have similar distributions, and hence are given a common prior whose
+parameters are informed by all of the data across sources.  
+
+Formally, we define
+\begin{align}
+  G_0 \sim \DP{\gamma H}
+\end{align}
+and
+\begin{align}
+  G_j \sim \DP{\alpha G_0}, \quad j = 1, 2, \dots, J
+\end{align}
+where $\gamma$ is a concentration parameter that governs the
+distribution of the weights of the atoms in the shared base measure
+$G_0$, with larger $\gamma$ leading to probability mass being
+dispersed among a large number of atoms, and smaller $\gamma$ leading
+to a concentration of mass in just a few components.  The
+concentration parameter $\alpha$ for the individual measures $G_j$
+governs how tightly clustered the individual $G_j$ are around the mean
+base measure $G_0$, with large $\alpha$ leading to the $G_j$ being
+highly similar to $G_0$, and small $\alpha$ leading to each $G_j$
+placing a lot of mass in a small number of components drawn from
+$G_0$, such that the average across $G_j$s still looks like $G_0$, 
+but where each $G_j$ may be quite different.
+
+While the effect of $\gamma$ is clear enough from the Stick-Breaking
+Process representation of DPs, it is worth examining how it is that
+the second-level concentration $\alpha$ governs the behavior of the
+atoms in the individual $G_j$.  We can see this using the
+Stick-Breaking Process as well.
+
+The effect of $\alpha$ is clearest when $\gamma$ is large, so that
+$G_0$ has little bits of mass at lots of different places, with
+location having much mass.  To draw a $G_j$ with this discrete $G_0$ 
+as a base measure, we begin with a stick of unit mass, and sample $\pi_1$ from a
+$\Beta{1}{\alpha}$ distribution.  We place a mass with this weight at
+a random location drawn from the countable set of possibilities given
+by $G_0$.  We then split the remaining mass by sampling from another
+$\Beta{1}{\alpha}$ distribution, choose another location independently
+from $G_0$, and so on.  First, imagine $\alpha$ is quite small.  Then
+the first mass is likely to be quite near 1, the secon is likely to
+take a large share of what's left, and so on.  So $G_j$ is likely to
+place most of its mass at a few locations, though {\em which}
+locations those are is uncertain due to the high dispersion in $G_0$.
+At the other extreme, suppose $\alpha$ is quite large.  Then each time
+we break off a mass, it is likely to be quite small, and it will take
+many breaks and samples from $G_0$ before we accumulate significant
+probability.  As a result, by the law of large numbers, 
+the distribution of this large number of small masses is likely to
+mimic closely the distribution in $G_0$.
+
+TODO: add a figure illustrating combinations of alpha and gamma
+
+\subsection{Adapting the HDP for an Infinite State HMM}
+
+We could use the HDP to define a coupled collection of mixture models,
+to model clustered data in several known contexts, as
+\citet{teh2006hierarchical} did to define coupled infinite mixtures of
+topics in various documents.  We can also use it to define a infinite
+collection of infinite mixtures in the form of an HMM with infinitely
+many states.
+
+Here, the ``data sources'' indexed by $j$ in the notation in the
+previous section correspond to different previous states in the hidden
+Markov chain, $\theta_j$ represents the emission parameters
+associated with state $j$ each hidden state, and $G_j$ represents the
+transition distribution from state $j$ to all other states (which are
+identified by their respective $\theta_{j'}$, and due to discreteness
+of $G_0$n, are the same countably infinite set for each source state).
 
 \section{Inference in Finite and Infinite State HMMs}
 \label{sec:inference-hdp-hmm}
