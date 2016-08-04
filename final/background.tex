@@ -176,9 +176,9 @@ A Gamma Process is a stochastic point process on $\mathbb{R}^{+} \times
 
   Having drawn $k-1$ point masses $(\pi_1, theta_1), \dots, (\pi_{k-1}, \theta_{k-1})$,
   \begin{enumerate}
-  \item \label{stick-step-1} Draw $\tilde{\pi_{k}} \sim \Beta{1}{\alpha}$.
-  \item \label{stick-step-2} Set $\pi_k = \tilde{\pi_k} \prod_{k'=1}^{K-1}
-    \tilde{\pi_{k'}}$.
+  \item \label{stick-step-1} Draw $\tilde{\pi}_{k} \sim \Beta{1}{\alpha}$.
+  \item \label{stick-step-2} Set $\pi_k = \tilde{\pi}_k \prod_{k'=1}^{K-1}
+    (1 - \pi_{k'})$.
   \item \label{stick-step-3} Draw $\theta_k \sim G_0$.
   \end{enumerate}
   where, when $k = 1$, the null product in step \ref{stick-step-2} is
@@ -511,11 +511,12 @@ Stick-Breaking Process as well.
 The effect of $\alpha$ is clearest when $\gamma$ is large, so that
 $G_0$ has little bits of mass at lots of different places, with
 location having much mass.  To draw a $G_j$ with this discrete $G_0$ 
-as a base measure, we begin with a stick of unit mass, and sample $\pi_1$ from a
+as a base measure, we begin with a stick of unit mass, and break off a
+mass by sampling from a
 $\Beta{1}{\alpha}$ distribution.  We place a mass with this weight at
 a random location drawn from the countable set of possibilities given
-by $G_0$.  We then split the remaining mass by sampling from another
-$\Beta{1}{\alpha}$ distribution, choose another location independently
+by $G_0$.  We then draw a random breaking point for remaining mass 
+from another $\Beta{1}{\alpha}$ distribution, choose another location independently
 from $G_0$, and so on.  First, imagine $\alpha$ is quite small.  Then
 the first mass is likely to be quite near 1, the secon is likely to
 take a large share of what's left, and so on.  So $G_j$ is likely to
@@ -530,6 +531,76 @@ mimic closely the distribution in $G_0$.
 
 TODO: add a figure illustrating combinations of alpha and gamma
 
+\subsection{A Stick-Breaking Representation of the Aggregate Weights
+  in an HDP}
+
+The second-level Stick-Breaking Process describes the weights of the
+atoms drawn from the base measure to form each $G_j$; however, since the base measure is
+discrete, we will assign more than one stick to the same location;
+thus if we want to describe the total mass that $G_j$ assigns to the
+location $\theta_k$, we need to account for the fact that this mass is
+the accumulation of infinitely many ``sticks''.  We can get a better
+handle on the distribution of these masses by considering the defining
+property of a Dirichlet Process random measure: namely, that the
+distribution of the values of the measure over any finite partition of
+$\Theta$ is a Dirichlet distribution.
+
+Denote by $\theta_1, \theta_2, \dots$ the locations of the atoms in
+$G_0$, with associated probabilities $\beta_1, \beta_2, \dots$.
+Consider the finite partition $\{\{\theta_1\}, \Theta \setminus
+\{\theta_1\}\}$, and define $\pi_{jk} := G_j(\theta_k), k = 1, 2,
+\dots$.  Then,
+\begin{align}
+  (\pi_{j1}, 1 - \pi_{j1}) \sim \Dir{\alpha
+    G_0(\theta_1), \alpha G_0(\Theta \setminus \theta_1)},
+\end{align}
+that is,
+\begin{align}
+  (\pi_{j1}, 1 - \pi_{j1}) \sim \Dir{\alpha
+    \beta_1, \alpha (1 - \beta_1)},
+\end{align}
+Since the first component of a two-component Dirichlet distribution
+has a Beta distribution with the same parameters, 
+this means that $\pi_{j1} \sim \Beta{\alpha \beta_1}{\alpha(1 -
+  \beta_1)}$.
+
+More generally, for any $K$, we have
+\begin{align}
+  (\pi_{j1}, \dots, \pi_{jK}, \sum_{k=K+1}^{\infty} \pi_{jk}) \sim
+  \Dir{\alpha \beta_1, \dots, \alpha \beta_K, \alpha
+    \sum_{k=K+1}^{\infty} \beta_k}
+\end{align}
+
+Thus we can construct the $\pi_{jk}$ weights directly via the
+following Stick-Breaking Process.  For $k = 1, 2, \dots$,
+  \begin{enumerate}
+  \item \label{stick-step-1} Draw $\tilde{\pi}_{jk} \sim \Beta{\alpha
+      \beta_k}{\alpha (1 - \sum_{k'=1}^k \beta_{k'})}$.
+  \item \label{stick-step-2} Set $\pi_{jk} = \tilde{\pi}_k \prod_{k'=1}^{K-1}
+    (1 - \pi_{k'})$.
+  \end{enumerate}
+
+\subsection{A Normalized Gamma Process Representation of the Weights
+  in the HDP}
+\label{sec:norm-gamma-proc-1}
+
+A Dirichlet distribution can be constructed by normalizing a set
+of Gamma random variables, where the shape parameters are equal to the
+parameters of the Dirichlet, and the rate parameters are a constant
+(what constant does not matter, since it will be normalized out
+anyway).  So we can write
+\begin{align}
+  \beta &\sim \GEM{\gamma} \\
+  \tilde{\pi}_{jk} &\stackrel{ind}{\sim} \Gamm{\alpha \beta_k}{1} \\
+  T_j &:= \sum_{k'} \tilde{\pi}_{jk'} \\
+  \pi_{jk} &:= T_j^{-1} \tilde{\pi}_{jk}
+\end{align}
+
+Since the sum of independent Gamma variates with a common rate
+parameter is a Gamma variate with the shared rate and whose shape is
+the sum of the shapes, we have $T_j \sim \Gamm{\alpha}{1}$, and
+conditioned on $T_j$ the $\pi_{jk}$ are independent.
+
 \subsection{Adapting the HDP for an Infinite State HMM}
 
 We could use the HDP to define a coupled collection of mixture models,
@@ -537,22 +608,83 @@ to model clustered data in several known contexts, as
 \citet{teh2006hierarchical} did to define coupled infinite mixtures of
 topics in various documents.  We can also use it to define a infinite
 collection of infinite mixtures in the form of an HMM with infinitely
-many states.
+many states.  \citet{beal2001infinite} first described an infinite HMM
+without explicitly making the connection to a Hierarchical Dirichlet
+Process; \citet{teh2006hierarchical} showed that, with a few
+differences, the model developed by \citeauthor{beal2001infinite}
+could be derived using an HDP.
 
-Here, the ``data sources'' indexed by $j$ in the notation in the
+In the HMM setting, the ``data sources'' indexed by $j$ in the notation in the
 previous section correspond to different previous states in the hidden
 Markov chain, $\theta_j$ represents the emission parameters
 associated with state $j$ each hidden state, and $G_j$ represents the
 transition distribution from state $j$ to all other states (which are
 identified by their respective $\theta_{j'}$, and due to discreteness
-of $G_0$n, are the same countably infinite set for each source state).
+of $G_0$n, are the same countably infinite set for each source
+state).  We will denote by $\pi_{jj'}$ the transition probability from
+state $j$ to state $j'$, where we have replaced the $k$ subscript by
+$j'$ to emphasize the fact that the set of source states and the set
+of destination states are the same.
+
+Then we can define the following prior on the elements of the transition matrix of the
+HDP-HMM:
+\begin{align}
+  \beta &\sim \GEM{\gamma} \\
+  \tilde{\pi}_{jj'} &\sim \Gamm{\alpha \beta_{j'}}{1} \\
+  T_j &:= \sum_{j'} \tilde{\pi}_{jj'} \\
+  \pi_{jj'} &:= T_j^{-1} \tilde{\pi}_{jj'} 
+\end{align}
+To complete the model, define a Markov chain over state indicators,
+$\{z_t\}_{t=1}^T$, with infinite transition matrix $\pi =
+(\pi_{jj'})$, a prior measure, $H$, on the collection of emission parameters
+$\{\theta_j\}_{j=1}^\infty$, and the likelihood $F$:
+\begin{align}
+  z_t \given z_{t-1} &\sim \Discrete{\pi_{z_{t-1}1},\pi_{z_{t-1}2},
+    \dots} \\
+  \theta_j &\stackrel{i.i.d.}{\sim} H \\
+  y_t \given z_t &\sim F(\theta_j)
+\end{align}
 
 \section{Inference in Finite and Infinite State HMMs}
 \label{sec:inference-hdp-hmm}
 
+A variety of inference algorithms have been developed for both finite
+state and infinite state Bayesian Hidden
+Markov Models, including variational methods (see \cite{beal2003variational} for
+a review of the finite-state case, and \cite{johnson2014stochastic}
+for the infinite-state case), and particle filters 
+\citep{fearnhead2003line, tripuraneni2015particle}, as well as a number
+of different Gibbs-sampling algorithms \citep{teh2006hierarchical,
+  vangael2008beam, fox2008hdp, johnson2013bayesian}.  
+The key difference among the Gibbs samplers is
+the treatment of the latent state sequence, $\{z_t\}$.  One
+distinction is whether each $z_t$ is put in its own block and sampled conditioned on
+all of the others (as in \citeauthor{teh2006hierarchical}), or whether
+the full $z_t$ sequence is sampled at once, as in
+\citeauthor{vangael2008beam}, \citeauthor{fox2008hdp} and
+\citeauthor{johnson2013bayesian}.  I focus here on the latter case,
+since the Gibbs sampler developed in Chapter \ref{chapter:HaMMLeT} for
+the new HaMMLeT model is of this type.
+
 \subsection{The Forward Backward Algorithm}
 \label{sec:forw-backw-algor-1}
 
-\subsection{Two Gibbs Samplers for the HDP-HMM}
+In a non-dynamic mixture model, the component labels are mutually
+independent given the component parameters, and hence a Gibbs sampler
+can trivially sample all of them simultaneously.  In the dynamic case,
+however, the distribution of each state indicator depends on the
+previous indicator, which depends on the previous one, etc.
+Moreoever, as a result of this propagation of dependence, the data at
+time $t$ is indirect evidence for the indicators not just at time $t$,
+but at {\em all other} times as well.  As a result,
+sampling the $\{z_t\}$ sequence jointly requires care to appropriately
+account for all of these dependencies.
+
+Because of the Markov assumption, the set $\{z_1, \dots,
+z_{t-1}\}$ is conditionally independent of the set $\{z_{t+1}, \dots,
+z_{T}\}$, as well as of the data $\{y_{t+1}, \dots, y_{T}\}$, given
+the indicator $z_t$.
+
+\subsection{A Gibbs Sampler for the HDP-HMM}
 
 \subsection{Beam Sampling in the HDP-HMM}

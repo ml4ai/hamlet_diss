@@ -21,6 +21,10 @@
 
 (toc "toc" "    1 Statistical Models" "/Users/cdawson/dissertation/final/intro.tex" nil 2 "1" "\\section{Statistical Models}" 1)
 
+(toc "toc" "      1.1 An overview of the dissertation" "/Users/cdawson/dissertation/final/intro.tex" nil 3 "1.1" "\\subsection{An overview of the dissertation}" 4930)
+
+("sec:an-overv-diss" "s" nil "/Users/cdawson/dissertation/final/intro.tex" nil "")
+
 (toc "toc" "    2 Model Selection" "/Users/cdawson/dissertation/final/intro.tex" nil 2 "2" "\\section{Model Selection}" 802)
 
 ("sec:model-selection" "s" "\\subsection{The Likelihood Function and the Conservation of Explanatory Power}  In a parametric mode" "/Users/cdawson/dissertation/final/intro.tex" nil)

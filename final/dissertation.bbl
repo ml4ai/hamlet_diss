@@ -6,6 +6,11 @@ Baum, L.~E. and Petrie, T. (1966).
   markov chains.
 \newblock {\em The annals of mathematical statistics}, 37(6):1554--1563.
 
+\bibitem[Beal, 2003]{beal2003variational}
+Beal, M.~J. (2003).
+\newblock {\em Variational algorithms for approximate Bayesian inference}.
+\newblock University of London London.
+
 \bibitem[Beal et~al., 2001]{beal2001infinite}
 Beal, M.~J., Ghahramani, Z., and Rasmussen, C.~E. (2001).
 \newblock The infinite hidden markov model.
@@ -31,6 +36,12 @@ Duane, S., Kennedy, A.~D., Pendleton, B.~J., and Roweth, D. (1987).
 Epanechnikov, V.~A. (1969).
 \newblock Non-parametric estimation of a multivariate probability density.
 \newblock {\em Theory of Probability \& Its Applications}, 14(1):153--158.
+
+\bibitem[Fearnhead and Clifford, 2003]{fearnhead2003line}
+Fearnhead, P. and Clifford, P. (2003).
+\newblock On-line inference for hidden {M}arkov models via particle filters.
+\newblock {\em Journal of the Royal Statistical Society: Series B (Statistical
+  Methodology)}, 65(4):887--899.
 
 \bibitem[Ferguson, 1973]{ferguson1973bayesian}
 Ferguson, T.~S. (1973).
@@ -65,6 +76,11 @@ Ishwaran, H. and Zarepour, M. (2000).
 \newblock Markov chain {M}onte {C}arlo in approximate {D}irichlet and beta
   two-parameter process hierarchical models.
 \newblock {\em Biometrika}, 87(2):371--390.
+
+\bibitem[Johnson and Willsky, 2014]{johnson2014stochastic}
+Johnson, M. and Willsky, A.~S. (2014).
+\newblock Stochastic variational inference for {B}ayesian time series models.
+\newblock In {\em ICML}, pages 1854--1862.
 
 \bibitem[Johnson and Willsky, 2013]{johnson2013bayesian}
 Johnson, M.~J. and Willsky, A.~S. (2013).
@@ -139,6 +155,18 @@ Teh, Y.~W. (2011).
 Teh, Y.~W., Jordan, M.~I., Beal, M.~J., and Blei, D.~M. (2006).
 \newblock Hierarchical {D}irichlet processes.
 \newblock {\em Journal of the American Statistical Association}, 101(476).
+
+\bibitem[Tripuraneni et~al., 2015]{tripuraneni2015particle}
+Tripuraneni, N., Gu, S., Ge, H., and Ghahramani, Z. (2015).
+\newblock Particle {G}ibbs for infinite hidden {M}arkov models.
+\newblock In {\em Advances in Neural Information Processing Systems}, pages
+  2395--2403.
+
+\bibitem[Van~Gael et~al., 2008]{vangael2008beam}
+Van~Gael, J., Saatci, Y., Teh, Y.~W., and Ghahramani, Z. (2008).
+\newblock Beam sampling for the infinite hidden {M}arkov model.
+\newblock In {\em Proceedings of the 25th International Conference on Machine
+  Learning}, pages 1088--1095. ACM.
 
 \bibitem[Wasserman, 2007]{wasserman2007nonparametric}
 Wasserman, L. (2007).
