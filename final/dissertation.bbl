@@ -109,15 +109,15 @@ McLachlan, G. and Peel, D. (2004).
 \newblock {\em Finite mixture models}.
 \newblock John Wiley \& Sons.
 
+\bibitem[Neal, 2003]{neal2003slice}
+Neal, R.~M. (2003).
+\newblock Slice sampling.
+\newblock {\em Annals of statistics}, pages 705--741.
+
 \bibitem[Neal et~al., 2011]{neal2011mcmc}
 Neal, R.~M. et~al. (2011).
 \newblock {MCMC} using {H}amiltonian dynamics.
 \newblock {\em Handbook of Markov Chain Monte Carlo}, 2:113--162.
-
-\bibitem[Paisley et~al., 2011]{paisley2011discrete}
-Paisley, J., Wang, C., and Blei, D. (2011).
-\newblock The discrete infinite logistic normal distribution.
-\newblock {\em arXiv preprint arXiv:1103.4789}.
 
 \bibitem[Parzen, 1962]{parzen1962estimation}
 Parzen, E. (1962).

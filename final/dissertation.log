@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016/MacPorts 2016_0) (preloaded format=pdflatex 2016.7.22)  3 AUG 2016 22:39
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016/MacPorts 2016_0) (preloaded format=pdflatex 2016.7.22)  4 AUG 2016 17:35
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -467,7 +467,7 @@ Weights
 [6
 
 ]
-Overfull \hbox (20.8322pt too wide) in paragraph at lines 71--71
+Overfull \hbox (20.8322pt too wide) in paragraph at lines 74--74
 [][] []\OT1/cmr/m/sc/12 SEPARATE SIM-I-LAR-I-TIES AND EMIS-SIONS: LEARN-ING TON
 AL 
  []
@@ -496,37 +496,37 @@ List of Figures
 Abstract
 (./abstract.tex [11
 
-] [12]) [13]
+]) [12]
 \c@s@avepageno=\count121
  (./abstract.tex [1
 
 
-] [2]) [3]
+]) [2]
 Chapter 1
-(./intro.tex [14
+(./intro.tex [13
 
 
-] [15] [16] [17] [18] [19] [20]
-<fig/test_linear.pdf, id=86, 361.35pt x 361.35pt>
+] [14] [15] [16] [17] [18] [19]
+<fig/test_linear.pdf, id=80, 361.35pt x 361.35pt>
 File: fig/test_linear.pdf Graphic file (type pdf)
  <use fig/test_linear.pdf>
 Package pdftex.def Info: fig/test_linear.pdf used on input line 294.
 (pdftex.def)             Requested size: 143.09538pt x 143.09283pt.
 
-<fig/test_quadratic.pdf, id=87, 361.35pt x 361.35pt>
+<fig/test_quadratic.pdf, id=81, 361.35pt x 361.35pt>
 File: fig/test_quadratic.pdf Graphic file (type pdf)
 
 <use fig/test_quadratic.pdf>
 Package pdftex.def Info: fig/test_quadratic.pdf used on input line 300.
 (pdftex.def)             Requested size: 143.09538pt x 143.09283pt.
 
-<fig/test_overfit.pdf, id=88, 361.35pt x 361.35pt>
+<fig/test_overfit.pdf, id=82, 361.35pt x 361.35pt>
 File: fig/test_overfit.pdf Graphic file (type pdf)
  <use fig/test_overfit.pdf>
 Package pdftex.def Info: fig/test_overfit.pdf used on input line 306.
 (pdftex.def)             Requested size: 143.09538pt x 143.09283pt.
 
-<fig/poly_errors.pdf, id=89, 361.35pt x 361.35pt>
+<fig/poly_errors.pdf, id=83, 361.35pt x 361.35pt>
 File: fig/poly_errors.pdf Graphic file (type pdf)
  <use fig/poly_errors.pdf>
 Package pdftex.def Info: fig/poly_errors.pdf used on input line 311.
@@ -536,55 +536,56 @@ Overfull \hbox (6.11047pt too wide) in paragraph at lines 292--322
  [][]  []  [] 
  []
 
-[21 <./fig/test_linear.pdf> <./fig/test_quadratic.pdf> <./fig/test_overfit.pdf>
- <./fig/poly_errors.pdf>] [22] [23] [24] [25] [26] [27]) [28]
+[20 <./fig/test_linear.pdf> <./fig/test_quadratic.pdf> <./fig/test_overfit.pdf>
+ <./fig/poly_errors.pdf>] [21] [22] [23] [24] [25] [26]) [27]
 Chapter 2
-(./background.tex [29
+(./background.tex [28
 
-] [30]
+] [29]
 Overfull \hbox (6.19814pt too wide) in paragraph at lines 118--122
 \OT1/cmr/m/n/12 Ferguson (1973) also showed that the Dirich-let Pro-cess arises
  by nor-mal-iz-ing a \OT1/cmr/bx/n/12 Gamma
  []
 
-[31] [32] [33] [34] [35] [36] [37] [38] [39] [40] [41] [42] [43]) [44]
+[30] [31] [32] [33] [34] [35] [36] [37] [38] [39] [40] [41] [42] [43] [44]
+[45] [46] [47] [48] [49]) [50]
 Chapter 3
-(./hammlet.tex [45
+(./hammlet.tex [51
 
-] [46] [47] [48] [49] [50] [51] [52]
+] [52] [53] [54] [55] [56] [57] [58]
 Overfull \hbox (24.18925pt too wide) in paragraph at lines 310--316
 \OT1/cmr/m/n/12 It is easy to show (and well known) that the marginal dis-tri-b
 u-tion of $\OML/cmm/m/it/12 n[]$ \OT1/cmr/m/n/12 is $[](\OML/cmm/m/it/12 ^^Y[]^
 ^^[]\OT1/cmr/m/n/12 )$,
  []
 
-[53]
+[59]
 Overfull \hbox (5.57597pt too wide) in paragraph at lines 398--398
 [] 
  []
 
-[54]
+[60]
 Overfull \hbox (1.37006pt too wide) in paragraph at lines 414--424
 []\OT1/cmr/m/n/12 The HDP Hid-den Semi-Markov Model (HDP-HSMM; John-son and Wil
 l-sky (2013))
  []
 
-[55] [56] [57] [58] [59] [60]
+[61] [62] [63] [64] [65] [66]
 Overfull \hbox (11.47104pt too wide) in paragraph at lines 724--724
 [] 
  []
 
-[61] [62] [63] [64] [65]) [66]
+[67] [68] [69] [70] [71]) [72]
 Chapter 4
-(./cocktail-party.tex [67
+(./cocktail-party.tex [73
 
-] [68] [69] [70] [71]
+] [74] [75] [76] [77]
 Overfull \hbox (10.05522pt too wide) in paragraph at lines 248--248
 [] 
  []
 
-[72] [73] [74]
-<fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/accuracy.pdf, id=287, 361.35pt x 361.35
+[78] [79] [80]
+<fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/accuracy.pdf, id=303, 361.35pt x 361.35
 pt>
 File: fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/accuracy.pdf Graphic file (type pd
 f)
@@ -593,7 +594,7 @@ Package pdftex.def Info: fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/accuracy.pdf us
 ed on input line 341.
 (pdftex.def)             Requested size: 173.44534pt x 173.44603pt.
 
-<fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/F1_score.pdf, id=288, 361.35pt x 361.35
+<fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/F1_score.pdf, id=304, 361.35pt x 361.35
 pt>
 File: fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/F1_score.pdf Graphic file (type pd
 f)
@@ -602,7 +603,7 @@ Package pdftex.def Info: fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/F1_score.pdf us
 ed on input line 345.
 (pdftex.def)             Requested size: 173.44534pt x 173.44603pt.
 
-<fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/lambda.pdf, id=289, 361.35pt x 361.35pt
+<fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/lambda.pdf, id=305, 361.35pt x 361.35pt
 >
 File: fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/lambda.pdf Graphic file (type pdf)
 
@@ -611,14 +612,14 @@ Package pdftex.def Info: fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/lambda.pdf used
  on input line 350.
 (pdftex.def)             Requested size: 173.44534pt x 173.44603pt.
 
-<fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/n_dot.pdf, id=290, 361.35pt x 361.35pt>
+<fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/n_dot.pdf, id=306, 361.35pt x 361.35pt>
 File: fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/n_dot.pdf Graphic file (type pdf)
 <use fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/n_dot.pdf>
 Package pdftex.def Info: fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/n_dot.pdf used 
 on input line 353.
 (pdftex.def)             Requested size: 173.44534pt x 173.44603pt.
 
-<fig/synth16/w0/noLT_s0/accuracy.pdf, id=291, 361.35pt x 361.35pt>
+<fig/synth16/w0/noLT_s0/accuracy.pdf, id=307, 361.35pt x 361.35pt>
 File: fig/synth16/w0/noLT_s0/accuracy.pdf Graphic file (type pdf)
 
 <use fig/synth16/w0/noLT_s0/accuracy.pdf>
@@ -626,7 +627,7 @@ Package pdftex.def Info: fig/synth16/w0/noLT_s0/accuracy.pdf used on input line
  388.
 (pdftex.def)             Requested size: 173.44534pt x 173.44603pt.
 
-<fig/synth16/w0/noLT_s0/F1_score.pdf, id=292, 361.35pt x 361.35pt>
+<fig/synth16/w0/noLT_s0/F1_score.pdf, id=308, 361.35pt x 361.35pt>
 File: fig/synth16/w0/noLT_s0/F1_score.pdf Graphic file (type pdf)
 
 <use fig/synth16/w0/noLT_s0/F1_score.pdf>
@@ -634,7 +635,7 @@ Package pdftex.def Info: fig/synth16/w0/noLT_s0/F1_score.pdf used on input line
  392.
 (pdftex.def)             Requested size: 173.44534pt x 173.44603pt.
 
-<fig/synth16/w0/noLT_s0/lambda.pdf, id=293, 361.35pt x 361.35pt>
+<fig/synth16/w0/noLT_s0/lambda.pdf, id=309, 361.35pt x 361.35pt>
 File: fig/synth16/w0/noLT_s0/lambda.pdf Graphic file (type pdf)
 
 <use fig/synth16/w0/noLT_s0/lambda.pdf>
@@ -642,20 +643,20 @@ Package pdftex.def Info: fig/synth16/w0/noLT_s0/lambda.pdf used on input line 3
 98.
 (pdftex.def)             Requested size: 173.44534pt x 173.44603pt.
 
-<fig/synth16/w0/noLT_s0/n_dot.pdf, id=294, 361.35pt x 361.35pt>
+<fig/synth16/w0/noLT_s0/n_dot.pdf, id=310, 361.35pt x 361.35pt>
 File: fig/synth16/w0/noLT_s0/n_dot.pdf Graphic file (type pdf)
 
 <use fig/synth16/w0/noLT_s0/n_dot.pdf>
 Package pdftex.def Info: fig/synth16/w0/noLT_s0/n_dot.pdf used on input line 40
 1.
 (pdftex.def)             Requested size: 173.44534pt x 173.44603pt.
-) [75] [76 <./fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/accuracy.pdf> <./fig/cockt
+) [81] [82 <./fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/accuracy.pdf> <./fig/cockt
 ail_s16_m12/w0/h10.0_nocs_cp1/F1_score.pdf> <./fig/cocktail_s16_m12/w0/h10.0_no
-cs_cp1/lambda.pdf> <./fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/n_dot.pdf>] [77 <.
+cs_cp1/lambda.pdf> <./fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/n_dot.pdf>] [83 <.
 /fig/synth16/w0/noLT_s0/accuracy.pdf> <./fig/synth16/w0/noLT_s0/F1_score.pdf> <
 ./fig/synth16/w0/noLT_s0/lambda.pdf> <./fig/synth16/w0/noLT_s0/n_dot.pdf>]
 Chapter 5
-(./redd.tex [78
+(./redd.tex [84
 
 ]
 Overfull \hbox (9.00864pt too wide) in paragraph at lines 23--29
@@ -664,9 +665,9 @@ cmr/m/n/12 . Rather than the ma-trix given by $(\OML/cmm/m/it/12 w[]\OT1/cmr/m/
 n/12 )[]$,
  []
 
-[79] [80] [81]
+[85] [86] [87]
 <data/REDD/jw2013_downsampled_intervals/house_1_1200_6800/house_1_1200-6800.pdf
-, id=358, 578.16pt x 650.43pt>
+, id=374, 578.16pt x 650.43pt>
 File: data/REDD/jw2013_downsampled_intervals/house_1_1200_6800/house_1_1200-680
 0.pdf Graphic file (type pdf)
 
@@ -675,29 +676,29 @@ File: data/REDD/jw2013_downsampled_intervals/house_1_1200_6800/house_1_1200-680
 Package pdftex.def Info: data/REDD/jw2013_downsampled_intervals/house_1_1200_68
 00/house_1_1200-6800.pdf used on input line 141.
 (pdftex.def)             Requested size: 433.62001pt x 487.8213pt.
-) [82] [83 <./data/REDD/jw2013_downsampled_intervals/house_1_1200_6800/house_1_
+) [88] [89 <./data/REDD/jw2013_downsampled_intervals/house_1_1200_6800/house_1_
 1200-6800.pdf>]
 Chapter 6
-(./music.tex [84
+(./music.tex [90
 
-] [85] [86] [87]) [88]
+] [91] [92] [93]) [94]
 Chapter 7
-(./discussion.tex) (./dissertation.bbl [89
+(./discussion.tex) (./dissertation.bbl [95
 
 ]
 References
-[90
+[96
 
-] [91]) [92] (./dissertation.aux)
+] [97]) [98] (./dissertation.aux)
 
 LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 5419 strings out of 494114
- 79947 string characters out of 6155601
- 143539 words of memory out of 5000000
- 8607 multiletter control sequences out of 15000+600000
+ 5421 strings out of 494114
+ 79970 string characters out of 6155601
+ 143553 words of memory out of 5000000
+ 8609 multiletter control sequences out of 15000+600000
  15803 words of font info for 58 fonts, out of 8000000 for 9000
  430 hyphenation exceptions out of 8191
  38i,14n,43p,1014b,503s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -720,10 +721,10 @@ opt/local/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy6.pfb></opt/lo
 cal/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy8.pfb></opt/local/sh
 are/texmf-texlive/fonts/type1/public/amsfonts/cm/cmti12.pfb></opt/local/share/t
 exmf-texlive/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on dissertation.pdf (95 pages, 671197 bytes).
+Output written on dissertation.pdf (100 pages, 683505 bytes).
 PDF statistics:
- 530 PDF objects out of 1000 (max. 8388607)
- 326 compressed objects within 4 object streams
+ 546 PDF objects out of 1000 (max. 8388607)
+ 337 compressed objects within 4 object streams
  0 named destinations out of 1000 (max. 500000)
  66 words of extra memory for PDF output out of 10000 (max. 10000000)
 

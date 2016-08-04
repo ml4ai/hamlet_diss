@@ -678,13 +678,266 @@ Moreoever, as a result of this propagation of dependence, the data at
 time $t$ is indirect evidence for the indicators not just at time $t$,
 but at {\em all other} times as well.  As a result,
 sampling the $\{z_t\}$ sequence jointly requires care to appropriately
-account for all of these dependencies.
+account for all of these dependencies.  The total number of possible
+sequences in a model with $J$ states and $T$ observations is $T^J$,
+which is an unmanageable number to consider exhausitvely.  In this section I derive the
+{\bf forward-backward algorithm} (CITATION) for a $J$ state HMM.
+The forward-backward algorithm is an efficient dynamic-programming
+technique for sampling the $\{z_t\}$ sequence given the transition
+matrix, $\pi$, the emission parameters, $\theta$, and the data, 
+$y_1, \dots, y_T$, which requires only $O(J^2 T)$ computation.
 
 Because of the Markov assumption, the set $\{z_1, \dots,
 z_{t-1}\}$ is conditionally independent of the set $\{z_{t+1}, \dots,
 z_{T}\}$, as well as of the data $\{y_{t+1}, \dots, y_{T}\}$, given
-the indicator $z_t$.
+the indicator $z_t$.  The forward-backward algorithm
+takes advantage of this conditional independence property to
+iteratively compute the marginal distribution of each $z_t$ 
+given only the data from $y_1$ through $y_t$ (the ``forward step''), 
+and then sample the $\{z_t\}$ sequence starting with $z_T$ and working
+backward to $z_1$ (the backward step).
 
-\subsection{A Gibbs Sampler for the HDP-HMM}
+I describe the backward step first, since this will make clearer the
+need for the forward step.
+
+\paragraph{The Backward Step}
+In the backward step, we iteratively sample $z_t$ given $z_{t+1}$, and
+the model parameters and data.  As noted above, conditioned on
+$z_{t+1}$, $z_{t}$ is conditionally independent of all ``future''
+data: $y_{t+1}, \dots, y_T$.  Using this fact and Bayes' rule, we have
+\begin{align}
+  p(z_{t}  = j \given z_{t+1}, y) &\propto p(z_t  = j \given z_{t+1}, y_1,
+  \dots, y_t) \\
+  &\propto p(z_t = j \given y_1, \dots, y_t) p(z_{t+1} \given z_t = j) \\
+  &= b_t(j) \pi_{jz_{t+1}}
+\end{align}
+where $b_t(j)$ is shorthand notation for the probability
+$p(z_t = j \given y_1, \dots, y_t)$, and we have omitted dependence on
+$\pi$ and $\theta$ for conciseness.  Hence if we can compute $b_t(j)$
+for each $j = 1, \dots, J$ and each $t = 1, \dots, T$, then it is
+straigtforward to sample the $z_t$ sequence backward from $T$ to 1.
+The computation of $b_t$ is the purpose of the forward step.
+
+\paragraph{The Forward Step}
+\label{sec:forward-step}
+
+The goal of the forward step is to compute at each $t$ the partial posterior
+distribution $b_t$ as defined above.  We can accomplish this via an
+iterative ``message passing'' scheme, beginning at $b_1$.
+
+By definition of the HMM we have
+\begin{align}
+  p(z_1 = j \given y_1) &\propto p(z_t = j) p(y_1 \given z_t = j) \\
+  &= \pi_{0j} f(y_1 \given \theta_{j})
+\end{align}
+
+Now, suppose we have computed $b_t$ for some $t$.  Then we can
+calculate the next ``message'', $b_{t+1}$ as follows, using the conditional independence
+properties of the HMM:
+\begin{align}
+  b_{t+1}(j') &= p(z_{t+1} = j' \given y_1, \dots, y_{t+1}) \\
+  &\propto p(z_{t+1} = j', y_1, \dots,
+  y_{t+1})\\
+  &\propto p(z_{t+1} = j', y_1, \dots, y_{t}) p(y_{t+1} \given z_{t+1} = j') \\
+  &= \sum_{j} p(z_{t} = j, z_{t+1} = j',  y_1, \dots,
+  y_{t}) p(y_{t+1} \given z_{t+1} = j') \\
+  &= \sum_{j} p(z_{t} = j, y_1, \dots, y_{t})
+  p(z_{t+1}  = j' \given z_{t} = j) p(y_{t+1} \given z_{t+1} = j') \\
+  &\propto \sum_{j} b_{t}(j) \pi_{jj'} f(y_{t+1} \given \theta_{j'})
+\end{align}
+
+Thus to sample the full sequence $\{z_t\}_{t=1}^T$ we first do a
+forward pass to calculate $b_t(j)$ for each $t,j$, and then
+iteratively sample each $z_t$ beginning from $z_T$ and working backward
+to $z_1$.  At each $t$ we need to compute $J^2$ products and a sum
+over $J$ terms, and this needs to occur for each $t = 1, \dots, T$, so
+the overall computation required for the forward step is $O(TJ^2)$.
+The backward step requires only $TJ$ multiplications, and so the full
+forward-backward algorithm is $O(TJ^2)$.
+
+\subsection{Gibbs Sampling in the HDP-HMM}
+
+In a finite-state HMM we can construct a straightforward Gibbs
+sampler, employing the forward-backward algorithm to
+sample the state sequence, $\{z_{t}\}$, conditioned on the data and
+model parameters, and then conditioned on the state sequence, we can
+update the model parameters as in a non-dynamic mixture model: if
+conjugate priors are used, this can be done exactly; otherwise a
+proposal distribution can be chosen and the result accepted according
+to the Metropolis-Hastings acceptance probability formula.
+
+In the HDP-HMM, however, we have infinitely many states to consider,
+and so we cannot directly apply the forward-backward algorithm to
+sample the state sequence, since it requires evaluating the
+probability of being in every state at every time.  Thus if we want to
+construct a Gibbs sampler for the HDP-HMM, we have a few obvious
+options.  One is to sample each $z_t$ separately conditioned on the
+rest of the sequence, integrating out the transition matrix.  
+This is the approach taken in the Chinese
+Restaurant Franchise representation, which also integrates out the top
+level weights, $\beta$, as well as in the related auxiliary
+variable sampler, which instantiates $\beta$, both originally described 
+in \citet{teh2006hierarchical} (see that paper for details).  
+Alternatively, we can use a finite-state approximation, either by
+adaptively terminating the stick-breaking process once a target
+proportion, $(1 - \varepsilon)$, for some suitably small choice of
+$\epsilon$, of the stick has been broken off (this is referred to as a
+{\bf truncated approximation}), or by simply picking a fixed reasonably
+large but finite $J$.  This last approach is pursued by
+\cite{fox2008hdp} and \cite{johnson2013bayesian} in their
+generalizations of the HDP-HMM: the Sticky HDP-HMM and the HDP Hidden
+Semi-Markov Model (HDP-HSMM), respectively.
+
+Another alternative that allows the $z_t$ to be sampled jointly
+from the full infinite state HDP model is {\bf beam sampling}
+\cite{vangael2008beam}, which employs the technique of
+{\bf slice sampling} \cite{neal2003slice}.  Slice sampling is a Gibbs
+sampling method in which the goal of sampling values $x$ from a target
+density, $f(x)$ is achieved by the introduction of an auxiliary
+``slice'' variable, $u$ that depends on $x$ according to the density 
+$f(u \given x)$, chosen so that $f(x \given u)$ can be sampled from
+easily.  By the usual logic of a Gibbs sampler, in the limit we obtain
+samples from the joint distribution $f(x,u)$, the $x$-marginal of
+which is $f(x)$.
 
 \subsection{Beam Sampling in the HDP-HMM}
+
+Beam sampling \citep{vangael2008beam} combines slice sampling with the
+forward-backward algorithm as follows.  The original conditional
+distribution of each $z_t$ is given by the transition matrix:
+\begin{align}
+  p(z_t = j' \given z_{t-1} = j, \pi) = \pi_{jj'}
+\end{align}
+For each $t$ we introduce a slice variable, $u_t$, which is uniformly
+distributed on the interval $(0, \pi_{z_{t-1}z_t})$, so that we have
+the conditional density
+\begin{align}
+  p(u_t \given z, \pi) = \pi_{z_{t-1}z_t}^{-1} \mathbb{I}(0 < u_t < \pi_{z_{t-1}z_t})
+\end{align}
+This yields the joint density
+\begin{align}
+  p(z, u \given \pi) &= \prod_{t=1}^T \pi_{z_{t-1}z_t}
+  \pi_{z_{t-1}z_t}^{-1} \mathbb{I}(0 < u_t < \pi_{z_{t-1}z_t})\\
+  &= \prod_{t=1}^T \mathbb{I}(0 < u_t < \pi_{z_{t-1}z_t}),
+\end{align}
+that is, conditioned on the collection of slice variables (but not yet
+conditioned on the data), the distribution of state sequences is
+uniform over all sequences that meet the condition that
+$\pi_{z_{t-1}z_t} > u_t$ for all $t$.
+
+Since for each $j$, the transition probabilities, $\pi_{jj'}$ must sum
+to 1 over all $j'$, there can be only a finite number of choices for
+$j'$ at each $t$ that satisfy $\pi_{jj'} > u_t$; hence, conditional on
+$u$, we need only consider finitely many states during the forward and
+backward steps.
+
+Now, conditioning on the data $y$ as well, and defining
+$b^*_{t+1}(j') := p(z_{t+1} = j' \given u, y_1, \dots, y_{t+1})$, 
+the forward message passing recurrence relation becomes
+\begin{align}
+  b^*_{t+1}(j') &= p(z_{t+1} = j' \given u, y_1, \dots, y_{t+1})\\
+  &\propto p(z_{t+1} = j', u, y_1, \dots, y_{t}) p(y_{t+1} \given z_{t+1} = j') \\
+  &= p(y_{t+1} \given z_{t+1} = j') \sum_{j} p(z_{t} = j, z_{t+1} = j', u, y_1, \dots, y_{t}) \\
+  &= p(y_{t+1} \given z_{t+1} = j') \sum_{j} p(z_{t} = j, u, y_1, \dots, y_{t})
+  p(z_{t+1}  = j' \given z_{t} = j, u) \\
+  &\propto f(y_{t+1} \given \theta_{j'}) \sum_{j} b^*_{t}(j) I(\pi_{jj'} > u_{t+1}) 
+\end{align}
+Although the sum over $j$ is still technically over an infinite number
+of terms, we can show that only finitely many $j$ will have
+$b^*_{t}(j) > 0$.
+
+First, consider $b^*_1$.  We have
+\begin{align}
+  b^*_1(j') &\propto f(y_{1} \given \theta_{j'}) I(\pi_{0j'} > u_t) .
+\end{align}
+Since only finitely many entries in the initial distribution $\pi_0$
+can exceed $u_t$, $b^*_1(j')$ is 0 for all but finitely many $j'$.
+Now suppose that $b^*_t(j)$ is positive for finitely many $j$.  Denote
+this set by $\mathcal{J}_t$.  In order for $b^*_{t+1}(j')$ to be
+positive, we need to have $\pi_{jj'} > u_{t+1}$ for some $j \in
+\mathcal{J}_t$.  Since for each $j$, there are finitely many $j'$ satisfying
+$\pi_{jj'} > u_{t+1}$, and since there are finitely many $j \in
+\mathcal{J}_t$, there can be only finitely many $\pi_{jj'} > u_{t+1}$ across
+{\em all} combinations of $j$ and $j'$.  Hence, $b^*_{t+1}$ has finite support.
+
+The backward distribution for sampling $z_{t}$ given $z_{t+1}$ and $y$
+data becomes
+\begin{align}
+  p(z_t = j \given z_{t+1}, u, y) &\propto p(z_{t} = j \given u, y_1,
+  \dots, y_{t}) p(z_{t+1} \given z_t, u) \\
+  &= b^*_{t}(j) I(u_{t+1} > \pi_{jz_{t+1}})
+\end{align}
+which is again zero for all but finitely many $j$.
+
+Using this algorithm we can represent only those entries in the
+transition matrix $\pi$ that are needed, combining the mass of all
+unrepresented components into one value, $\pi_{j,new}$ for each
+$j$.  When performing the forward step, each time there is a $t$ and
+$j$ such that both $b^*_{t}(j) > 0$,$\pi_{j,new} > u_{t+1}$, then it is possible that the chain could visit a
+new state, and so we perform a stick-breaking step to instantiate the
+new component, and the new transition probabilities to and from that
+component.  Let $J$ be the number of states currently instantiated, so
+that the current representation of $\beta$ is $\beta_1, \dots,
+\beta_J, \beta_{new}$.  Then, to instantiate a new component, sample
+\begin{align}
+  \tilde{\beta}_{J+1} \sim \Beta{1}{\gamma}
+\end{align}
+set
+\begin{align}
+  \beta_{J+1} \gets \tilde{\beta}_{J+1} \beta_{new} \qquad \beta_{new}
+  \gets (1 - \tilde{\beta}_{J+1}) \beta_{new}
+\end{align}
+and for each $j = 1, \dots J$, sample
+\begin{align}
+  \tilde{\pi}_{j,J+1} \sim \Beta{\alpha \beta_{J+1}}{\alpha \beta_{new}}
+\end{align}
+and set
+\begin{align}
+  \pi_{j,J+1} \gets \tilde{\pi}_{j,J+1} \pi_{j,new} \qquad \pi_{J,new}
+  \gets (1 - \tilde{\pi}_{j,J+1}) \pi_{j,new}
+\end{align}
+Now, if $\pi_{j,J+1} > u_{t+1}$ for some $j$ in the support of
+$b^*_t$, then $J+1$ will be in the support of $b^*_{t+1}$, and we need
+to sample a new transition distribution from state $J+1$ according to
+\begin{align}
+  (\pi_{J+1,1}, \dots, \pi_{J+1,J+1}, \pi_{J+1,new}) \sim \Dir{\alpha
+    \beta_1, \dots, \alpha \beta_{J+1}, \alpha \beta_{new}}.
+\end{align}
+We repeat the above process until $\pi_{j,new} < u_{t+1}$ for all $j$,
+after which we can calculate $b^*_{t+1}$ and then move on to the next $t$.
+
+\section{Local Transitions}
+\label{sec:local-transitions}
+
+HDP models have been widely adopted in Bayesian statistics and
+machine learning.  However, a limitation of the vanilla HDP
+is that it offers no mechanism to model correlations between mixture
+components across contexts.  % Given the top level weights, one
+% construction of the second level weights is to sample a collection of
+% Gamma weights, one for each combination of context and component,
+% which are all mutually independent, and then normalize within contexts
+% to obtain valid mixture distributions; and so the only correlations
+% possible between components are the small negative correlations 
+% induced by normalization.
+This is limiting in many applications, where we expect certain 
+components to occur or not occur together.  In the HMM setting, 
+we might expect certain states to exhibit similar incoming and
+outgoing transition probabilities; that is, for certain rows and columns of the transition
+matrix to be correlated.  In particular, we might expect pairs of states that are
+``similar'' in some way to transition frequently to each other.  The
+HDP-HMM offers no mechanism to model this similarity structure.  
+
+In Chapter \ref{chapter:HaMMLeT}, I define a new model, the Hierarchical Dirichlet
+Process Hidden Markov Model with Local Transitions (HDP-HMM-LT, or
+HaMMLet, for short), which allows for correlations between rows and columns of the
+transition matrix by assigning each state a location in an abstract metric 
+space and promoting transitions between states
+that are near each other.  I present a Gibbs sampling scheme
+for inference in this model which employs an auxiliary variable scheme
+to produce simple conditional distributions.  Then, in Chapters
+\ref{chapter:cocktail-party} through \ref{chapter:music} I define
+concrete instantiations of this model for several kinds of data, and
+report experimental results showing that the new model in some cases
+achieves better inference performance than existing models.
+
+

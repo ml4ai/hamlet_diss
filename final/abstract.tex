@@ -5,10 +5,9 @@
 %\begin{abstractslong}    %uncommenting this line, gives a different abstract heading
 %\begin{abstracts}        %this creates the heading for the abstract page
 
-In a classical mixture modeling, each data point is modeled as arising
-i.i.d. (typically) from a weighted sum of probability distributions,
-where both the weights and the parameters of the mixture components
-are targets of inference.  When data arises from different sources
+In classical mixture modeling, each data point is modeled as arising
+i.i.d. (typically) from a weighted sum of probability distributions.
+When data arises from different sources
 that may not give rise to the same mixture distribution, a
 hierarchical model can allow the source contexts to share components while
 assigning different weights across them (while perhaps coupling the
@@ -19,34 +18,16 @@ infinite number of components: the Dirichlet Process provides a prior
 on the mixture weights that guards against overfitting.  The Hierarchical 
 Dirichlet Process (HDP) Mixture Model \citep{teh2006hierarchical} employs
 a separate DP Mixture Model for each context, but
-couples the weights across contexts by using a common base measure which is
-itself drawn from a top-level DP.  This coupling is critical to ensure
+couples the weights across contexts%  by using a common base measure which is
+% itself drawn from a top-level DP
+.  This coupling is critical to ensure
 that mixture components are reused across contexts.
-For example, in natural language topic modeling, a common application
-domain for mixture models, the components represent semantic topics,
-and the contexts are documents, and it is critical that topics be reused
-across documents.
+% For example, in natural language topic modeling, a common application
+% domain for mixture models, the components represent semantic topics,
+% and the contexts are documents, and it is critical that topics be reused
+% across documents.
 
-These models have been widely adopted in Bayesian statistics and
-machine learning.  However, a limitation of DPs is that the atoms
-are {\it a priori} exchangeable, and in the case of HDPs, the
-component weights are independent conditioned on the top-level
-measure.  This is unrealistic in many applications, including topic modeling, where certain
-components (e.g., topics) are expected to correlate across contexts
-(e.g., documents).  In the case of topic modeling, the Discrete
-Infinite Logistic Normal model (DILN; \citet{paisley2011discrete}) addresses
-this shortcoming by associating with each mixture component a latent
-location in an abstract metric, and rescaling each context-specific
-set of weights, initially drawn from an HDP, 
-by an exponentiated draw from a Gaussian Process (GP), so that
-components which are nearby in space tend to have their weights be
-scaled up or down together.  However, inference in this model requires
-the posterior distribution to be approximated by a variational family,
-as MCMC sampling from the exact posterior was deemed intractable.
-Thus, one goal of this dissertation is the development of simple MCMC
-algorithms for correlated components.
-
-A second application of HDPs is to time series
+An important application of HDPs is to time series
 models, in particular Hidden Markov Models (HMMs), where the HDP can be used
 as a prior on a doubly infinite transition matrix for the latent Markov
 chain, giving rise to the HDP-HMM (first developed, as the ``Infinite
@@ -54,16 +35,9 @@ HMM'', by \cite{beal2001infinite},
 and subsequently shown to be a case of an HDP by \citet{teh2006hierarchical}).  
 There, the hierarchy is over rows of the transition matrix,
 and the distributions across rows are coupled through a top-level
-Dirichlet Process.  The sequential nature of the problem introduces two
-added wrinkles, namely that: the contexts themselves are random (since
-the context when generating state $t$ is the state at time $t-1$),
-and the set of contexts is the same as the set of components.  Hence,
-not only might the components be correlated with each other via
-locations in some latent space, but we might expect that contexts that
-correspond to correlated components will overall have similar
-distributions.  
+Dirichlet Process. 
 
-In the first part of the dissertation, I will present a formal overview of
+In the first part of the dissertation, I present a formal overview of
 Mixture Models and Hidden Markov Models.  I then turn to a discussion
 of Dirichlet Processes and their various representations, as well as
 associated schemes for tackling the problem of doing approximate inference over an
@@ -71,24 +45,53 @@ infinitely flexible model with finite computational resources.  I will
 then turn to the Hierarchical Dirichlet Process (HDP) and its application to
 an infinite state Hidden Markov Model, the HDP-HMM.
 
-The central contribution of the dissertation is a novel probabilistic model, which I call the
-Hierarchical Dirichlet Process Hidden Markov Model With Local
+These models have been widely adopted in Bayesian statistics and
+machine learning.  However, a limitation of the vanilla HDP
+is that it offers no mechanism to model correlations between mixture
+components across contexts.  % Given the top level weights, one
+% construction of the second level weights is to sample a collection of
+% Gamma weights, one for each combination of context and component,
+% which are all mutually independent, and then normalize within contexts
+% to obtain valid mixture distributions; and so the only correlations
+% possible between components are the small negative correlations 
+% induced by normalization.
+This is limiting in many applications, including topic modeling,
+where we expect certain components to occur or not occur
+together.  In the HMM setting, we might expect certain states to
+exhibit similar incoming and outgoing transition probabilities; 
+that is, for certain rows and columns of the transition
+matrix to be correlated.  In particular, we might expect pairs of states that are
+``similar'' in some way to transition frequently to each other.  The
+HDP-HMM offers no mechanism to model this similarity structure.
+
+% In the case of topic modeling, the Discrete
+% Infinite Logistic Normal model (DILN; \citet{paisley2011discrete}) addresses
+% this shortcoming by associating with each mixture component a latent
+% location in an abstract metric, and rescaling each context-specific
+% set of weights, initially drawn from an HDP, 
+% by an exponentiated draw from a Gaussian Process (GP), so that
+% components which are nearby in space tend to have their weights be
+% scaled up or down together.  However, inference in this model requires
+% the posterior distribution to be approximated by a variational family,
+% as MCMC sampling from the exact posterior was deemed intractable.
+% Thus, one goal of this dissertation is the development of simple MCMC
+% algorithms for correlated components.
+
+The central contribution of the dissertation is a novel generalization
+of the HDP-HMM which I call the Hierarchical Dirichlet Process Hidden Markov Model With Local
 Transitions (HDP-HMM-LT, or HaMMLeT for short), 
-which achieves the goal of simultaneously modeling
-correlations between contexts and components by assigning each
-a location in a metric space and promoting transitions between states
+which allows for correlations between rows and columns of the
+transition matrix by assigning each state a location in an abstract metric 
+space and promoting transitions between states
 that are near each other.  I present a Gibbs sampling scheme
-for inference in this model, employing an augmented data
-representation to simplify the relevant conditional distributions.  I
-give a intuitive interpretation of the augmented representation by
-casting the discrete time chain as a continuous time chain in which
-durations are not observed, and in which some jump attempts fail and
-are never observed.  By tying the success probability of a jump
-between two states to the distance between them, the first successful
-(and therefore observed) jump is more likely to be to a nearby state.
-I refer to this representation as a Markov Process With Failed Jumps.
+for inference in this model, employing auxiliary variables to simplify 
+the relevant conditional distributions, which have a natural
+interpretation after re-casting the discrete time Markov chain as a 
+continuous time Markov Jump Process where holding times are integrated
+out, and where some jump attempts ``fail''.  I refer to this 
+representation as the Markov Process With Failed Jumps.
 I test this model on several synthetic and real data sets, showing
-that in at least some circumstances, the HaMMLeT model more
+that for data exhibiting the key property, the HaMMLeT model more
 effectively finds the latent time series structure underlying the observations.
 
 %\end{abstracts}
