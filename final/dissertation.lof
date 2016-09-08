@@ -14,6 +14,7 @@
 \addvspace {\medskipamount }
 \contentsline {figure}{\numberline {5.1}{\ignorespaces A sample data interval from the REDD dataset \cite {kolter2011redd}. The top channel contains the total measured power in watts consumed by a home during a period of approximately 24 hours. Each timestep represents a 20 second intervals, during which the amplitude recorded is a median of the amplitudes in the original higher resolution data.\relax }}{89}
 \addvspace {\medskipamount }
+\contentsline {figure}{\numberline {6.1}{\ignorespaces Left: Log likelihood on the training set by Gibbs iteration (marginalizing out state sequence) for LT and no LT (HDP-HMM) models. Right: Log likelihood on a held out test set.\relax }}{94}
 \addvspace {\medskipamount }
 \addvspace {\medskipamount }
 \addvspace {\medskipamount }

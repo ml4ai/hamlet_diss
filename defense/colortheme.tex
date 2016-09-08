@@ -1,0 +1,123 @@
+% \usepackage{mathpazo}
+
+% \mode<handout>{
+% \pgfpagesuselayout{3 on 1 with notes}[letterpaper, border, shrink=0mm]
+% }
+
+
+\definecolor{paperbg}{HTML}{FDF6E3}
+\definecolor{paperbgdark}{HTML}{EDE6CA}
+\definecolor{solarred}{HTML}{DC322F}
+\definecolor{solarlightorange}{HTML}{EBD6C3}
+\definecolor{solarlightgreen}{HTML}{F3FFC8}
+\definecolor{solarorange}{HTML}{C45B2A}
+\definecolor{solaryellow}{HTML}{A57900}
+\definecolor{solargreen}{HTML}{859900}
+\definecolor{solarcyan}{HTML}{2AA198}
+\definecolor{solarblue}{HTML}{268BD2}
+\definecolor{solardarkblue}{HTML}{005BA2}
+\definecolor{solarviolet}{HTML}{6C71C4}
+\definecolor{solarmagenta}{HTML}{C05068}
+\definecolor{solarbase2}{HTML}{EEE8D5}
+\definecolor{solarbase1}{HTML}{93A1A1}
+\definecolor{solarbase00}{HTML}{657B83}
+\definecolor{solarbase01}{HTML}{586E75}
+\definecolor{solarbase015}{HTML}{174652}
+\definecolor{solarbase02}{HTML}{073642}
+\definecolor{solarbase03}{HTML}{002B36}
+\definecolor{functionblue}{HTML}{40A0B8}
+\definecolor{solarlightblue}{HTML}{D9EEEF}
+
+\usetheme{Singapore}
+\usecolortheme[accent=cyan]{solarized}
+
+\setbeamercolor{background canvas}{bg=white}
+% \mode<handout>{
+% \setbeamercolor{background canvas}{bg=white}
+% }
+\setbeamercolor{normal text}{fg=black}
+% \usecolortheme[named=functionblue]{structure}
+% \setbeamercolor{title in sidebar}{fg=solaryellow}
+% \setbeamercolor{author in sidebar}{fg=solaryellow}
+% \setbeamercolor{section in head/foot}{fg=paperbg}
+% \setbeamercolor{section in sidebar}{fg=functionblue}
+% \setbeamercolor{section in sidebar shaded}{fg=solarbase1}
+
+% % \usecolortheme{orchid}
+% \setbeamercolor{block body}{fg=solarbase01, bg=solarlightgreen}
+% \setbeamercolor{block title}{fg=paperbg, bg=solargreen}
+% \setbeamercolor{alertblock body}{fg=solarbase01, bg=solarlightorange}
+% \setbeamercolor{alertblock title}{fg=paperbg, bg=solarorange}
+% \setbeamertemplate{navigation symbols}{}
+
+\AtBeginDocument{%
+  % \setbeamercolor{frametitle}{fg=black}%
+  \pgfdeclareverticalshading{beamer@headfade}{\paperwidth}
+  {%
+    color(0.00cm)=(solarbase2!50!paperbg);%
+    color(0.00cm)=(solarbase2!50!paperbg)%
+  }
+  \setbeamercolor{section in head/foot}{fg=solaryellow}
+} 
+
+\newenvironment<>{attnblock}[1]{%
+  \begin{actionenv}#2%  
+      \def\insertblocktitle{#1}%
+      \par%
+      \mode<presentation>{%
+        \setbeamercolor{block title}{fg=paperbg, bg=solarorange}
+        \setbeamercolor{block body}{fg=solarbase01, bg=solarlightorange}
+        \setbeamercolor{itemize item}{fg=solarorange}
+        \setbeamercolor{itemize subitem}{fg=solarorange}
+        }%
+      \usebeamertemplate{block begin}}
+{\par\usebeamertemplate{block end}\end{actionenv}}
+
+\newenvironment<>{infoblock}[1]{%
+  \begin{actionenv}#2%  
+      \def\insertblocktitle{#1}%
+      \par%
+      \mode<presentation>{%
+        \setbeamercolor{block title}{fg=paperbg, bg=solargreen}
+        \setbeamercolor{block body}{fg=solarbase01, bg=solarlightgreen}
+        \setbeamercolor{itemize item}{fg=solargreen}
+        \setbeamercolor{itemize subitem}{fg=solargreen}
+        \setbeamercolor{enumerate item}{fg=solargreen}
+        }%
+      \usebeamertemplate{block begin}}
+{\par\usebeamertemplate{block end}\end{actionenv}}
+
+\newenvironment<>{exblock}[1]{%
+  \begin{actionenv}#2%  
+      \def\insertblocktitle{#1}%
+      \par%
+      \mode<presentation>{%
+        \setbeamercolor{block title}{fg=paperbg, bg=functionblue}
+        \setbeamercolor{block body}{fg=solarbase01, bg=solarlightblue}
+        \setbeamercolor{itemize item}{fg=functionblue}
+        \setbeamercolor{itemize subitem}{fg=functionblue}
+        }%
+      \usebeamertemplate{block begin}}
+{\par\usebeamertemplate{block end}\end{actionenv}}
+
+% Double-line for start and end of epigraph.
+\newcommand{\epiline}{\hrule \vskip -.2em \hrule}
+% Massively humongous opening quotation mark.
+\newcommand{\hugequote}{%
+  \fontsize{42}{48}\selectfont \color{solarcyan} {\rm \textbf{``}}
+  \vskip -.5em
+}
+
+% Beautify quotations.
+\newcommand{\epigraph}[3]{%
+  \bigskip
+  \colorbox{solarbase2}{%
+    \parbox{#1\textwidth}{%
+    \epiline \vskip 1em {\hugequote} % \vskip -.5em
+    % \parindent 2.2em
+    {\rm #2}\begin{flushright}{\rm  #3}\end{flushright}
+    \epiline
+    }
+  }
+  \bigskip
+}

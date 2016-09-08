@@ -1,0 +1,112 @@
+;; RefTeX parse info file
+;; File: /Users/cdawson/dissertation/defense/slides.tex
+;; User: cdawson (Colin Dawson)
+
+(set reftex-docstruct-symbol '(
+
+
+(xr nil "\\\\\\\\\\\\")
+
+(index-tags)
+
+(is-multi t)
+
+(bibview-cache)
+
+(master-dir . "/Users/cdawson/dissertation/defense/")
+
+(label-numbers)
+
+(bof "/Users/cdawson/dissertation/defense/slides.tex")
+
+(bof "/Users/cdawson/dissertation/defense/packages.tex")
+
+(eof "/Users/cdawson/dissertation/defense/packages.tex")
+
+(bof "/Users/cdawson/dissertation/defense/macros.tex")
+
+(eof "/Users/cdawson/dissertation/defense/macros.tex")
+
+(bof "/Users/cdawson/dissertation/defense/colortheme.tex")
+
+(eof "/Users/cdawson/dissertation/defense/colortheme.tex")
+
+(toc "toc" "    1 Some Motivating Applications" "/Users/cdawson/dissertation/defense/slides.tex" nil 2 "1" "\\section{Some Motivating Applications}" 405)
+
+(toc "toc" "    2 Hidden Markov Models (HMMs)" "/Users/cdawson/dissertation/defense/slides.tex" nil 2 "2" "\\section{Hidden Markov Models (HMMs)}" 2176)
+
+("eq:12" "e" "%  % z_t \\given z_{t-1} &\\sim \\pi_{z_{t-1}} \\quad t = 1, \\dots, T " "/Users/cdawson/dissertation/defense/slides.tex" 3289)
+
+(toc "toc" "      2.1 Mixture Models" "/Users/cdawson/dissertation/defense/slides.tex" nil 3 "2.1" "\\subsection{Mixture Models}" 4350)
+
+("sec:mixture-models" "s" "\\begin{frame}{HMMs as Mixture Models} HMMs can be viewed as a dynamic version of a {\\bf mixture mode" "/Users/cdawson/dissertation/defense/slides.tex" nil)
+
+("eq:3" "s" "f(y) = \\sum_{j} \\pi_j f_k(y) " "/Users/cdawson/dissertation/defense/slides.tex" nil)
+
+("eq:4" "e" "f(y; \\pi, \\theta) = \\sum_{k=1}^K \\pi_k f(y; \\theta_k) " "/Users/cdawson/dissertation/defense/slides.tex" nil)
+
+("eq:5" "s" "\\pi_k &\\stackrel{i.i.d}{\\sim} \\mathrm{Dirichlet}(\\alpha\\mathbf{1}_K) " "/Users/cdawson/dissertation/defense/slides.tex" nil)
+
+(toc "toc" "    3 ``Nonparametric'' Bayesian Models" "/Users/cdawson/dissertation/defense/slides.tex" nil 2 "3" "\\section{``Nonparametric'' Bayesian Models}" 7597)
+
+(toc "toc" "      3.1 Infinite Mixture Models" "/Users/cdawson/dissertation/defense/slides.tex" nil 3 "3.1" "\\subsection{Infinite Mixture Models}" 7641)
+
+("sec:dirichl-proc-mixt" "s" "\\begin{frame} \\frametitle{Unbounded number of components} \\begin{itemize}[<+->] " "/Users/cdawson/dissertation/defense/slides.tex" nil)
+
+("eq:6" "e" "(\\mu(A_1), \\dots, \\mu(A_n)) \\sim \\mathrm{Dirichlet}(\\alpha G_0(A_1), \\dots, \\alpha G_0(A_n)) " "/Users/cdawson/dissertation/defense/slides.tex" nil)
+
+("eq:10" "e" "\\pi &\\sim \\mathrm{Stick}(\\alpha) " "/Users/cdawson/dissertation/defense/slides.tex" nil)
+
+(toc "toc" "      3.2 An Infinite HMM?" "/Users/cdawson/dissertation/defense/slides.tex" nil 3 "3.2" "\\subsection{An Infinite HMM?}" 10564)
+
+("sec:infinite-hmm" "s" "\\begin{frame}{Infinite State HMM} We want to allow HMM to have (countably) infinite state space. \\vs" "/Users/cdawson/dissertation/defense/slides.tex" nil)
+
+(toc "toc" "      3.3 Hierarchical Dirichlet Process Mixtures" "/Users/cdawson/dissertation/defense/slides.tex" nil 3 "3.3" "\\subsection{Hierarchical Dirichlet Process Mixtures}" 10992)
+
+("sec:dirichl-proc-mixt" "s" "\\begin{frame} \\frametitle{Hierarchical Dirichlet Processes} \\begin{itemize}[<+->] " "/Users/cdawson/dissertation/defense/slides.tex" nil)
+
+("eq:11" "e" "G_j \\stackrel{i.i.d}{\\sim} \\mathsf{DP}(\\alpha G_0), " "/Users/cdawson/dissertation/defense/slides.tex" nil)
+
+("eq:5" "e" "(\\pi_j, \\theta_j) &\\stackrel{i.i.d}{\\sim} \\mathrm{DP}(\\alpha G_0) " "/Users/cdawson/dissertation/defense/slides.tex" nil)
+
+(toc "toc" "    4 HDP HMM with Local Transitions" "/Users/cdawson/dissertation/defense/slides.tex" nil 2 "4" "\\section{HDP HMM with Local Transitions}" 13995)
+
+("sec:hdp-hidden-markov" "s" "%--------------------------------------------------- \\subsection{Adding the Concept of ``Local'' Tra" "/Users/cdawson/dissertation/defense/slides.tex" nil)
+
+(toc "toc" "      4.1 Adding the Concept of ``Local'' Transitions" "/Users/cdawson/dissertation/defense/slides.tex" nil 3 "4.1" "\\subsection{Adding the Concept of ``Local'' Transitions}" 14120)
+
+("eq:8" "e" "\\nu(d\\pi, d\\theta) = \\alpha \\pi^{-1} e^{-\\pi} d\\pi G_0(d\\theta) " "/Users/cdawson/dissertation/defense/slides.tex" nil)
+
+("eq:9" "e" "n(A) \\sim \\Pois{\\int_A \\nu(d\\pi, d\\theta)} " "/Users/cdawson/dissertation/defense/slides.tex" nil)
+
+("eq:14" "s" "\\tilde{\\pi}_{jj'} = \\frac{\\pi_{jj'}}{\\sum_{j''} \\pi_{jj''}} " "/Users/cdawson/dissertation/defense/slides.tex" nil)
+
+("eq:17" "e" "p(\\bz \\given \\pi, \\phi) = \\prod_{j} \\left(\\sum_{j''} \\pi_{jj''}\\phi_{jj''}\\right)^{-n_{j\\cdot}} \\pro" "/Users/cdawson/dissertation/defense/slides.tex" nil)
+
+("eq:18" "e" "u_j \\sim \\mathsf{Gamma}(n_{j\\cdot},\\sum_{j'}a_{jj'}) " "/Users/cdawson/dissertation/defense/slides.tex" nil)
+
+("eq:19" "e" "q_{jj'} \\sim \\mathsf{Poisson}(\\pi_{jj'}(1 - \\phi_{jj'}) u_j) " "/Users/cdawson/dissertation/defense/slides.tex" nil)
+
+("eq:20" "s" "\\mathcal{L}(\\pi \\given z, u, Q; \\phi) &\\propto \\prod_{j}\\prod_{j'} \\pi_{jj'}^{n_{jj'} + q_{jj'}} e^{" "/Users/cdawson/dissertation/defense/slides.tex" nil)
+
+(toc "toc" "      4.2 Posterior Inference" "/Users/cdawson/dissertation/defense/slides.tex" nil 3 "4.2" "\\subsection{Posterior Inference}" 20749)
+
+("eq:22" "e" "p(\\gamma, \\alpha, \\bbeta, \\bpi \\given \\mathcal{D}) = p(\\gamma \\given \\mathcal{D}) p(\\alpha \\given \\m" "/Users/cdawson/dissertation/defense/slides.tex" nil)
+
+(toc "toc" "    5 Experiments" "/Users/cdawson/dissertation/defense/slides.tex" nil 2 "5" "\\section{Experiments}" 21881)
+
+("sec:experiments" "s" "\\begin{frame}{Cocktail Party Data} \\vspace{-0.3in} \\begin{center} \\includegraphics[width=\\textwidth]" "/Users/cdawson/dissertation/defense/slides.tex" nil)
+
+(toc "toc" "      5.1 Data With Block Diagonal Transitions" "/Users/cdawson/dissertation/defense/slides.tex" nil 3 "5.1" "\\subsection{Data With Block Diagonal Transitions}" 23162)
+
+("sec:block-diag-trans" "s" "\\begin{minipage}{0.45\\textwidth} \\begin{center} \\includegraphics[width=\\textwidth]{img/block_diag/A_" "/Users/cdawson/dissertation/defense/slides.tex" nil)
+
+(toc "toc" "    6 Future Work" "/Users/cdawson/dissertation/defense/slides.tex" nil 2 "6" "\\section{Future Work}" 27668)
+
+("sec:future-work" "s" nil "/Users/cdawson/dissertation/defense/slides.tex" nil "")
+
+(toc "toc" "    6 Future Work" "/Users/cdawson/dissertation/defense/slides.tex" nil 2 "6" "\\section{Future Work}" 27668)
+
+(eof "/Users/cdawson/dissertation/defense/slides.tex")
+))
+

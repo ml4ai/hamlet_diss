@@ -1,0 +1,75 @@
+() Ch 1 - Background Review
+	() Review more of existing methods, Bayesian and Frequentist, and where LT model fits
+	- If have data that HMM is amenable, what methods can you use
+	- blind source separation
+	- identifying temporal clustering
+
+() Ch 3 - adding section / augmenting discussion of kernels
+	() add general discussion of conditions of kernels:
+		List constraints on kernels that are needed in order to be appropriate for LT model
+		1. should return valued [0..1] or naturally normalizable to do so
+		2. should be translation invariant (shift invariant; linear kernel doesn't do this)
+		3. similarity between value between self should be 1
+		*4. differentiable everywhere when using HMC
+	[kernel can return a negative value]
+	[has to give you a positive value if you integrate]
+	
+	() Identify some classes of kernels with different properties
+		and experimentally contrast them
+		- Comparing kernels with different tail thickness
+			Cauchy vs. Gaussian
+		- Look at common kernels
+			- linear (inner-product), polynomial  <-- not normalized
+			- if normalize by product of norms, then is like correlation
+		- Inner product of likelihoods (symmetrized KL divergence?)
+	
+	[currently using Gaussian and Laplace (Exponential)
+		- Laplace in Ch 4, Gauss in Ch 6 ]
+	
+	- Additional kernels to add to experiment domains:
+		- if identify any other kernel classes, demonstrate representatives...
+		
+		- Ch 4: [Laplace], Gaussian, Cauchy
+		- Ch 5: Gaussian, Laplace, Cauchy
+		- Ch 6: [Gaussian], Cauchy kernel (messy algebra involved)
+			Laplace not possible in Ch 6 (not differentiable everywhere)
+
+>> Model sensitivity analysis - augment reporting of experiment results in Chs 4-6
+	() Model structure and parameters
+	() Synthetic data, data properties
+	- So far, data has been more influential than the prior	
+	- general parameters to assess:
+		prior of Lambda
+		prior of concentration parameters
+
+() Ch 4 - Cocktail Party
+	- construct data from HMM that has means and variances
+	- add sticky HMM to curve
+	- states linearly transformed into means (like cocktail party)
+	- add cocktail party figures
+	- add sparse, non-symmetric transition matrix discussion (with binary states)
+
+() Ch 5 - Categorical latent space
+	- Run REDD experiment report results
+	- compare with LT, noLT, sticky (not factorial b/c not prior known latent channel)
+
+() Ch 6 - Continuous Latent Space
+	>> block synthetic data
+	- when syn data diverges from blockdata, difference between LT/noLT goes away
+	- Different parameters for HMC
+		- to get clustering of locations -- possibly not exploring enough
+	>> music data
+		- Define our evaluation metric
+		- compare with LT, noLT, sticky (not factorial b/c not prior known latent channel)
+		- CLAY: get more data from the same grammar (chord1) - test set
+	- add sparse, non-symmetric transition matrix discussion (with binary states)
+
+() Ch 7 - Write
+	() future work
+		- Full beam sampling method
+		- variation inference
+		- Applications
+			- further work on blind source, disaggregation; music
+			- Biopaper context application
+
+-------------

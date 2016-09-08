@@ -75,6 +75,8 @@
 \contentsline {section}{\numberline {6.1}Separable Similarity and Emissions}{90}
 \contentsline {section}{\numberline {6.2}A Hamlitonian Monte Carlo step to sample $\eta $}{90}
 \contentsline {section}{\numberline {6.3}Synthetic Data from an HMM with a Nearly Block Diagonal Transition Matrix}{93}
+\contentsline {subsection}{\numberline {6.3.1}Data-generation}{93}
+\contentsline {subsection}{\numberline {6.3.2}Results}{94}
 \contentsline {section}{\numberline {6.4}Discovering Chord Equivalence Classes in Tonal Music}{94}
 \contentsline {chapter}{\chapterline {7}\MakeUppercase {Conclusions and Future Work}}{95}
 \contentsline {chapter}{References}{96}

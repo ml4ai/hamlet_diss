@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016/MacPorts 2016_0) (preloaded format=pdflatex 2016.7.22)  4 AUG 2016 17:35
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016/MacPorts 2016_0) (preloaded format=pdflatex 2016.7.22)  9 AUG 2016 11:22
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -486,7 +486,13 @@ List of Tables
 
 ]
 List of Figures
-(./dissertation.lof)
+(./dissertation.lof
+Overfull \hbox (14.32036pt too wide) in paragraph at lines 17--17
+ [][] \OT1/cmr/m/sc/12 Fig-ure []\OT1/cmr/m/n/12 Left: Log like-li-hood on the 
+train-ing set by Gibbs it-er-a-tion (marginal- 
+ []
+
+)
 \tf@lof=\write5
 \openout5 = `dissertation.lof'.
 
@@ -681,7 +687,24 @@ Package pdftex.def Info: data/REDD/jw2013_downsampled_intervals/house_1_1200_68
 Chapter 6
 (./music.tex [90
 
-] [91] [92] [93]) [94]
+] [91] [92] [93]
+<fig/block_diag/train_log_likelihood.pdf, id=463, 505.89pt x 505.89pt>
+File: fig/block_diag/train_log_likelihood.pdf Graphic file (type pdf)
+
+<use fig/block_diag/train_log_likelihood.pdf>
+Package pdftex.def Info: fig/block_diag/train_log_likelihood.pdf used on input 
+line 117.
+(pdftex.def)             Requested size: 195.12767pt x 195.12718pt.
+
+<fig/block_diag/test_log_likelihood.pdf, id=464, 505.89pt x 505.89pt>
+File: fig/block_diag/test_log_likelihood.pdf Graphic file (type pdf)
+
+<use fig/block_diag/test_log_likelihood.pdf>
+Package pdftex.def Info: fig/block_diag/test_log_likelihood.pdf used on input l
+ine 121.
+(pdftex.def)             Requested size: 195.12767pt x 195.12718pt.
+) [94 <./fig/block_diag/train_log_likelihood.pdf> <./fig/block_diag/test_log_li
+kelihood.pdf>]
 Chapter 7
 (./discussion.tex) (./dissertation.bbl [95
 
@@ -695,10 +718,10 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 5421 strings out of 494114
- 79970 string characters out of 6155601
+ 5432 strings out of 494114
+ 80378 string characters out of 6155601
  143553 words of memory out of 5000000
- 8609 multiletter control sequences out of 15000+600000
+ 8617 multiletter control sequences out of 15000+600000
  15803 words of font info for 58 fonts, out of 8000000 for 9000
  430 hyphenation exceptions out of 8191
  38i,14n,43p,1014b,503s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -721,10 +744,10 @@ opt/local/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy6.pfb></opt/lo
 cal/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy8.pfb></opt/local/sh
 are/texmf-texlive/fonts/type1/public/amsfonts/cm/cmti12.pfb></opt/local/share/t
 exmf-texlive/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on dissertation.pdf (100 pages, 683505 bytes).
+Output written on dissertation.pdf (100 pages, 754338 bytes).
 PDF statistics:
- 546 PDF objects out of 1000 (max. 8388607)
- 337 compressed objects within 4 object streams
+ 584 PDF objects out of 1000 (max. 8388607)
+ 365 compressed objects within 4 object streams
  0 named destinations out of 1000 (max. 500000)
- 66 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 76 words of extra memory for PDF output out of 10000 (max. 10000000)
 

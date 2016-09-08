@@ -97,15 +97,33 @@ where $h_{\eta}$ is the prior precision which does not depend on $d$.
 \section{Synthetic Data from an HMM with a Nearly Block Diagonal Transition Matrix}
 \label{sec:synthetic-data-from}
 
-As a first check on this version of the model, we generated several datasets fixed state Hidden Markov models whose transition matrices were close to block-diagonal.  Specifically, the state space consisted of 12 states in total which were grouped into 3 ``superstates'' of 4 states each.  With probability 0.95, the chain transitioned to another state in the same superstate, and with probability 0.05 it transitioned to a different superstate.  The distribution across the 4 same-superstate entries was drawn for each row from a symmetric Dirichlet, where the concentration parameter varied across datasets.  The distribution for each row across the 8 other-superstate entries was drawn from a symmetric Dirichlet as well, where again, the concentration parameter was varied.
 
-Each of the twelve states was associated with a mean in a two-dimensional observation space.  However, unlike in the experiments discussed in Chapters \ref{chapter:cocktail-party} and \ref{chapter:REDD}, there was no relationship between proximity in transition space and proximity in emission space: the means for the twelve states were drawn independently from a $\Norm{0}{\sigma^2 I}$ distribution, where $\sigma^2$ was varied across datasets.
+\subsection{Data-generation}
+
+As a first check on this version of the model, several datasets were generated from fixed state Hidden Markov models whose transition matrices were close to block-diagonal.  Specifically, the state space consisted of 40 states in total which were grouped into 10 ``superstates'' of 4 states each.  With probability 0.95, the chain transitioned to another state in the same superstate, and with probability 0.05 it transitioned to a different superstate.  The distribution across the 4 same-superstate entries was drawn for each row from a symmetric Dirichlet, where the concentration parameter varied across datasets.  The distribution for each row across the 8 other-superstate entries was drawn from a symmetric Dirichlet as well, where again, the concentration parameter was varied.
+
+Each of the forty states was associated with a mean in a two-dimensional observation space.  However, unlike in the experiments discussed in Chapters \ref{chapter:cocktail-party} and \ref{chapter:REDD}, there was no relationship between proximity in transition space and proximity in emission space: the means for the twelve states were drawn independently from a $\Norm{0}{\sigma^2 I}$ distribution, where $\sigma^2$ was varied across datasets.
 
 At each time step, an observation was drawn from a bivariate $\Norm{\mu_j}{I}$ distribution.
 
 Since the HaMMLeT model infers a latent location for each state, and since the latent state locations impact the transition matrix by promoting transitions between nearby states and suppressing transitions between far away states, it is predicted that the HaMMLeT model will locate states in the same superstate near each other, and so we should expect to see a ``clustering'' of states into three distinct groups based on their $\eta_j$ vectors.  This clustering ability should allow HaMMLeT to more efficiently learn the correct transition matrix as compared to the HDP-HMM with no preference for local transitions.
 
-To evaluate the performance of HaMMLeT versus the ordinary HDP-HMM, we computed each models' calculated marginal log likelihood based on both the training data set used during inference, and on a held-out test set.  At each Gibbs iteration, the marginal log likelihood was computed by fixing the transition matrix and emission parameters, and integrating out the state sequence using the forward message passing algorithm.
+To evaluate the performance of HaMMLeT versus the ordinary HDP-HMM, each models' calculated marginal log likelihood was computed based on both the training data set used during inference, and on a held-out test set.  At each Gibbs iteration, the marginal log likelihood was computed by fixing the transition matrix and emission parameters, and integrating out the state sequence using the forward message passing algorithm.
+
+\subsection{Results}
+
+\begin{figure}
+\begin{minipage}{0.45\textwidth}
+\includegraphics[width=\textwidth]{fig/block_diag/train_log_likelihood}
+\end{minipage}
+\hspace{0.1in}
+\begin{minipage}{0.45\textwidth}
+\includegraphics[width=\textwidth]{fig/block_diag/test_log_likelihood}
+\end{minipage}
+\caption{Left: Log likelihood on the training set by Gibbs iteration
+  (marginalizing out state sequence) for LT and no LT (HDP-HMM)
+  models.  Right: Log likelihood on a held out test set.}
+\end{figure}
 
 \section{Discovering Chord Equivalence Classes in Tonal Music}
 \label{sec:disc-chord-equiv}
