@@ -7,7 +7,9 @@
 \usepackage[noend]{algpseudocode}
 % \usepackage{subfigure}
 \usepackage{caption,sidecap,subcaption}
+% \usepackage[toc,page]{appendix}
 \usepackage{setspace}
+\usepackage{url}
 % \usepackage{color}
 % \usepackage[pdfencoding=auto]{hyperref}
 
@@ -56,7 +58,7 @@
 \label{chapter:HMM-NPBayes}
 \input{background}
 
-\chapter{\MakeUppercase{HaMMLeT: An infinite Hidden Markov Model with
+\chapter{\MakeUppercase{HaMMLeT: An Infinite Hidden Markov Model with
     Local Transitions}}
 \label{chapter:HaMMLeT}
 \input{hammlet}
@@ -64,10 +66,10 @@
 \chapter{\MakeUppercase{Binary Vector States: Speaker Diarization}}
 \label{chapter:cocktail-party}
 \input{cocktail-party}
-
-\chapter{\MakeUppercase{Categorical Vector States: Power Disaggregation}}
-\label{chapter:REDD}
 \input{redd}
+
+% \chapter{\MakeUppercase{Categorical Vector States: Power Disaggregation}}
+% \label{chapter:REDD}
 
 \chapter{\MakeUppercase{Separate Similarities and Emissions: Learning
   Tonal Grammar in Music}}
@@ -78,8 +80,11 @@
 \label{chapter:discussion}
 \input{discussion}
 
+\appendix
+\chapter{Effect of Hyperparameters}
+\label{appendix:hyperparameters}
+\input{appendixA}
+
 \bibliographystyle{apalike}
 \bibliography{../bib/supplement}
 \end{document}  
-
-a

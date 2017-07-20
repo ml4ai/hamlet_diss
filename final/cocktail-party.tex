@@ -270,24 +270,59 @@ requires Adaptive Rejection Sampling, with the equations
 
 \section{``Cocktail Party'' Data}
 
-To evaluate the model, we created synthetic data based on a speaker 
+The binary state instantiation of the model was evaluated using a speaker
 diarization/blind source separation task known as the ``cocktail party'' problem.  
-In such a task, the observable data consists of one or more audio signals, discretized into $T$ segments, where the signal at time $t$ is assumed to arise from multiple speakers, some subset of whom are speaking.  The inference problem is to recover which speakers are speaking when.  We further assume that speakers are grouped into conversations, and take turns speaking within conversation.  In such a task, there are naively $2^S$ possible
-states, where each state indicates which of $S$ speakers is speaking
+In such a task, the observable data consists of one or more audio
+signals, discretized into $T$ segments, where the signal at time $t$
+is assumed to arise from multiple speakers, some subset of whom are
+speaking.  The inference problem is to recover which speakers are
+speaking when.  In this experiment it is assumed that speakers are grouped into
+conversations, and take turns speaking within conversation, a
+modification of standard ``cocktail party'' data [TODO: CITATION].  
+An example binary state sequence with three groups of
+3, 2 and 2 speakers is shown in Fig. \ref{fig:cocktail-binary-sequences}, with time on the
+horizontal axis and speaker on the vertical axis, so that the full latent
+binary state at a given time is represented by an individual column.
+
+In this task, there are naively $2^D$ possible states, where each state
+indicates which of $D$ speakers is speaking
 at a particular time step.  However, due to the conversational grouping, if
 at most one speaker in a conversation can be speaking at any given
 time (a natural assumption of within-group turn-taking), 
 the state space is constrained, with only $\prod_c (s_c + 1)$
-states possible (with perhaps a small probability of other combinations occurring due to occasional overlap), where $s_c$ is the
+states possible (with perhaps a small probability of other
+combinations occurring due to occasional overlap), where $s_c$ is the 
 number of speakers in conversation $c$.
 
-For the synthetic cocktail party data, the turn sequence within each conversation is
+Two datasets were used for evaluation, one synthetic and one using
+utterances from the the PASCAL 1st Speech Separation
+Challenge\footnote{\url{http://laslab.org/SpeechSeparationChallenge/}}.
+In both cases, the underlying signal consisted of 16 simultaneous speakers, with the
+signal matrix linearly mapped to 12 microphone channels.
+The 16 speakers were grouped into 4 conversational groups of 4
+speakers each, where speakers within a conversation took turns
+speaking.   Hence there are $2^{16} = 65536$ states possible assuming
+that any combination of speakers can be active at a given time;
+however, because of turn-taking only $5^4 = 625$ of these can actually
+occur.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.8\textwidth]{fig/cocktail-with-groups.png}
+  \caption{Example latent binary vector sequence for synthetic
+    "cocktail party with conversational groups" data.  Conversational
+    groups are indicated by the brackets on the right.}
+  \label{fig:cocktail-binary-sequences}
+\end{figure}
+
+\paragraph{Synthetic Data}
+For the synthetic cocktail party data, the turn sequence within each conversation was
 generated using a Hidden Semi-Markov Model (HSMM) with Poisson distributed state-durations, in which the state sequence had $s_c$ states, with pauses with
 shorter Poisson duration inserted between each ``sentence''.  The
-states within conversations are then mapped to a binary vector with
+states within conversations were then mapped to a binary vector with
 $s_c$ entries, where silence is represented by all zeroes, 
 and speaker $s$ speaking corresponds to a 1 in position $s$.  
-The binary vectors are concatenated across
+The binary vectors were concatenated across
 conversations to yield latent states consisting of length $S$ binary
 vectors.  To simulate speakers being recorded by $K$ microphones,
 weights mapping speakers to microphones were generated independently from
@@ -304,12 +339,44 @@ $2^{16} = 65536$ possible binary vector-valued states, but only
 $(4+1)^4 = 625$, less than 1\%, can actually occur.  The noise variance $\sigma^2_k$ 
 was set to a constant of $1/10$ for all $k = 1, \dots, K$.
 
-We attempted to infer the states
-from the data using three models: (1) a binary-state Factorial HMM, in which the
+\paragraph{PASCAL Dataset}
+The dataset for this experiment was constructed using a pool of 
+500 utterances wasfrom the the PASCAL 1st Speech Separation
+Challenge\footnote{\url{http://laslab.org/SpeechSeparationChallenge/}}.
+In this data, each ``turn'' within a conversation consists of a single sentence
+(average duration $\sim 3$s) and turn orders within a conversation were
+randomly generated, with random pauses distributed $\Norm{1/4s}{(1/4s)^2}$
+inserted between sentences.  Every time a speaker has a turn, the
+sentence is drawn randomly from the 500 sentences uttered by that
+speaker in the data.  The conversations continued for 40s, and 
+the signal was down-sampled to length 2000.  The 'on' portions of each
+speaker's signal were normalized to have amplitudes with mean 1 and standard
+deviation 0.5.  An additional column of 1s was added to the speaker signal matrix,
+representing background noise.  The resulting signal matrix, $\boldeta$, was thus
+$2000 \times 17$ and the weight matrix was $17 \times 12$.  Following
+\citet{gael2009infinite} and \citet{valera2015infinite}, the weights
+were drawn independently from a $\Unif{0,1}$ distribution, and
+independent $\Norm{0}{0.3^2}$ noise was added to each entry of the
+observation matrix. 
+
+As with the synthetic data, weights mapping speakers to microphones 
+were generated independently from
+a $U(0,1)$ distribution, resulting in a $D \times K$ weight matrix,
+$W$.  A constant ``background sound level'' parameter for each
+microphone was again added,
+also $U(0,1)$, and independent $\Norm{0}{\sigma^2_k}$ noise was added
+to each time step at microphone $k$.
+
+\paragraph{Results}
+The states were inferred from the data using five models: 
+(1) a binary-state Factorial HMM, in which the
 individual binary speaker sequences are modeled as independent a
 priori, (2) an ordinary HDP-HMM without local transitions, where the
-latent states are binary vectors, and (3) our
-HDP-HMM-LT model.  The same linear-Gaussian emission model was employed for all three models; the only difference was the prior on the sequence of binary state vectors.
+latent states are binary vectors, (3) the Sticky HDP-HMM, (4) our
+HDP-HMM-LT model, and (5) a model that combines the local transition
+property with the ``Sticky'' property: the Sticky HDP-HMM-LT.  
+The same linear-Gaussian emission model was employed for all models; 
+the only difference was the prior on the sequence of binary state vectors.
 
 To simplify interpretation of the results, the weight matrix
 was fixed to the true value (this makes the latent dimensions
@@ -318,49 +385,121 @@ state matrices meaningful).  Each model was evaluated at each Gibbs
 iteration using the Hamming distance between inferred 
 and ground truth state matrices, as well as the F1 score, which is the harmonic mean between the precision (the proportion of the 1s in the inferred state matrix that were actually 1 in the ground truth) and recall (the proportion of the 1s in the ground truth state matrix that were correctly classified as 1 by the model).
 
-The results for the three models are in Figure
-\ref{fig:cocktail-results}.  % In Fig \ref{fig:binary-matrix}, we also plot the ground truth state
-% matrix against the expected state matrix for the two HDP models, averaged over the 10 runs and all iterations
-% 500 through 1000.  
-The LT model outperforms the other two on
-all measures on all datasets. 
+The results for the five models on the synthetic and PASCAL datasets are in Figs
+\ref{fig:synth-cocktail-results} and \ref{fig:pascal-results},
+respectively.  
+In Figs \ref{fig:synth-cocktail-binary-matrices} and
+\ref{fig:pascal-binary-matrices}, the ground truth state
+matrix is shown against the expected state matrix for the five models,
+averaged over the 10 runs and all iterations 1001 through 2000.  
+The LT and Sticky-LT models outperform the others on all measures. 
 
-We also plot the inferred decay rate $\lambda$ for the
-HDP-HMM-LT model.  The LT model settles on a non-negligible $\lambda$
-value for this data, suggesting that the local transition structure
-explains the data well.  It also uses more components than the non-LT
-model, perhaps owing to the fact that the weaker transition prior of
-the non-LT model is more likely to explain nearby similar observations
-as a single persisting state, whereas the LT model places a higher
+The inferred decay rate $\lambda$ for the
+HDP-HMM-LT model and its Sticky counterpart on the synthetic and
+PASCAL datasets are shown in Figs. \ref{fig:synth-cocktail-results}
+and \ref{fig:pascal-results} as well.  Both LT models settle 
+on a non-negligible $\lambda$ value for both datasets, suggesting that 
+the local transition structure explains the data well.  
+They also use more components than the non-LT HDP
+models, perhaps owing to the fact that the weaker transition prior of
+the non-LT models is more likely to explain nearby similar observations
+as a single persisting state, whereas the LT models place a higher
 probability on transitioning to a new state with a similar latent vector.
-
 
 \begin{figure}[tb]
   \centering
-  \begin{minipage}{0.40\textwidth}
-  \includegraphics[width = \textwidth]{fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/accuracy.pdf}
+  \begin{minipage}{0.75\textwidth}
+  \includegraphics[width = \textwidth]{fig/cocktail/synth_s16_m12/hyper_h/h10.0_nocs_cp0/a5b0p01/accuracy_density.pdf}
 \end{minipage}
-\hspace{0.1in}
-\begin{minipage}{0.40\textwidth}
-  \includegraphics[width = \textwidth]{fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/F1_score.pdf}
-\end{minipage}
-\vspace{-0.3in}
 
-\begin{minipage}{0.40\textwidth}
-  \includegraphics[width = \textwidth]{fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/lambda.pdf}
+\begin{minipage}{0.75\textwidth}
+  \includegraphics[width = \textwidth]{fig/cocktail/synth_s16_m12/hyper_h/h10.0_nocs_cp0/a5b0p01/F1_score_density.pdf}
 \end{minipage}
-\begin{minipage}{0.40\textwidth}
-  \includegraphics[width = \textwidth]{fig/cocktail_s16_m12/w0/h10.0_nocs_cp1/n_dot.pdf}
+
+\begin{minipage}{0.75\textwidth}
+  \includegraphics[width = \textwidth]{fig/cocktail/synth_s16_m12/hyper_h/h10.0_nocs_cp0/a5b0p01/lambda_density.pdf}
+\end{minipage}
+
+\begin{minipage}{0.75\textwidth}
+  \includegraphics[width = \textwidth]{fig/cocktail/synth_s16_m12/hyper_h/h10.0_nocs_cp0/a5b0p01/n_dot_density.pdf}
 \end{minipage}
 \caption{(a-b) Accuracy and F1 scores for the HDP-HMM-LT, standard HDP-HMM, and
     Binary Factorial HMM on
-    the Cocktail Party Data.  Metrics are averaged
+    the synthetic cocktail party data.  Metrics are averaged
   over 10 Gibbs runs on each model, with error bars representing a 99\% confidence
   interval for the mean per iteration.  The first 100 iterations are
   not shown. (c) Learned similarity parameter, $\lambda$, for the LT
   model, (d) Number of distinct states used by HDP-HMM and
   HDP-HMM-LT.  The first 100 iterations are excluded.}
-  \label{fig:cocktail-results}
+  \label{fig:synth-cocktail-results}
+\end{figure}
+
+\begin{figure}[tb]
+% \vskip 0.1in
+\begin{center}
+  \centerline{\includegraphics[width = \textwidth, height = 0.2\textwidth]{fig/cocktail/synth_s16_m12/hyper_h/h10.0_nocs_cp0/a5b0p01/groundtruth.pdf}}
+  \centerline{\includegraphics[width = \textwidth, height = 0.2\textwidth]{fig/cocktail/synth_s16_m12/hyper_h/h10.0_nocs_cp0/a5b0p01/StickyLT_hdp_hmm_w0_ah5_bh0p01/binary_state.pdf}}
+  \centerline{\includegraphics[width = \textwidth, height = 0.2\textwidth]{fig/cocktail/synth_s16_m12/hyper_h/h10.0_nocs_cp0/a5b0p01/LT_hdp_hmm_w0_ah5_bh0p01/binary_state.pdf}}
+  \centerline{\includegraphics[width = \textwidth, height = 0.2\textwidth]{fig/cocktail/synth_s16_m12/hyper_h/h10.0_nocs_cp0/a5b0p01/BFact_hmm_w0_ah5_bh0p01/binary_state.pdf}}
+  \centerline{\includegraphics[width = \textwidth, height = 0.2\textwidth]{fig/cocktail/synth_s16_m12/hyper_h/h10.0_nocs_cp0/a5b0p01/Sticky_hdp_hmm_w0_ah5_bh0p01/binary_state.pdf}}
+  \centerline{\includegraphics[width = \textwidth, height = 0.2\textwidth]{fig/cocktail/synth_s16_m12/hyper_h/h10.0_nocs_cp0/a5b0p01/noLT_hdp_hmm_w0_ah5_bh0p01/binary_state.pdf}}
+\caption{Binary speaker matrices for the synthetic cocktail data, with time on
+  the horizontal axis and speaker on the vertical axis.  White is 1,
+  black is 0.  The ground truth matrix is at the top, followed by the 
+  inferred speaker matrix for the
+  Sticky HDP-HMM-LT, HDP-HMM-LT, binary factorial, Sticky-HDP-HMM, and
+  ``vanilla'' HDP-HMM.  All inferred matrices are averaged over 5 runs
+  of 5000 Gibbs iterations each, with the first 2000 iterations
+  discarded as burn-in. \label{fig:synth-cocktail-binary-matrices}}
+\end{center}
+\end{figure}
+
+\begin{figure}[tb]
+  \centering
+  \begin{minipage}{0.75\textwidth}
+  \includegraphics[width = \textwidth]{fig/cocktail/SSC1_s16_m12/abs_2000_n0.3_cp0/all_models/accuracy_density.pdf}
+\end{minipage}
+
+\begin{minipage}{0.75\textwidth}
+  \includegraphics[width = \textwidth]{fig/cocktail/SSC1_s16_m12/abs_2000_n0.3_cp0/all_models/F1_score_density.pdf}
+\end{minipage}
+
+\begin{minipage}{0.75\textwidth}
+  \includegraphics[width = \textwidth]{fig/cocktail/SSC1_s16_m12/abs_2000_n0.3_cp0/all_models/lambda_density.pdf}
+\end{minipage}
+
+\begin{minipage}{0.75\textwidth}
+  \includegraphics[width = \textwidth]{fig/cocktail/SSC1_s16_m12/abs_2000_n0.3_cp0/all_models/n_dot_density.pdf}
+\end{minipage}
+\caption{(a-b) Accuracy and F1 scores for the HDP-HMM-LT, standard HDP-HMM, and
+    Binary Factorial HMM on
+    the PASCAL cocktail party data.  Metrics are averaged
+  over 10 Gibbs runs on each model, with error bars representing a 99\% confidence
+  interval for the mean per iteration.  The first 100 iterations are
+  not shown. (c) Learned similarity parameter, $\lambda$, for the LT
+  model, (d) Number of distinct states used by HDP-HMM and
+  HDP-HMM-LT.  The first 100 iterations are excluded.}
+  \label{fig:pascal-results}
+\end{figure}
+
+\begin{figure}[tb]
+% \vskip 0.1in
+\begin{center}
+  \centerline{\includegraphics[width = \textwidth, height = 0.2\textwidth]{fig/cocktail/SSC1_s16_m12/abs_2000_n0.3_cp0/all_models/groundtruth.pdf}}
+  \centerline{\includegraphics[width = \textwidth, height = 0.2\textwidth]{fig/cocktail/SSC1_s16_m12/abs_2000_n0.3_cp0/all_models/StickyLT_hdp_hmm_w0/binary_state.pdf}}
+  \centerline{\includegraphics[width = \textwidth, height = 0.2\textwidth]{fig/cocktail/SSC1_s16_m12/abs_2000_n0.3_cp0/all_models/LT_hdp_hmm_w0/binary_state.pdf}}
+  \centerline{\includegraphics[width = \textwidth, height = 0.2\textwidth]{fig/cocktail/SSC1_s16_m12/abs_2000_n0.3_cp0/all_models/BFact_hmm_w0/binary_state.pdf}}
+  \centerline{\includegraphics[width = \textwidth, height = 0.2\textwidth]{fig/cocktail/SSC1_s16_m12/abs_2000_n0.3_cp0/all_models/Sticky_hdp_hmm_w0/binary_state.pdf}}
+  \centerline{\includegraphics[width = \textwidth, height = 0.2\textwidth]{fig/cocktail/SSC1_s16_m12/abs_2000_n0.3_cp0/all_models/noLT_hdp_hmm_w0/binary_state.pdf}}
+\caption{Binary speaker matrices for the PASCAL cocktail party data, with time on
+  the horizontal axis and speaker on the vertical axis.  White is 1,
+  black is 0.  The ground truth matrix is at the top, followed by the 
+  inferred speaker matrix for the
+  Sticky HDP-HMM-LT, HDP-HMM-LT, binary factorial, Sticky-HDP-HMM, and
+  ``vanilla'' HDP-HMM.  All inferred matrices are averaged over 5 runs
+  of 5000 Gibbs iterations each, with the first 2000 iterations
+  discarded as burn-in. \label{fig:pascal-binary-matrices}}
+\end{center}
 \end{figure}
 
 \section{Synthetic Data Without Local Transitions}
@@ -383,27 +522,42 @@ states when the data does not have the LT property.
 
 \begin{figure}[tb]
   \centering
-  \begin{minipage}{0.40\textwidth}
-  \includegraphics[width =
-  \textwidth]{fig/synth16/w0/noLT_s0/accuracy.pdf}
-\end{minipage}
-\hspace{0.1in}
-  \begin{minipage}{0.40\textwidth}
-\includegraphics[width = \textwidth]{fig/synth16/w0/noLT_s0/F1_score.pdf}
+  \begin{minipage}{0.75\textwidth}
+  \includegraphics[width = \textwidth]{fig/synth16/accuracy_density.pdf}
 \end{minipage}
 
-\vspace{-0.3in}
-
-  \begin{minipage}{0.40\textwidth}
-  \includegraphics[width = \textwidth]{fig/synth16/w0/noLT_s0/lambda.pdf}
+  \begin{minipage}{0.75\textwidth}
+\includegraphics[width = \textwidth]{fig/synth16/F1_score_density.pdf}
 \end{minipage}
-  \begin{minipage}{0.40\textwidth}
-  \includegraphics[width = \textwidth]{fig/synth16/w0/noLT_s0/n_dot.pdf}
+
+  \begin{minipage}{0.75\textwidth}
+  \includegraphics[width = \textwidth]{fig/synth16/lambda_density.pdf}
+\end{minipage}
+
+  \begin{minipage}{0.75\textwidth}
+  \includegraphics[width = \textwidth]{fig/synth16/n_dot_density.pdf}
 \end{minipage}
   \caption{(a-b) Accuracy and F1 for the three models on data generated 
     from an HDP-HMM without local transitions, (c) Learned similarity
     parameter, $\lambda$,
   for the LT model, (d) Number of states used by
-  the HDP-HMM and HDP-HMM-LT.  The first 100 iterations are omitted.}
+  the HDP-HMM and HDP-HMM-LT.  The first 1000 iterations are omitted.}
   \label{fig:synthetic-results}
+\end{figure}
+
+\begin{figure}[tb]
+% \vskip 0.1in
+\begin{center}
+  \centerline{\includegraphics[width = \textwidth, height = 0.2\textwidth]{fig/synth16/groundtruth.pdf}}
+  \centerline{\includegraphics[width = \textwidth, height = 0.2\textwidth]{fig/synth16/LT_hdp_hmm_w0/binary_state.pdf}}
+  \centerline{\includegraphics[width = \textwidth, height = 0.2\textwidth]{fig/synth16/noLT_hdp_hmm_w0/binary_state.pdf}}
+  \centerline{\includegraphics[width = \textwidth, height = 0.2\textwidth]{fig/synth16/BFact_hmm_w0/binary_state.pdf}}
+\caption{Binary state matrices for the data generated from a regular HDP-HMM, 
+  White is 1, black is 0.  The ground truth matrix is at the top, followed by the 
+  inferred speaker matrix for the
+  Sticky HDP-HMM-LT, HDP-HMM-LT, binary factorial, Sticky-HDP-HMM, and
+  ``vanilla'' HDP-HMM.  All inferred matrices are averaged over 5 runs
+  of 2000 Gibbs iterations each, with the first 1000 iterations
+  discarded as burn-in. \label{fig:synthetic-binary-matrices}}
+\end{center}
 \end{figure}

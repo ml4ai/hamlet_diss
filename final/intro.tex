@@ -513,9 +513,9 @@ The {\bf Hidden Markov Model}, first developed by
 for a classic tutorial) separates temporal dynamics of an evolving
 underlying (``hidden'') state from an temporally independent ``noise''
 component by augmenting the observed time sequence $\{y_t\}, t = 1,
-\dots, T$ with a latent data sequence, $\{z_t\}, t = 1,
+\dots, T$ with a latent state sequence, $\{z_t\}, t = 1,
 \dots T$, such that at the distribution of the observations, $y_t$ are
-independent conditioned on the latent sequence, $z_t$, but the $z_t$
+mutually independent conditioned on the latent sequence, $z_t$, but the $z_t$
 evolve according to a Markov chain.  More formally, the model is
 \begin{align}
   z_1 &\sim \Cat{\pi_{01}, \dots, \pi_{0J}} \\
@@ -533,8 +533,174 @@ for each state in the Markov chain by the $\theta_j, j = 1, \dots, J$.
 
 This model is nearly identical to the mixture model discussed in
 Sec. \ref{sec:clustering}, the only difference being the dependence of
-the label, $z_t$ on the previous label, $z_{t-1}$.  We can indeed
-construct an easy to work with Bayesian HMM by placing an appropriate 
+the label, $z_t$ on the previous label, $z_{t-1}$.  Though this
+may appear to be a small change, it implies that inferences about any
+particular latent state, $z_t$ are potentially influenced by the entire
+data sequence, $y_1, \dots, y_T$, and moreover, no latent state is
+independent of any other.  Whereas in the static mixture model case,
+once the emission parameters, $\theta_1, \dots, \theta_J$ and
+transition matrix $\bpi = (\pi_{jj'}), j,j' \in \{1,\dots,J\}^2$ are known, finding the maximum 
+{\em a posteriori} (MAP) set of class labels reduces to finding
+the MAP for each $z_t$ separately, in the dynamic case, the best {\em
+marginal} $z_t$ is typically not the $t$th element of the best {\em
+joint} sequence.  Some inference goals we might want to solve for an
+HMM are
+\begin{enumerate}
+\item {\bf Smoothing:} \label{goal:smoothing} Finding the marginal distribution of $z_t$ at
+  some $t$ given the observations $y_1, \dots, y_T$ and a fixed set of model
+  parameters $\theta_1, \dots, \theta_J$ and $\bpi$.
+\item {\bf Decoding:} \label{goal:decoding} Finding the MAP state sequence $z_1, \dots, z_T$
+  given the observations $y_1, \dots, y_T$ and a fixed set of model
+  parameters $\theta_1, \dots, \theta_J$ and $\bpi$.
+\item {\bf Estimation:} \label{goal:estimation} Finding the ``best'' (by some criterion)
+  values of the model parameters, $\theta_1, \dots, \theta_J$ and
+  $\bpi$ for fixed $J$.
+\item {\bf Model Selection:} \label{goal:model-selection}
+  Finding the ``best'' (by some criterion)
+  degree of model complexity, $J$.
+\end{enumerate}
+
+I briefly outline the classic algorithms for the first three of these
+in the next section; for more detail the reader is referred to any of
+a number of classic references, for example
+\citet{rabiner1986introduction, rabiner1989tutorial,
+  bishop2006pattern}.  The model selection problem for static mixture
+models as well as the HMM is briefly introduced in
+Sec. \ref{sec:model-select-mixt} and treated in more detail in Chapter \ref{chapter:HMM-NPBayes}.
+
+\section{Smoothing, Decoding, and Estimation in HMMs}
+\label{sec:smooth-decod-estim}
+
+\paragraph{Smoothing} We first consider the so-called ``smoothing'' problem; that is,
+finding the marginal posterior distribution over the value of the
+hidden state $z_t$ corresponding to a particular observation $y_t$,
+having recorded the entire observation sequence, $y_1, \dots y_T$,
+which relative to $z_t$ consists of the ``past'', $y_1, \dots,
+y_{t-1}$, the ``present'', $y_t$, and the future $y_{t+1}, \dots,
+y_T$.
+
+For conciseness, define $z_{s:t} = z_s, \dots, z_t$.  Then the full
+joint distribution is defined to be
+\begin{align}
+  p(z_{1:T}, y_{1:T})&= \prod_{t=1}^T p(z_t \given z_{t-1}) p(y_t
+                        \given z_t) \\
+  &= \prod_{t=1}^T \pi_{z_{t-1},z_t} f(y_t \given \theta_{z_t})
+\end{align}
+where for simplicity we define $z_{0}$ to be a special start state,
+$\pi_{0,j}, j = 1, \dots, J$ to be the initial distribution, and
+$f(\cdot \given \theta_j)$ to be the emission PDF/PMF for state $j$.
+
+Naively, we could compute $p(z_t \given y_{1:T})$ by brute force, as
+\begin{align}
+p(z_t \given y_{1:T}) \propto p(z_t, y_{1:T}) = \sum_{z_1} \dots \sum_{z_{t-1}} \sum_{z_{t+1}} \dots \sum_{z_T} p(z_{1:t-1},z_t,z_{t+1:T}, y_{1:T}),
+\end{align}
+but this has computational complexity which is exponential in $T$.
+Fortunately, we can take advantage of the Markov property that the past
+$z_{1:t-1}$ and the future $z_{t+1:T}$ are independent conditioned on
+the present to simplify computation considerably, using the
+factorization
+\begin{align}
+  p(z_{t}, y_{1:T}) = p(z_{t}, y_{1:t}) p(y_{t+1:T}
+  \given z_t)
+\end{align}
+the two terms on the right
+can be computed using the ``forward'' and ``backward'' recursion formulas:
+\begin{align}
+  \label{eq:forward-step} p(z_{t}, y_{1:t}) &= \sum_{z_{t-1}} p(z_{t-1}, y_{1:t-1}) p(z_{t}
+                      \given z_{t-1}) p(y_t \given z_t) \\
+  \label{eq:backward-step} p(y_{t+1:T} \given z_{t}) &= \sum_{z_{t+1}} p(z_{t+1} \given z_{t})
+  p(y_{t+1} \given z_{t+1}) p(y_{t+2:T} \given z_{t+1})
+\end{align}
+where we define the initial conditions
+\begin{align}
+  p(z_0, y_0) &\equiv 1 \\
+  p(y_{T+1:T} \given z_{t}) & \equiv 1
+\end{align}
+The recursion formulas can be written more concisely in terms of
+matrix and vector operations by defining $\bpi$ to be the $J \times J$
+transition matrix (i.e., $\bpi_{j,j'} = p(z_{t+1} = j' \given z_{t} =
+j)$ for any $t$), $\bb_t$ to be the $J \times 1$ likelihood vector
+with $j$th element defined to be $p(y_t \given z_t = j)$, and
+$\boldsymbol{\alpha}_t$ and $\bbeta_t$ to be the forward and backward ``message'' vectors:
+\begin{align}
+  \alpha_{t,j} = p(z_t = j, y_{1:t}) \qquad \beta_{t,j} = p(y_{t+1:T}
+  \given z_t).
+\end{align}
+Then
+\begin{align}
+  p(z_t \given y_{1:T}) &= \frac{\boldsymbol{\alpha}_{t}
+  \bbeta_t}{\boldsymbol{\alpha_t}^{\sf T}\bbeta_{t}} \\
+  \boldsymbol{\alpha}_{t} &= \boldsymbol{\alpha}_{t-1} \bpi \odot
+                            \bb_t \\
+  \bbeta_t &= \bpi (\bb_{t+1} \odot \bbeta_{t+1})
+\end{align}
+where $\odot$ is the elementwise product.  Taken together, this
+computation is known as the {\bf forward-backward algorithm} (see also
+\citet{rabiner1986introduction}).
+
+Note that having found $p(z_T \given y_{1:T})$, it is easy to find the
+predictive distribution for either $z_T$ or $y_{T}$: simply write
+\begin{align}
+  p(z_{T+1} \given y_{1:T}) &= \sum_{z_T} p(z_T \given y_{1:T})
+                              p(z_{T+1} \given z_{T}) \\
+  p(y_{T+1} \given y_{1:T} &= \sum_{z_{T+1}} p(z_{T+1} \given y_{1:T})
+                             p(y_{T+1} \given y_{z_{T+1}})
+\end{align}
+repeating as often as needed to find $p(z_{T+s} \given y_{1:T})$ or
+$p(y_{T+s} \given y_{1:T})$ for $s > 1$.
+
+\paragraph{Decoding}
+
+Rather than finding the marginal distribution of some $z_t$, we may be
+interested in finding the most likely joint sequence, $z_{1:T}$, given
+all observations.  This is known as the {\em decoding} problem.  Like
+the smoothing problem, it could in principle be solved by brute force,
+enumerating all possible sequences and calculating the posterior
+probability of each one, but again there is an efficient recursive
+solution, known as the {\bf Viterbi algorithm}.
+
+The idea is to develop
+a recursive formula to find
+  $\hat{z}_{t+1:T,j}$, defined as the most likely ``suffix''
+  conditioned on $z_t = j$ and the data, $y_{1:T}$:
+  \begin{align}
+    \hat{z}_{t+1:T,j} &:= \argmax_{z_{t+1:T}} p(z_{t+1:T} \given z_t =
+                        j, y_{1:T})).
+  \end{align}
+By conditional independence, $p(z_{t+1:T} \given z_t =
+                        j, y_{1:T})$ is proportional (as a function of
+                        $z_{t+1:T}$) to
+  \begin{align}
+    p(z_{t+1:T}, y_{t:T} \given z_t = j) =
+    p(y_{t} \given z_t = j
+    = j) p(z_{t+1:T} \given z_t) p(y_{t+1:T} \given z_{t+1:T})
+  \end{align}
+  and hence we can maximize this instead.  Define $\mu_{t,j}$ to be the maximized probability itself:
+  \begin{align}
+    \mu_{t,j} := \max_{z_{t+1:T}} p(z_{t+1:T}, y_{t:T} \given z_{t} = j)
+  \end{align}
+  To develop the recursion relation, we take advantage of the
+  fact that
+  \begin{align}
+    \mu_{t-1,j} &:= \max_{z_{t:T}} p(z_{t:T}, y_{t-1:T} \given z_{t-1} = j) \\
+    &= \max_{j'} \max_{z_{t+1:T}} p(z_{t} = {j'},
+      z_{t+1:T},  y_{1:T}
+    \given z_{t-1} = j)) \\
+    &= \max_{j'} p(y_{t-1} \given z_{t-1} = j) p(z_t = j' \given
+      z_{t-1} = j) p(\hat{z}_{t+1:T,j}, y_{t:T} \given z_t = j') \\
+    &= \max_{j'} p(y_{t-1} \given z_{t-1} = j) p(z_t = j' \given
+      z_{t-1} = j) \mu_{t,j'}.
+  \end{align}
+  where $\hat{z}_{t:T,j}$ is obtained by taking the $j'$ that maximizes
+  the above expression for each $j$, and prepending it to $\hat{z}_{t+1:T,j'}$.
+  
+  Thus at each step we start with $J$ suffixes, expand to $J^2$ by
+  considering each possible preceding state with each current best
+  suffix, and then pruning to $J$.  The initial condition in the
+  recursion is simply the empty suffix for all $j$ with $\mu_{T,j}
+  \equiv 1$.  The end result is $\hat{z}_{1:T}$
+
+We can indeed construct an easy to work with Bayesian HMM by placing an appropriate 
 conjugate prior on the $\theta_t$ emission parameters (e.g.,
 Normal-Inverse Wishart in the case where $F$ is the family of Normal
 distributions), and Dirichlet conjugate priors on $\pi_0$ and 
@@ -562,7 +728,7 @@ What can we do if we cannot specify $K$ ahead of time?
 
 One approach is to apply the logic outlined in
 Sec. \ref{sec:balanc-fit-compl} and simply put a prior distribution on
-$K$, and then calculate (or sample from) the posterior distribution
+p$K$, and then calculate (or sample from) the posterior distribution
 over $K$.  Then, although we can always achieve at least as large a
 likelihood with a larger $K$ as with a smaller $K$ (either by setting
 some mixture weights to zero, or by effectively combining multiple
