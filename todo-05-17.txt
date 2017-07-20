@@ -1,0 +1,160 @@
+--------
+Utilities
+--------
+
+(*) Allowing more than one sequence to be learned
+(*) independent multivariate observations
+	(*) Gaussian
+	(*) Categorical
+(~) Restarting inference from previous end state
+	- problem in kjb matrix library: reading infs from file
+>>	() Needs testing
+
+------------
+Diss Todo By task type
+-----------
+
+TODO CODE:
+(*) Sticky HMM
+(*) Bookkeeping for REDD prior
+(*) Bill: Cauchy kernel
+
+Complete:
+(*) Vary lambda prior
+   (*) Cocktail party
+(*) Vary concentration hyperparams
+   (*) Cocktail party
+   (*) Music
+(*) Vary HMC params
+   (*) Music
+
+
+TODO WRITE:
+(*) Kernel discussion (Ch. 3)
+(*) Add discussion on Bach data (Ch. 5)
+() Expanded discussion of time series models in (Ch. 1)
+(*) Move REDD chapter to conclusion/future work
+(*) Finish conclusion (Ch. 7):
+    (*) Future work (variational, biopaper, full beam sampler)
+(*) Add appendix w/ hyperparam results
+	
+
+FUTURE/JMLR(?):
+() REDD data(?) - we suspect requires more algorithmic work to make LT
+(empirical question)
+    - compare with LT, noLT, sticky (not factorial b/c not prior known latent channel)
+() Synth block diag
+    () Vary blockiness/sparsity of data
+    () Vary hyperparameters
+    () Vary HMC parameters
+() running and analyzing cauchy experiment
+	- depending on interesting differences in kernels
+		options: fold into chs 4 and 6, OR ch between 6 and 7 OR in discussion in 7
+() Implement IBP
+() Implement Beam sampler
+
+
+----------
+Diss Todo by Chapter
+-----------
+() Ch 1 - Background Review
+	(TODO:write)
+	() Review more of existing methods, Bayesian and Frequentist, and where LT model fits
+	- If have data that HMM is amenable, what methods can you use
+	- blind source separation
+	- identifying temporal clustering
+
+(*) Ch 3 - adding section / augmenting discussion of kernels
+	(DONE; Clay read)
+	(*) add general discussion of conditions of kernels:
+		List constraints on kernels that are needed in order to be appropriate for LT model
+		1. should return valued [0..1] or naturally normalizable to do so
+		2. should be translation invariant (shift invariant; linear kernel doesn't do this)
+		3. similarity between value between self should be 1
+		*4. differentiable everywhere when using HMC
+	[kernel can return a negative value]
+	[has to give you a positive value if you integrate]
+	
+	(*) Identify some classes of kernels with different properties
+		and experimentally contrast them
+		- Comparing kernels with different tail thickness
+			Cauchy vs. Gaussian
+		- Look at common kernels
+			- linear (inner-product), polynomial  <-- not normalized
+			- if normalize by product of norms, then is like correlation
+		- Inner product of likelihoods (symmetrized KL divergence?)
+	
+	[currently using Gaussian and Laplace (Exponential)
+		- Laplace in Ch 4, Gauss in Ch 6 ]
+	
+	(*) Additional kernels to add to experiment domains:
+		- if identify any other kernel classes, demonstrate representatives...
+		- Ch 4: [Laplace], Gaussian, Cauchy
+		- Ch 5: [Gaussian], Cauchy kernel (messy algebra involved)
+			Laplace not possible in Ch 6 (not differentiable everywhere)
+
+>> Model sensitivity analysis - augment reporting of experiment results in Appendix
+	(TODO:run - varying Cauchy kernel is last step) -- all the following
+	() JMLR: Model structure and parameters
+	(*) Synthetic data
+	- So far, data has been more influential than the prior	
+	- general parameters to assess:
+		prior of Lambda
+		prior of concentration parameters
+
+(*) Ch 4 - Binary latent space: Cocktail Party
+	- (DONE) add sticky HMM to curve
+	- (LATER) states linearly transformed into means (like "real world" cocktail party)
+		> This is really a modeling choice, not a demonstration of the role of the LT property
+		- latent states have amplitude 
+		(right now, only microphones have noisy amplitude, this would be per voice)
+	- (DONE; Clay read) add cocktail party figures
+	- add sparse, non-symmetric transition matrix discussion (with BINARY states)
+		- (TODO:write/Review that discussion is adequate) highlight role of concentration 
+			parameters to bias toward sparse transition matrix
+
+
+
+(*) Ch 5 - Continuous Latent Space
+	>> block synthetic data
+<<<	- (TODO:run/write) add systematic demonstration:
+	   observation: when syn data diverges from blockdata, 
+           difference between LT/noLT goes away
+	- (DONE) Different parameters for HMC
+		- to get clustering of locations -- possibly not exploring enough
+	>> music data - chords as latent categories
+		- Define our evaluation metric (DONE: log likelihood)
+		- compare with LT, noLT, (TODO:run) sticky (not factorial b/c not prior known latent channel)
+		- (DONE) CLAY: get more data from the same grammar (chord1) - test set
+	- (TODO:write) add sparse, non-symmetric transition matrix
+            discussion (with CONTINUOUS states)
+
+(*) Ch 7 - Write
+	(TODO:write - complete)
+	(*) future work
+		- Full beam sampling method
+                - Infinite Factorial variant
+		- Applications
+			- further work on blind source, disaggregation; music
+			- Biopaper context application
+
+
+----- (JMLR) Experiment varying Cauchy kernel on cocktail and Bach
+
+Cauchy kernel : 1/(1 + c*dist^2)
+by setting decay rate intelligently - favor local neighborhood, else treat more or less equivalent
+
+5 replications
+	start with replication 01 first on everything
+	then replications 02..05
+cocktail
+	base: cocktail16_inference_LT_HMM_W0-J600.config
+	LT, stickyLT
+	kernel = (default gaussian), cauchy
+	blambda = { 0.01, 0.1, 1 }
+Bach
+	base: music_bach_major_LT.config
+	LT, stickLT
+	kernel = (default gaussian), cauchy, l1cauchy
+	vary epsilon = { 0.0001, 0.0005, 0.001, 0.005 }
+	vary lambda = { 0.01, 0.1, 1, 5, 10 }
