@@ -665,9 +665,10 @@ a recursive formula to find
   conditioned on $z_t = j$ and the data, $y_{1:T}$:
   \begin{align}
     \hat{z}_{t+1:T,j} &:= \argmax_{z_{t+1:T}} p(z_{t+1:T} \given z_t =
-                        j, y_{1:T})).
+                        j, y_{1:T}).
   \end{align}
-By conditional independence, $p(z_{t+1:T} \given z_t =
+By conditional independence of $z_{t+1:T}$ and $y_{1:t-1}$ given $z_t
+= j$, $p(z_{t+1:T} \given z_t =
                         j, y_{1:T})$ is proportional (as a function of
                         $z_{t+1:T}$) to
   \begin{align}
@@ -692,28 +693,92 @@ By conditional independence, $p(z_{t+1:T} \given z_t =
       z_{t-1} = j) \mu_{t,j'}.
   \end{align}
   where $\hat{z}_{t:T,j}$ is obtained by taking the $j'$ that maximizes
-  the above expression for each $j$, and prepending it to $\hat{z}_{t+1:T,j'}$.
+  the above expression for each $j$, and prepending it to
+  $\hat{z}_{t+1:T,j'}$.  The initial condition in the recursion is
+  simply the empty suffix for all $j$ with $\mu_{T,j}
+  \equiv 1$.
   
-  Thus at each step we start with $J$ suffixes, expand to $J^2$ by
-  considering each possible preceding state with each current best
-  suffix, and then pruning to $J$.  The initial condition in the
-  recursion is simply the empty suffix for all $j$ with $\mu_{T,j}
-  \equiv 1$.  The end result is $\hat{z}_{1:T}$
+  Thus at each step we start with $J$ suffixes, one for each value of
+  $z_t$, expand to $J^2$ by
+  considering each possible value of $z_{t-1}$ in combination with
+  each suffix, and then pruning to $J$ by taking advantage of the fact
+  that, conditioned on $z_{t-1}$, the information not yet considered
+  (namely $z_{1:t-2}$ and $y_{1:t-1}$) is independent of the suffix.
+  Once we have carried the recursion through to $t = 0$ (for which
+  $z_t$ is fixed at the special initial state), we have
+  $\hat{z}_{1:T}$, which by definition is the MAP state sequence
+  conditioned on all the data.
 
-We can indeed construct an easy to work with Bayesian HMM by placing an appropriate 
-conjugate prior on the $\theta_t$ emission parameters (e.g.,
-Normal-Inverse Wishart in the case where $F$ is the family of Normal
-distributions), and Dirichlet conjugate priors on $\pi_0$ and 
-on each row of $\pi$, and carry out posterior inference using Gibbs
-sampling: alternating between sampling the state sequence $\{z_t\}$
-and the model parameters, $\pi, \pi_0$ and the $\theta_j$.  There is
-some additional difficulty introduced by the fact that the $z_t$
-indicators are no longer conditionally independent, and so we must
-either sample them jointly, or break up the Gibbs sampler into
-many additional blocks so as to sample each $z_t$ conditioned on all
-the others.  I will defer details of inference in this model until
-Chapter \ref{chapter:HMM-NPBayes}.
+  \paragraph{Sampling from $p(z_{1:T} \given y_{1:T})$}
+  The Viterbi algorithm deterministically yields the single best state
+  sequence, but does not give us any measure of confidence in that
+  result.  If instead we wish to sample state sequences from the
+  full joint posterior distribution over $z_{1:T}$, we can do so by
+  first carrying out the forward part of the forward-backward
+  algorithm, to yield $p(z_t \given y_{1:T})$ for each $t = 1, \dots,
+  T$, sampling a value for
+  $z_T$ from its marginal posterior distribution,
+  and then conditioning on this value to calculate
+  \begin{align}
+    p(z_{T-1} \given z_T, y_{1:T}) &= p(z_{T-1} \given z_T, y_{1:T-1})
+    \\
+    &\propto p(z_{T-1} \given y_{1:T}) p(z_T, \given z_{T-1})
+  \end{align}
+  where the first line follows from the conditional independence
+  structure, and the second from Bayes' rule.  We can iteratively
+  apply this sampling method to obtain a sample of the full sequence
+  $z_{1:T}$.
 
+  \paragraph{Estimating $\theta_1, \dots, \theta_J$ and $\bpi$}
+  The smoothing, prediction, decoding, and sampling algorithms given
+  above assume that the transition matrix $\bpi$ and the emission
+  parameters $\theta_1, \dots, \theta_J$ are known.  If, as is most
+  often the case, we want to learn these parameters as well, we can do
+  so.  First, however, we need to define an estimation criterion.  The
+  two most common approaches are (1) to maximize the likelihood,
+  $p(y_{1:T} \given \theta_1, \dots, \theta_J, \bpi)$, which is a
+  frequentist method, or to take a Bayesian perspective, putting a
+  prior on the parameters, and working with the posterior distribution
+  in some way (e.g., by taking samples from it using MCMC).  In the
+  When the priors are conditionally conjugate given $z_{1:T}$, a simple
+  Gibbs sampling approach is to alternate between sampling $z_{1:T}$
+  conditioned on $\theta_1, \dots, \theta_J$ and $\bpi$, as described
+  in the previous section, and sampling $\theta_1, \dots, \theta_J,
+  \bpi$ from their conditional posterior given $z_{1:T}$.
+
+  Alternatively, a local maximum of the likelihood can be obtained using
+  Expectation-Maximization (EM).  The augmented likelihood of 
+  $z_{1:T}$ and $y_{1:T}$ is
+  \begin{align}
+    p(z_{1:T}, y_{1:T} \given \bpi, \theta_1, \dots, \theta_J) &=
+                                                                 \prod_{t=1}^T \pi_{z_{t-1}z_t} f(y_t \given \theta_{z_t}) \\
+    &= \prod_{t} \prod_j f(y_t \given \theta_j)^{I(z_t = j)}
+      \prod_{j'} \pi_{jj'}^{I(z_{t-1} = j', z_t = j)}
+  \end{align}
+  By replacing the indicator variables with their conditional expected
+  values (given both the model parameters and the data) , denoting
+  \begin{align}
+    &q_{t,j} := \E{I(z_t = j \given \bpi, \theta_1, \dots, \theta_J, y_{1:T})} \\
+    &\xi_{t,j,j'} := \E{I(z_{t-1} = j, z_{t} = j' \given \bpi, \theta_1, \dots, \theta_J, y_{1:T})}
+  \end{align}
+  we can perform the M step of the EM algorithm by maximizing
+  \begin{align}
+    \prod_{t} \prod_j f(y_t \given \theta_j)^{q_{t,j}}
+      \prod_{j'} \pi_{jj'}^{\xi_{t,j,j'}}
+  \end{align}
+  To calculate the expectations for the $E$ step, we first note that
+  $q_{t,j} = p(z_t = j \given y_{1:T})$, which we have from the
+  forward-backward algorithm.  Similarly, $\xi_{t,j,j'} = p(z_{t-1} =
+  j, z_t = j' \given y_{1:T})$, which we can get from the messages
+  computed in the forward-backward algorithm by writing
+  \begin{align}
+    \xi_{tjj'} &\propto p(z_{t-1} = j, 
+    y_{1:t-1}, z_t = j', y_t, y_{t+1:T}) \\
+                                            &= p(z_{t-1} = j, y_{1:t-1}) p(z_t = j' \given z_{t-1} = j)
+    p(y_t \given z_t = j)
+      p(y_{t+1:T} \given z_t = j) \\
+    &= \alpha_{t-1,j} \pi_{jj'} b_{tj'} \beta_{tj'}
+  \end{align}
 
 \section{Model Selection in HMMs and the Mixture of Gaussians Model}
 \label{sec:model-select-mixt}
